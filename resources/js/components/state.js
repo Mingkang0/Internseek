@@ -1,0 +1,18 @@
+export const MalaysianStates = [
+  { value: '1', name: 'Kuala Lumpur' },
+  { value: '2', name: 'Selangor' },
+  { value: '3', name: 'Penang' },
+  { value: '4', name: 'Labuan' },
+  { value: '5', name: 'Putrajaya' },
+  { value: '6', name: 'Johor' },
+  { value: '7', name: 'Kedah' },
+  { value: '8', name: 'Kelantan' },
+  { value: '9', name: 'Melaka' },
+  { value: '10', name: 'Negeri Sembilan' },
+  { value: '11', name: 'Pahang' },
+  { value: '12', name: 'Perak' },
+  { value: '13', name: 'Perlis' },
+  { value: '14', name: 'Sabah' },
+  { value: '15', name: 'Sarawak' },
+  { value: '16', name: 'Terengganu' },
+];

@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Employer extends Authenticatable
+class Employer extends Model
 {
     use HasFactory;
 
@@ -27,5 +26,10 @@ class Employer extends Authenticatable
     public function receivedMessages()
     {
         return $this->morphMany(Message::class, 'receiver');
+    }
+
+    public function contactPersons()
+    {
+        return $this->hasMany(ContactPerson::class, 'employerID');
     }
 }

@@ -68,7 +68,7 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
           <div className="flex items-center mb-4 justify-between">
             <div className='flex gap-2 items-center'>
               <img src="../../assets/avatar.png" alt="Avatar" className="w-12 h-12 rounded-full border border-gray-900" />
-              <h5 className="text-base font-bold text-gray-900">{receiver ? receiver.companyName : 'Receiver'}</h5>
+              <h5 className="text-base font-bold text-gray-900">{receiver && receiverType === 'employer' ? receiver.companyName : receiver.firstName + ' ' + receiver.lastName}</h5>
             </div>
             <Link><FaTimesCircle className="text-black-900 cursor-pointer" onClick={handleGoBack} /></Link>
           </div>

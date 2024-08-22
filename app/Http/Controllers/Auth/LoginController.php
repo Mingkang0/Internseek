@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Admin;
 use App\Models\Employer;
 use App\Models\Student;
+use App\Models\ContactPerson;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
@@ -40,7 +41,19 @@ class LoginController extends Controller
                 break;
             case 'employer':
                 $guard = 'employer';
-                $user = Employer::where('companyEmail', $credentials['email'])->first(); // Updated column name
+                $contactPerson = ContactPerson::where('email', $credentials['email'])->first();
+                if (!$contactPerson) {
+                    return back()->withErrors(['email' => 'Invalid contact person email.']);
+                }
+                $user = $contactPerson;
+                $employer = Employer::find($user->employerID);
+                if ($employer) {
+                    // Store the employer details in the session
+                    $request->session()->put('employer', $employer);
+                    // Optionally, attach the employer to the user object
+                    $user->employer = $employer;
+                }
+                
                 break;
             case 'student':
                 $guard = 'student';
@@ -53,16 +66,17 @@ class LoginController extends Controller
         if ($user && Hash::check($credentials['password'], $user->password)) {
             Auth::guard($guard)->login($user); // Use the appropriate guard to log in the user
             $request->session()->regenerate();
-            
         // Store the user role in session
         $request->session()->put('userRole', $role);
         $request->session()->put('userGuard', $guard);
 
+
         // Share the userRole with Inertia
         Inertia::share('auth', [
-            'user' => $user,
+            'user' => $user->toArray(), 
             'role' => $role,
         ]);
+
             switch ($role) {
                 case 'admin':
                     return redirect()->route('admin.dashboard');

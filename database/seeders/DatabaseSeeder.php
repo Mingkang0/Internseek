@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Internship;
 use App\Models\Employer;
-
+use App\Models\ContactPerson;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,10 +22,16 @@ class DatabaseSeeder extends Seeder
 
         Employer::factory()->count(10)->create();
 
+        ContactPerson::factory()->count(10)->create();
+
         DB::table('admins')->insert([
-            'name' => 'admin',
+            'firstName' => 'admin',
+            'lastName' => 'admin',
+            'phoneNum' => '012-3456789',
             'email' => 'admin@example.com',
             'password' => bcrypt('1234'),
+            'ICNumber' => '011225060012',
+            'gender' => 'Male',
         ]);
 
         DB::table('employers')->insert([
@@ -71,14 +77,29 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('students')->insert([
-            'name' => 'student',
+            'firstName' => 'student',
+            'lastName' => 'student',
+            'phoneNum' => '012-3456789',
             'email' => 'student@example.com',
             'password' => bcrypt('1234'),
+            'ICNumber' => '01122506060041',
+            'dateOfBirth' => '2000-01-01',
+            'nationality' => 'Malaysian',
+            'gender' => 'Male',
+            'profilePicture' => 'https://www.example.com/profile.jpg',
         ]);
+
         DB::table('students')->insert([
-            'name' => 'student1',
+            'firstName' => 'student1',
+            'lastName' => 'student1',
+            'phoneNum' => '012-3456789',
             'email' => 'student1@example.com',
             'password' => bcrypt('1234'),
+            'ICNumber' => '01122506060041',
+            'dateOfBirth' => '2000-01-01',
+            'nationality' => 'Malaysian',
+            'gender' => 'Male',
+            'profilePicture' => 'https://www.example.com/profile.jpg',
         ]);
     }
 

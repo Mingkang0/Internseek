@@ -10,8 +10,15 @@ class Student extends Authenticatable
 {
     use HasFactory;
     
-    protected $fillable = ['name', 'email', 'password'];
-
+    protected $fillable = 
+    [
+    'firstName', 
+    'lastName',
+    'email', 
+    'phoneNum',
+    'password'
+    ];
+    
     protected $hidden = ['password', 'remember_token'];
 
     public function sentMessages()

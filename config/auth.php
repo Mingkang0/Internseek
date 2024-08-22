@@ -48,7 +48,7 @@ return [
 
         'employer' => [
             'driver' => 'session',
-            'provider' => 'employers',
+            'provider' => 'contact_persons',
         ],
 
         'student' => [
@@ -85,9 +85,9 @@ return [
             'model' => App\Models\Admin::class,
         ],
 
-        'employers' => [
+        'contact_persons' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Employer::class,
+            'model' => App\Models\ContactPerson::class,
         ],
 
         'students' => [

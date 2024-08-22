@@ -16,19 +16,31 @@ class PostingController extends Controller
     public function index()
     {
         $guard = session('userGuard');
-        $employer = Auth::guard($guard)->user();
+        $user = Auth::guard($guard)->user();
 
-
-        // Fetch internships with their associated employers
-        $internships = Internship::where('employerID', $employer->id)
-        ->withCount('bookmarks', 'clicks')
-        ->get();
+        if ($user === 'contact_person') {
+            if($user->employerID) {
+                $employer = Employer::find($user->employerID);
+                // Fetch internships with their associated employers
+                $internships = Internship::where('employerID', $employer->id)
+                ->withCount('bookmarks', 'clicks')
+                ->get();
         
 
-        // Return the data to the Inertia view
-        return Inertia::render('Posting/postingList', [
-            'internships' => $internships,
-        ]);
+                // Return the data to the Inertia view
+                return Inertia::render('Posting/postingList', [
+                'internships' => $internships,
+            ]);
+            } 
+            else 
+            {
+                return redirect()->route('employer.dashboard').with('error', 'Employer not found');
+            }
+        }
+        else {
+            return redirect()->route('login')->with('error', 'You are not authorized to view this page');
+        }
+        
     }
 
     public function create()

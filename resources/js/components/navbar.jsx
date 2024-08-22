@@ -35,9 +35,23 @@ export default function Navbar() {
     <nav className={`sticky top-0 border-gray-300 ${userRole === 'employer' ? 'bg-yellow-300' : userRole === 'student' ? 'bg-blue-100' : userRole === 'admin' ? 'bg-white' : 'bg-blue-100'} border-b w-full`}>
       <div className="max-w-screen-xl mx-auto flex justify-between items-center p-2">
         <div className="flex items-center space-x-6 rtl:space-x-reverse">
-          <a href="/" className="flex items-center rtl:space-x-reverse">
-            <img src="../../assets/logo.png" className="w-32 ml-2 h-auto" alt="Internseek Logo" />
-          </a>
+          {!isAuthenticated ? (
+            <a href="/" className="flex items-center rtl:space-x-reverse">
+              <img src="../../assets/logo.png" className="w-32 ml-2 h-auto" alt="Internseek Logo" />
+            </a>
+          ) : isAuthenticated && userRole === 'student' ? (
+            <a href="/internships" className="flex items-center rtl:space-x-reverse">
+              <img src="../../assets/logo.png" className="w-32 ml-2 h-auto" alt="Internseek Logo" />
+            </a>
+          ) : isAuthenticated && userRole === 'employer' ? (
+            <a href="/employer/dashboard" className="flex items-center rtl:space-x-reverse">
+              <img src="../../assets/logo.png" className="w-32 ml-2 h-auto" alt="Internseek Logo" />
+            </a>
+          ) :
+            <a href="/admin/dashboard" className="flex items-center rtl:space-x-reverse">
+              <img src="../../assets/logo.png" className="w-32 ml-2 h-auto" alt="Internseek Logo" />
+            </a>
+          }
 
           {isAuthenticated ? (
             <div className="hidden md:flex space-x-6 rtl:space-x-reverse">
@@ -51,9 +65,13 @@ export default function Navbar() {
 
               {userRole === 'employer' && (
                 <>
+                {auth.user.employer && (
+                <>
                   <a href="#" className="text-sm font-bold text-gray-900">Internship Posted</a>
                   <a href="#" className="text-sm font-bold text-gray-900">Applicants</a>
                   <a href="#" className="text-sm font-bold text-gray-900">Interview List</a>
+                </>
+                )}
                 </>
               )}
 
@@ -78,13 +96,20 @@ export default function Navbar() {
             <>
               {userRole === 'employer' && (
                 <>
-                  <IoChatbubbleEllipses size={24} className='cursor-pointer' onClick={handleViewMessages}/>
+                 {auth.user.employer && (
+                  <>
+                  <IoChatbubbleEllipses size={24} className='cursor-pointer' onClick={handleViewMessages} />
                   <div className="w-px h-8 bg-gray-900"></div>
                   <div className="flex items-center space-x-2">
                     <FaBuilding size={24} />
-                    <p className="text-sm font-medium ml-2">{auth.user.companyName}</p>
+                    <p className="text-sm font-medium ml-2">
+                   
+                    {auth.user.employer.companyName}
+                    </p>
                   </div>
                   <div className="w-px h-8 bg-gray-900"></div>
+                  </>
+                )}
                 </>
               )}
 
@@ -101,7 +126,7 @@ export default function Navbar() {
                 <button onClick={handleDropdownNavbar} aria-haspopup="true" aria-controls="dropdownNavbar" aria-expanded={dropdownNavbar}
                   id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" className="flex items-center justify-center text-gray-900">
                   <FaUser size={20} />
-                  <span className="text-sm font-medium ml-2">{auth.user.name}</span>
+                  <span className="text-sm font-medium ml-2"> {auth.user.email}</span>
                   <FaCaretDown size={18} />
                 </button>
 
@@ -121,7 +146,7 @@ export default function Navbar() {
                         <>
                           <li><a href="/profile/employer" className="block px-4 py-2 hover:bg-gray-100">Company Profile</a></li>
                           <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">Branch & Site Info</a></li>
-                          <li><a href="/profile/employer/contactPerson" className="block px-4 py-2 hover:bg-gray-100">Contact Person Details</a></li>
+                          <li><a href="/contact-person-details" className="block px-4 py-2 hover:bg-gray-100">Contact Person Details</a></li>
                           <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
                         </>
                       )}
@@ -161,7 +186,7 @@ export default function Navbar() {
                 <h3 className="text-lg font-semibold text-gray-900">
                   Account Registration
                 </h3>
-                <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center" data-modal-toggle="select-modal" onClick={closeModal}> 
+                <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center" data-modal-toggle="select-modal" onClick={closeModal}>
                   <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                   </svg>
@@ -171,26 +196,26 @@ export default function Navbar() {
               <div className="p-4 md:p-5">
                 <ul className="space-y-4 mb-2">
                   <li>
+                  <Link method="get" href="/register/student" className="block">
                     <label HTMLFor="student-registration" className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100">
-                      <Link href="" className="block">
                         <div className="w-full text-lg font-semibold">Student Registration</div>
-                      </Link>
                       <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" /></svg>
                     </label>
+                    </Link>
                   </li>
                   <li>
+                  <Link method="get" href="/register/employer" className="block">
                     <label for="employer-registration" className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100">
-                      <Link href="" className="block">
                         <div className="w-full text-lg font-semibold">Employer Registration</div>
-                      </Link>
                       <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" /></svg>
                     </label>
+                    </Link>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-          </div>
+        </div>
       )}
 
     </nav>

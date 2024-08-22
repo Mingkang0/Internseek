@@ -31,7 +31,7 @@ function formatTime(dateString) {
             <div className='flex flex-col w-full px-2 pt-2'>
               <div className="flex justify-between items-center">
                 <h5 className="text-sm font-semibold text-gray-900">
-                  {userRole === 'employer' ? conversation.partner.name : userRole === 'student' ? conversation.partner.companyName : null}
+                  {userRole === 'employer' ? conversation.partner.firstname + ' ' + conversation.partner.lastName : userRole === 'student' ? conversation.partner.companyName : null}
                 </h5>
                 <span className="text-xs text-gray-500">{formatDate(latestMessage.created_at)}</span>
               </div>

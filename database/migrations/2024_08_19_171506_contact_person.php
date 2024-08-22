@@ -11,15 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admins', function (Blueprint $table) {
+        Schema::create('contact_persons', function (Blueprint $table) {
             $table->id();
             $table->string('firstName');
             $table->string('lastName');
             $table->string('phoneNum');
-            $table->string('ICNumber');
-            $table->enum('gender', ['Male', 'Female']);
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('position')->nullable();
+            $table->string('department')->nullable();
+            // First, make the column nullable
+            $table->unsignedBigInteger('employerID')->nullable();
+
+            // Then, add the foreign key constraint
+            $table->foreign('employerID')
+                  ->references('id')->on('employers')
+                  ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('admins');
+        Schema::dropIfExists('contact_persons');
     }
 };

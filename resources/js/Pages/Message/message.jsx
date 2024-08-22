@@ -73,7 +73,7 @@ const Message = ({ conversation, userRole, userID }) => {
       <div className="flex items-center mb-2 justify-between">
         <div className='flex gap-2 items-center'>
           <img src="../../assets/avatar.png" alt="Avatar" className="w-12 h-12 rounded-full border border-gray-900" />
-          <h5 className="text-base font-bold text-gray-900">{userRole === 'student' ? conversation.partner.companyName : conversation.partner.name}</h5>
+          <h5 className="text-base font-bold text-gray-900">{userRole === 'student' ? conversation.partner.companyName : conversation.partner.firstName + ' ' + conversation.partner.lastName}</h5>
         </div>
       </div>
       <hr className="my-2 border border-gray-900" />
@@ -99,7 +99,7 @@ const Message = ({ conversation, userRole, userID }) => {
               >
                 <div className="flex gap-4 items-center mb-2 overflow-y-auto">
                   <h5 className="text-sm font-semibold text-gray-900">
-                    {message.sender_id === userID && message.sender_type === userRole ? 'You' : message.sender_type === 'student' ? conversation.partner.name : conversation.partner.companyName}
+                    {message.sender_id === userID && message.sender_type === userRole ? 'You' : message.sender_type === 'student' ? conversation.partner.firstName + ' ' + conversation.partner.lastName : conversation.partner.companyName}
                   </h5>
                   <span className="text-sm text-gray-600">{formatDate(message.created_at)}</span>
                 </div>

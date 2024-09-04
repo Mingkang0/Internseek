@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\ContactPerson;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employer;
+use Illuminate\Support\Facades\Storage;
 
 class RegistrationController extends Controller
 {
@@ -107,7 +108,10 @@ class RegistrationController extends Controller
     public function searchExistingEmployer(Request $request)
     {
         $companyName = $request->input('companyName');
-        $employers = Employer::where('companyName', 'like', "%{$companyName}%")->get();
+        $employers = Employer::where('companyName', 'like', "%{$companyName}%")
+                   ->where('registrationStatus', 'Approved')
+                   ->get();
+
         return Inertia::render('Registration/Employer/searchExistingCompany', [
         'employers' => $employers,
     ]);
@@ -153,7 +157,174 @@ class RegistrationController extends Controller
             return redirect()->route('login')->with('error', 'You are not authorized to view this page');
         }
         }
+    
+    public function createCompany()
+    {
+        $guard = session('userGuard');
+        $user = Auth::guard('employer')->user();
+
+        $contactPerson = ContactPerson::find($user->id);
+
+        return Inertia::render('Registration/Employer/registrationForm', [
+            'contactPerson' => $contactPerson,
+        ]);
+    }
+
+    public function handleRegistration(Request $request) {
+
+        // Validate the input data
+        $validatedData = $request->validate([
+            'companyInfo.companyName' => 'required',
+            'companyInfo.companyEmail' => 'required|email',
+            'companyInfo.companyType' => 'required',
+            'companyInfo.companyPhone' => 'required',
+            'companyInfo.companyAddress1' => 'required',
+            'companyInfo.companyAddress2' => 'required',
+            'companyInfo.companyPostalCode' => 'required',
+            'companyInfo.companyCity' => 'required',
+            'companyInfo.companyState' => 'required',
+            'companyInfo.companyCountry' => 'required',
+            'companyInfo.companySector' => 'required',
+            'companyInfo.companySize' => 'required',
+            'companyInfo.companyWebsite' => 'required',
+            'companyInfo.documentType' => 'required',
+            'companyInfo.documentName' => 'required|mimes:pdf,doc,docx',
+            'companyInfo.businessRegNum' => 'required',
+            'companyInfo.businessRegDate' => 'required',
+            'logo.companyLogo' => 'required|mimes:png,svg,jpg,jpeg|max:2048',
+            'contactPersonInfo.firstName' => 'required',
+            'contactPersonInfo.lastName' => 'required',
+            'contactPersonInfo.email' => 'required|email',
+            'contactPersonInfo.position' => 'required',
+            'contactPersonInfo.department' => 'required',
+        ]);
+    
+        // Handle file uploads
+        if ($request->hasFile('companyInfo.documentName')) {
+            $documentPath = $request->file('companyInfo.documentName')->store('public/company/businessRegDocuments');
+            $validatedData['companyInfo']['documentName'] = basename($documentPath);
+        }
+    
+        if ($request->hasFile('logo.companyLogo')) {
+            $logoPath = $request->file('logo.companyLogo')->store('public/company/companyLogo');
+            $validatedData['logo']['companyLogo'] = basename($logoPath);
+        }
+    
+        // Add default registration status
+        $validatedData['companyInfo']['registrationStatus'] = 'Pending';
+    
+        // Merge all validated data into one array for creating the Employer
+        $companyData = array_merge(
+            $validatedData['companyInfo'],
+            ['companyLogo' => $validatedData['logo']['companyLogo']],
+        );
+    
+        // Create the Employer
+        $company = Employer::create($companyData);
 
 
+        // Handle contact person information
+        $contactPersonData = [
+            'employerID' => $company->id,
+            'first_name' => $validatedData['contactPersonInfo']['firstName'],
+            'last_name' => $validatedData['contactPersonInfo']['lastName'],
+            'email' => $validatedData['contactPersonInfo']['email'],
+            'position' => $validatedData['contactPersonInfo']['position'],
+            'department' => $validatedData['contactPersonInfo']['department'],
+        ];
+        
+        $request->session()->put('employer', $company);
+
+
+        // Create or update contact person
+        ContactPerson::updateOrCreate(
+            ['email' => $validatedData['contactPersonInfo']['email']], // Unique identifier
+            $contactPersonData
+        );
+
+        // Redirect to employer dashboard
+        return redirect()->route('employer.dashboard')->with('success', 'Successfully register company!');
+    }
+
+
+    public function editRegistrationDetails()
+    {
+        $guard = session('userGuard');
+        $user = Auth::guard('employer')->user();
+
+        $contactPerson = ContactPerson::find($user->id);
+
+        $employer = Employer::find($contactPerson->employerID);
+
+
+        return Inertia::render('Registration/Employer/editRegistrationDetails', [
+            'contactPerson' => $contactPerson,
+            'employer' => $employer,
+        ]);
+    }
+    
+
+    public function updateRegistrationDetails(Request $request, $id)
+    {
+        // Retrieve the employer and contact person
+        $employer = Employer::find($id);
+        $user = Auth::guard('employer')->user();
+        $contactPerson = ContactPerson::find($user->id);
+    
+        // Validate the input data
+        $validatedData = $request->validate([
+            'companyName' => 'required',
+            'companyEmail' => 'required|email',
+            'companyType' => 'required',
+            'companyPhone' => 'required',
+            'companyAddress1' => 'required',
+            'companyAddress2' => 'required',
+            'companyPostalCode' => 'required',
+            'companyCity' => 'required',
+            'companyState' => 'required',
+            'companyCountry' => 'required',
+            'companySector' => 'required',
+            'companySize' => 'required',
+            'companyWebsite' => 'required',
+            'documentType' => 'required',
+            'documentName' => 'nullable|mimes:pdf,doc,docx',
+            'businessRegNum' => 'required',
+            'businessRegDate' => 'required',
+            'companyLogo' => 'nullable|mimes:png,svg,jpg,jpeg|max:2048',
+            'firstName' => 'required',
+            'lastName' => 'required',
+            'email' => 'required|email',
+            'position' => 'required',
+            'department' => 'required',
+        ]);
+    
+        // Handle file uploads
+        if ($request->hasFile('documentName')) {
+            $documentPath = $request->file('documentName')->store('public/company/businessRegDocuments');
+            $validatedData['documentName'] = basename($documentPath);
+        }
+    
+        if ($request->hasFile('companyLogo')) {
+            $logoPath = $request->file('companyLogo')->store('public/company/companyLogo');
+            $validatedData['companyLogo'] = basename($logoPath);
+        }
+    
+        // Add default registration status
+        $validatedData['registrationStatus'] = 'Pending';
+    
+        // Update the employer with validated data
+        $employer->update($validatedData);
+    
+        // Update the contact person details
+        $contactPerson->update([
+            'firstName' => $validatedData['firstName'],
+            'lastName' => $validatedData['lastName'],
+            'email' => $validatedData['email'],
+            'position' => $validatedData['position'],
+            'department' => $validatedData['department'],
+        ]);
+        // Redirect back with success message
+        return redirect()->route('employer.dashboard')->with('success', 'Registration details updated successfully!');
+    }
 
 }

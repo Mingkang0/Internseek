@@ -9,7 +9,30 @@ class Employer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = [
+        'companyName',
+        'companyEmail',
+        'companyPhone',
+        'documentType',
+        'documentName',
+        'companyAddress1',
+        'companyAddress2',
+        'companyPostalCode',
+        'companyCity',
+        'companyState',
+        'companyCountry',
+        'companySector',
+        'companySize',
+        'companyWebsite',
+        'companyType',
+        'businessRegNum',
+        'businessRegDate',
+        'registrationStatus',
+        'companyLogo',
+        'mission',
+        'vision',
+        'companyDescription',
+    ];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -31,5 +54,10 @@ class Employer extends Model
     public function contactPersons()
     {
         return $this->hasMany(ContactPerson::class, 'employerID');
+    }
+
+    public function branches()
+    {
+        return $this->hasMany(Branch::class, 'employerID');
     }
 }

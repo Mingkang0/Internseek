@@ -31,7 +31,7 @@ export default function Home() {
         <DefaultLayout>
             <Head title="Home" />
             <div className="bg-blue-100 min-h-screen mx-auto overflow-y-auto lg:py-6 lg:px-8">
-                <div className="max-w-screen-xl mx-auto flex lg:flex-row lg:justify-between overflow-y-auto gap-16">
+                <div className="max-w-screen-xl mx-auto flex lg:flex-row lg:justify-between overflow-y-auto gap-8">
 
                     {/* Main content area */}
                     <div className="lg:w-1/2 flex flex-col justify-center lg:ml-2 mb-6 lg:mb-0">

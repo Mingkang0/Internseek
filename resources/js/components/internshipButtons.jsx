@@ -26,7 +26,8 @@ const InternshipButtons = ({ id, onReportClick }) => {
         icon: flash.success ? 'success' : 'info',
         timer: 5000,
         timerProgressBar: true,
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#007bff'
       }).then(() => {
       // Remove the flash message after displaying it
       Inertia.replace(window.location.pathname);

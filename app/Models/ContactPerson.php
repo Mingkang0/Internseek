@@ -16,7 +16,10 @@ class ContactPerson extends Authenticatable
         'lastName',
         'phoneNum',
         'email', 
-        'password'
+        'password',
+        'department',
+        'position',
+        'employerID'
     ];
 
     protected $hidden = ['password', 'remember_token'];

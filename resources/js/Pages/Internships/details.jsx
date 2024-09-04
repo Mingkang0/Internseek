@@ -6,6 +6,8 @@ import DefaultLayout from '@/layout/defaultLayout';
 import { Head, Link } from '@inertiajs/react';
 import Modal from '@/components/Modal';
 import { usePage } from '@inertiajs/react';
+import { Inertia } from '@inertiajs/inertia';
+import Swal from 'sweetalert2';
 
 const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -34,8 +36,29 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
     setOtherReason(event.target.value);
   };
 
-  const handleSubmit = () => {
-    onSubmit(internshipId, selectedReason, otherReason);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const problemDesc = selectedReason === 'Other' ? otherReason : selectedReason;
+  
+    // Post the data using Inertia
+    Inertia.post(`/report-internship/${internship.id}`, {problemDesc}, {
+      onSuccess: () => {
+        console.log('Report submitted successfully');
+      },
+      onError: (errors) => {
+        console.log(errors);
+
+        Swal.fire({
+          title: 'Error',
+          text: 'Sorry, There is an error occurs during submission',
+          icon: 'error',
+          timer: 3000,
+          timerProgressBar: true,
+          confirmButtonText: 'OK'
+        })
+      }
+    });
   };
 
   return (
@@ -112,7 +135,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                 <FaTimesCircle size={20} className="text-gray-600 cursor-pointer" onClick={closeReportModal} />
               </h2>
               <hr className="my-2" />
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label className="block text-gray-700 font-semibold mb-2">
                     Reason for reporting (Choose a problem):
@@ -122,7 +145,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                       <input
                         type="radio"
                         className="form-radio"
-                        name="reason"
+                        name="problemDesc"
                         value="It’s trying to sell something unrelated to the internship"
                         onChange={handleReasonChange}
                       />
@@ -132,7 +155,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                       <input
                         type="radio"
                         className="form-radio"
-                        name="reason"
+                        name="problemDesc"
                         value="It’s offensive and/or discriminatory"
                         onChange={handleReasonChange}
                       />
@@ -142,7 +165,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                       <input
                         type="radio"
                         className="form-radio"
-                        name="reason"
+                        name="problemDesc"
                         value="Asking for money or seems like a fake internship"
                         onChange={handleReasonChange}
                       />
@@ -152,7 +175,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                       <input
                         type="radio"
                         className="form-radio"
-                        name="reason"
+                        name="problemDesc"
                         value="Incorrect Company, Location, or internship details"
                         onChange={handleReasonChange}
                       />
@@ -162,7 +185,6 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                       <input
                         type="radio"
                         className="form-radio"
-                        name="reason"
                         value="Other"
                         onChange={handleReasonChange}
                       />
@@ -178,6 +200,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                     <textarea
                       className="w-full px-3 py-2 border rounded-lg"
                       rows={4}
+                      name="problemDesc"
                       onChange={handleOtherReasonChange}
                       value={otherReason}
                     />
@@ -187,7 +210,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
                   <button
                     className="px-4 py-2 bg-blue-900 text-white rounded"
                     onClick={handleSubmit}
-                    type="button"
+                    type="submit"
                   >
                     Report
                   </button>

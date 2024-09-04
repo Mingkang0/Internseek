@@ -11,7 +11,7 @@ class CompanyController extends Controller
     public function index()
     {
         // Fetch internships with their associated employers
-        $employers = Employer::all();
+        $employers = Employer::where('registrationStatus', 'Approved')->get();
 
         // Return the data to the Inertia view
         return Inertia::render('Companies/list', [
@@ -29,5 +29,7 @@ class CompanyController extends Controller
             'employer' => $employer
         ]);
     }
+
+    
 
 }

@@ -9,6 +9,8 @@ use App\Models\Bookmark;
 use App\Models\Click;
 use App\Models\Employer;
 use App\Models\ContactPerson;
+use App\Models\Report;
+use App\Models\Student;
 
 
 class DashboardController extends Controller
@@ -24,6 +26,7 @@ class DashboardController extends Controller
         }
 
         $internships = Internship::where('employerID', $employer->id)
+            ->with('employer')
             ->withCount('bookmarks', 'clicks')
             ->orderBy('created_at', 'desc')
             ->limit(3)
@@ -32,6 +35,34 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard/Employer', [
             'internships' => $internships,
             'employer' => $employer,
+        ]);
+    }
+
+
+    public function indexAdmin(){
+
+        $internshipCount = Internship::count();
+
+        $employerCount = Employer::count();
+
+        $studentCount = Student::count();
+
+        $employer = Employer::orderBy('created_at', 'desc')->limit(5)->get();
+
+        $report = Report::with('internship.employer')
+                ->orderBy('created_at', 'desc')
+                ->limit(5)
+                ->get();
+
+       
+        //Internship Report
+
+        return Inertia::render('Dashboard/Admin', [
+            'internshipCount' => $internshipCount,
+            'employerCount' => $employerCount,
+            'studentCount' => $studentCount,
+            'employers' => $employer,
+            'reports' => $report,
         ]);
     }
 }

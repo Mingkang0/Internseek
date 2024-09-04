@@ -20,10 +20,9 @@ return new class extends Migration
             $table->string('branchState');
             $table->string('branchPostcode');
             $table->string('branchCountry');
-            $table->string('branchFaxNum');
             $table->string('branchPhoneNum');
             $table->string('branchEmail');
-            $table->foreignId('company_id')->constrained('employers')->onDelete('cascade'); // FK
+            $table->foreignId('employerID')->constrained('employers')->onDelete('cascade'); // FK
             $table->timestamps();
         });
     }

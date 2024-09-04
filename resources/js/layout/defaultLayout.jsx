@@ -1,6 +1,7 @@
 import react from "react";
 import Navbar from "../components/navbar";
 import { Head } from "@inertiajs/react";
+import 'flowbite/dist/flowbite.css';
 
 const DefaultLayout = ({ children }) => {
   return (

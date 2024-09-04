@@ -8,6 +8,7 @@ use App\Models\Internship;
 use App\Models\Employer;
 use App\Models\Bookmark;
 use App\Models\Click;
+use App\Models\ContactPerson;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -18,7 +19,7 @@ class PostingController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if ($user === 'contact_person') {
+        if ($user instanceof ContactPerson) {
             if($user->employerID) {
                 $employer = Employer::find($user->employerID);
                 // Fetch internships with their associated employers
@@ -26,7 +27,6 @@ class PostingController extends Controller
                 ->withCount('bookmarks', 'clicks')
                 ->get();
         
-
                 // Return the data to the Inertia view
                 return Inertia::render('Posting/postingList', [
                 'internships' => $internships,
@@ -90,10 +90,14 @@ class PostingController extends Controller
     {
         // Get the authenticated employer based on the guard
         $guard = session('userGuard');
-        $employer = Auth::guard($guard)->user();
+        $user = Auth::guard($guard)->user();
 
-        // Validate the incoming request
-        $validatedData = $request->validate([
+        if ($user instanceof ContactPerson) {
+            $employer = Employer::find($user->employerID);
+
+            
+            // Validate the incoming request
+            $validatedData = $request->validate([
             'internshipTitle' => 'required|string',
             'internshipAllowance' => 'required|numeric',
             'internshipDescription' => 'required|string',
@@ -105,33 +109,38 @@ class PostingController extends Controller
             'workingHour' => 'required|numeric',
             'studyScope' => 'required|string',
             'workingMethod' => 'required|string',
-        ]);
+            ]);
 
 
-        // Convert dates to Carbon instances in the local timezone
-        $startPostingDate = Carbon::createFromFormat('Y-m-d', $validatedData['startPostingDate'], 'Asia/Kuala_Lumpur');
-        $endPostingDate = Carbon::createFromFormat('Y-m-d', $validatedData['endPostingDate'], 'Asia/Kuala_Lumpur');
-        // Check if the dates are valid
+            // Convert dates to Carbon instances in the local timezone
+            $startPostingDate = Carbon::createFromFormat('Y-m-d', $validatedData['startPostingDate'], 'Asia/Kuala_Lumpur');
+            $endPostingDate = Carbon::createFromFormat('Y-m-d', $validatedData['endPostingDate'], 'Asia/Kuala_Lumpur');
+            // Check if the dates are valid
 
-        $now = Carbon::now('Asia/Kuala_Lumpur');
+            $now = Carbon::now('Asia/Kuala_Lumpur');
 
-        if ($startPostingDate->isToday() || $startPostingDate->isPast()) {
-        $postingStatus = 'Published';
+            if ($startPostingDate->isToday() || $startPostingDate->isPast()) {
+            $postingStatus = 'Published';
+            } else {
+            $postingStatus = 'Unpublished';
+            }
+
+            // Add the employer ID and posting status to the validated data
+            $validatedData['employerID'] = $employer->id;
+            $validatedData['postingStatus'] = $postingStatus;
+
+            // Create a new internship posting
+            $internship = Internship::create($validatedData);
+
+            // Redirect back to the internships listing with a success message
+            return redirect()->route('employer.postedinternships')
+                ->with('success', 'Internship posted successfully!')
+                ->with('message', 'Your internship has been posted successfully.');
+
         } else {
-        $postingStatus = 'Unpublished';
+            return redirect()->route('login')->with('error', 'You are not authorized to view this page');
         }
 
-        // Add the employer ID and posting status to the validated data
-        $validatedData['employerID'] = $employer->id;
-        $validatedData['postingStatus'] = $postingStatus;
-
-        // Create a new internship posting
-        $internship = Internship::create($validatedData);
-
-        // Redirect back to the internships listing with a success message
-        return redirect()->route('employer.postedinternships')
-            ->with('success', 'Internship posted successfully!')
-            ->with('message', 'Your internship has been posted successfully.');
     }
 
     public function delete($id)

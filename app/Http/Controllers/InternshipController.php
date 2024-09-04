@@ -7,6 +7,7 @@ use App\Models\Internship;
 use Inertia\Inertia;
 use App\Models\Click;
 use App\Models\Bookmark;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -104,5 +105,31 @@ class InternshipController extends Controller
     private function getClickCount($internshipId)
     {
         return Click::where('internshipID', $internshipId)->count();
+    }
+
+    public function ReportInternship(Request $request, $id)
+    {
+        $guard = session('userGuard');
+        $student = Auth::guard($guard)->user();
+        
+        $validateData = $request->validate ([
+            'problemDesc' => 'required|string'
+        ]);
+
+        // Replace underscores with spaces for display purposes
+        $problemDesc = str_replace('_', ' ', $request->problemDesc);
+
+        $reportStatus = 'Reviewing';
+
+        Report::create([
+            'problemDesc' => $request->problemDesc,
+            'studentID' => $student->id,
+            'internshipID' => $id,
+            'reportStatus' => $reportStatus,
+        ]);
+
+        return redirect()->back()             
+            ->with('success', 'Successfully Report Internship!')
+            ->with('message', 'You can view the status of your report at My Report page.');
     }
 }

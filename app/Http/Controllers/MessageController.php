@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Employer;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 
 class MessageController extends Controller

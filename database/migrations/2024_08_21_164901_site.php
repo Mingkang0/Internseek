@@ -19,10 +19,8 @@ return new class extends Migration
             $table->string('siteCountry');
             $table->string('sitePhone');
             $table->string('siteEmail');
-            $table->string('siteFax');
-            $table->string('siteWebsite');
             $table->timestamps();
-            $table->foreignId('branch_id')->constrained('branch')->onDelete('cascade');
+            $table->foreignId('branchID')->constrained('branch')->onDelete('cascade');
         });
     }
 

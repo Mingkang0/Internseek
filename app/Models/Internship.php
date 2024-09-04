@@ -46,4 +46,9 @@ class Internship extends Model
         return $this->hasMany(Bookmark::class, 'internshipID');
     }
 
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'internshipID');
+    }
+
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('businessRegNum');
             $table->date('businessRegDate');
             $table->string('documentType');
+            $table->string('documentName');
             $table->string('companyPhone');
             $table->string('companyAddress1');
             $table->string('companyAddress2');
@@ -28,14 +29,14 @@ return new class extends Migration
             $table->string('companySector');
             $table->string('companySize');
             $table->string('companyWebsite');
-            $table->string('companyDescription');
+            $table->string('inquiryComment')->nullable();
+            $table->string('companyDescription')->nullable();
             $table->enum('companyType', ['SME','MNC','International', 'Government Agency', 'NGO', 'Government Company']);
-            $table->string('vision');
-            $table->string('mission');
-            $table->string('password');
-            $table->enum('companyRating', ['Highly Recommended', 'Recommended', 'Average', 'Shut Down']);
+            $table->string('vision')->nullable();
+            $table->string('mission')->nullable();
+            $table->enum('companyRating', ['Highly Recommended', 'Recommended', 'Average', 'Shut Down'])->nullable();
             $table->enum('registrationStatus', ['Pending','Inquiry', 'Approved']);
-            $table->string('companyLogo');
+            $table->string('companyLogo')->nullable();
             $table->timestamps();
         });
     }

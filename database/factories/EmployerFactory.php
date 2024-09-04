@@ -26,7 +26,6 @@ class EmployerFactory extends Factory
         return [
             'companyName' => $this->faker->name,
             'companyEmail' => $this->faker->unique()->safeEmail,
-            'password' => bcrypt('1234'),
             'companyPhone' => $this->faker->phoneNumber,
             'companyAddress1' => $this->faker->address,
             'companyAddress2' => $this->faker->address,
@@ -47,7 +46,8 @@ class EmployerFactory extends Factory
             'businessRegNum' => $this->faker->randomElement(['123456', '234567', '345678', '456789']),
             'businessRegDate' => $this->faker->date,
             'documentType' => $this->faker->randomElement(['Certificate of Incorporation', 'Form 9', 'Form 24', 'Form 49']),
-
+            'documentName' => $this->faker->name,
+            'inquiryComment' => $this->faker->sentence,
         ];
     }
 }

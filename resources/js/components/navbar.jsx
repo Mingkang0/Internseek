@@ -1,9 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { FaUser, FaCaretDown, FaBuilding } from 'react-icons/fa';
+import { FaUser, FaCaretDown, FaBuilding, FaBell } from 'react-icons/fa';
 import { IoChatbubbleEllipses } from 'react-icons/io5';
 import { Inertia } from '@inertiajs/inertia';
+
 
 
 export default function Navbar() {
@@ -65,7 +66,7 @@ export default function Navbar() {
 
               {userRole === 'employer' && (
                 <>
-                {auth.user.employer && (
+                {auth.user.employer && auth.user.employer.registrationStatus ==='Approved' && (
                 <>
                   <a href="#" className="text-sm font-bold text-gray-900">Internship Posted</a>
                   <a href="#" className="text-sm font-bold text-gray-900">Applicants</a>
@@ -77,9 +78,9 @@ export default function Navbar() {
 
               {userRole === 'admin' && (
                 <>
-                  <a href="#" className="text-sm font-bold text-gray-900">Employer List</a>
-                  <a href="#" className="text-sm font-bold text-gray-900">Internseeker List</a>
-                  <a href="#" className="text-sm font-bold text-gray-900">Internship List</a>
+                  <a href="/admin/employers" className="text-sm font-bold text-gray-900">Employer List</a>
+                  <a href="/admin/internseekers" className="text-sm font-bold text-gray-900">Internseeker List</a>
+                  <a href="/admin/internships" className="text-sm font-bold text-gray-900">Internship List</a>
                 </>
               )}
             </div>
@@ -96,8 +97,9 @@ export default function Navbar() {
             <>
               {userRole === 'employer' && (
                 <>
-                 {auth.user.employer && (
+                 {auth.user.employer && auth.user.employer.registrationStatus ==='Approved' && (
                   <>
+                  <FaBell size={24} className='cursor-pointer mr-2' />
                   <IoChatbubbleEllipses size={24} className='cursor-pointer' onClick={handleViewMessages} />
                   <div className="w-px h-8 bg-gray-900"></div>
                   <div className="flex items-center space-x-2">
@@ -135,17 +137,17 @@ export default function Navbar() {
                     <ul className="py-2 text-sm text-gray-700" aria-labelledby="dropdownLargeButton">
                       {userRole === 'student' && (
                         <>
-                          <li><a href="/profile/student" className="block px-4 py-2 hover:bg-gray-100">My Profile</a></li>
-                          <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
+                          <li><a href="/student/profile" className="block px-4 py-2 hover:bg-gray-100">My Profile</a></li>
+                          <li><a href="/student/my-report" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
                           <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">Industrial Training</a></li>
-                          <li><a href="/profile/student/settings" className="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
+                          <li><a href="/student/profile/settings" className="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
                         </>
                       )}
 
-                      {userRole === 'employer' && (
+                      {userRole === 'employer' && auth.user.employer && auth.user.employer.registrationStatus === 'Approved' && (
                         <>
-                          <li><a href="/profile/employer" className="block px-4 py-2 hover:bg-gray-100">Company Profile</a></li>
-                          <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">Branch & Site Info</a></li>
+                          <li><a href="/employer/profileDetails" className="block px-4 py-2 hover:bg-gray-100">Company Profile</a></li>
+                          <li><a href="/employer/branch-details" className="block px-4 py-2 hover:bg-gray-100">Branch & Site Info</a></li>
                           <li><a href="/contact-person-details" className="block px-4 py-2 hover:bg-gray-100">Contact Person Details</a></li>
                           <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
                         </>
@@ -153,8 +155,7 @@ export default function Navbar() {
 
                       {userRole === 'admin' && (
                         <>
-                          <li><a href="/profile/admin" className="block px-4 py-2 hover:bg-gray-100">Admin Dashboard</a></li>
-                          <li><a href="/profile/admin/settings" className="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
+                          <li><a href="/admin/profile" className="block px-4 py-2 hover:bg-gray-100">My Profile</a></li>
                         </>
                       )}
                     </ul>
@@ -168,7 +169,7 @@ export default function Navbar() {
           ) : (
             <>
               <button onClick={() => { openModal() }} className="text-gray-900 bg-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2">
-                Register Account
+                Register
               </button>
               <Link method="get" href='/login' className="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 text-center">
                 Login

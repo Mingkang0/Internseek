@@ -70,7 +70,7 @@ export default function PostingList({ internships }) {
               <input
                 type="search"
                 id="default-search"
-                className="block w-full p-4 text-sm text-gray-900 border border-gray-300 rounded-3xl bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full p-4 text-sm text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Search by entering internship title"
                 value={searchQuery}
                 onChange={handleSearch}

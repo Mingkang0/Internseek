@@ -44,6 +44,7 @@ export default function ProfilePicSection({ student, studentID, profileCompletio
           <EditProfilePic  
           profilePic={student.profilePicture}
           studentID={studentID}
+          closeModal={() => setIsEditModalOpen(false)}
           />
         </Modal>
       )}

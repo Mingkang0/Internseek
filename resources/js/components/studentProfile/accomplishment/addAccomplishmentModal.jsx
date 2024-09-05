@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 
 
-export default function AddAccomplishmentModal({ studentID }) {
+export default function AddAccomplishmentModal({ studentID, onClose }) {
   const yearInputRef = useRef(null);
 
   const { data, setData, post, processing, errors, setError } = useForm({
@@ -23,15 +23,20 @@ export default function AddAccomplishmentModal({ studentID }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    Inertia.post(`/accomplishment/store/${studentID}`, data).
-      onError((error) => {
+    router.post(`/accomplishment/store/${studentID}`, data, {
+      onError: (error) => {
         Swal.fire({
           title: 'Error',
           text: 'There was an error while adding the accomplishment',
           icon: 'error',
           confirmButtonText: 'Ok',
         });
-      });
+      },
+      onSuccess: (response) => {
+        // Handle successful response if needed
+      },
+    });
+    onClose();
   };
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>

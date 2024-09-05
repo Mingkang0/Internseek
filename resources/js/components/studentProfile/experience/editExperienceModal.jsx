@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
 import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/react';
 
 export default function EditExperienceModal({ experience, onClose, studentID }) {
   const [jobTitle, setJobTitle] = useState(experience.jobTitle);
@@ -44,7 +45,7 @@ export default function EditExperienceModal({ experience, onClose, studentID }) 
       return;
     }
 
-    Inertia.post(`/experience/update/${studentID}/${experience.id}`, updatedExperience, {
+    router.post(`/experience/update/${studentID}/${experience.id}`, updatedExperience, {
       onSuccess: () => {
         onClose(); // Close the modal on success
       },
@@ -58,6 +59,7 @@ export default function EditExperienceModal({ experience, onClose, studentID }) 
         });
       },
     });
+    onClose();
 
   }
 
@@ -71,11 +73,14 @@ export default function EditExperienceModal({ experience, onClose, studentID }) 
       showCancelButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/experience/delete/${studentID}/${experience.id}`);
+        router.post(`/experience/delete/${studentID}/${experience.id}`);
       }
     });
+    onClose();
   };
   return (
     <form className="space-y-4" >

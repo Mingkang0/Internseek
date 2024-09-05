@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/react';
 
 
 const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
@@ -103,10 +104,11 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
       },
     ];
 
-    Inertia.post(`/basicInfo/update/${studentID}`, {
+    router.post(`/basicInfo/update/${studentID}`, {
       student: updatedStudent,
       addresses: updatedAddresses
     });
+    onClose();
   };
 
 

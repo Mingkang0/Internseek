@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import DefaultLayout from '@/layout/defaultLayout';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
 export default function ReportRequest({ report }) {
 
@@ -32,7 +32,7 @@ export default function ReportRequest({ report }) {
   };
 
   const handleBack = () => {
-    Inertia.get('/admin/problems-reports');
+    router.get('/admin/problems-reports');
   };
 
   const handleCommentChange = (event) => {
@@ -47,7 +47,7 @@ export default function ReportRequest({ report }) {
     event.preventDefault();
     post(`/admin/problems-reports/update-status/${report.id}`, {
       onSuccess: () => {
-        Inertia.get('/admin/problems-reports');
+        router.get('/admin/problems-reports');
       },
     });
   }

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
 import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
 import CompleteMessage from "./completeMessage";
 import Swal from "sweetalert2";
 import DefaultLayout from "@/layout/defaultLayout";
+import { router } from "@inertiajs/react";
 
 const RegisterEmployerForm = ({ contactPerson }) => {
   const [step, setStep] = useState(1);
@@ -64,7 +64,7 @@ const RegisterEmployerForm = ({ contactPerson }) => {
       cancelButtonColor: "#d33",
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post("/employer/register", formData, {
+        router.post("/employer/register", formData, {
           onSuccess: () => {
             Swal.fire({
               title: "Registration Complete",
@@ -213,7 +213,7 @@ const RegisterEmployerForm = ({ contactPerson }) => {
                 {step === 1 ? (
                   <button
                     type="button"
-                    onClick={() => Inertia.visit("/employer/dashboard")}
+                    onClick={() => router.visit("/employer/dashboard")}
                     className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
                   >
                     Back to Home

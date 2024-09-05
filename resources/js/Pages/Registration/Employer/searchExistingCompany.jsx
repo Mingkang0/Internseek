@@ -1,6 +1,5 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { useForm, Link } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { useForm, Link, router } from "@inertiajs/react";
 
 
 
@@ -11,7 +10,7 @@ const SearchExistingCompany = ({ employers }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    Inertia.get('/search-existing-employer', {
+    router.get('/search-existing-employer', {
       onError: () => {
         errors.companyName = 'Company not found';
         console.log('Company not found');
@@ -57,7 +56,7 @@ const SearchExistingCompany = ({ employers }) => {
                           <div className="">
                             <form onSubmit={(e) => {
                               e.preventDefault();
-                              Inertia.post(`/add-existing-employer/${employer.id}`);
+                              router.post(`/add-existing-employer/${employer.id}`);
                             }}>
                               <button type="submit"
                                 className="bg-blue-800 hover:bg-blue-700 text-white font-semibold px-4 h-10 rounded-lg  rounded-full my-auto"

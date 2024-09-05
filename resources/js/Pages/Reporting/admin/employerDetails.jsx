@@ -1,5 +1,6 @@
 import DefaultLayout from "@/layout/defaultLayout";
 import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import { useState } from "react";
 
 
@@ -12,7 +13,7 @@ export default function EmployerDetails({ employer, branches, sites, contactPers
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    Inertia.post(`/admin/update-companyRating/${employer.id}`, {
+    router.post(`/admin/update-companyRating/${employer.id}`, {
       rating: rating
     });
   }

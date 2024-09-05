@@ -2,10 +2,9 @@
 import React, { useState } from 'react';
 import { countries } from '../country';
 import { MalaysianStates } from '../state';
-import { useForm } from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia';
+import { useForm, router } from '@inertiajs/react';
 
-export default function AddSiteModal({ branch , onClose }) {
+export default function AddSiteModal({ branch , closeModal }) {
 
   console.log(branch);
 
@@ -23,7 +22,8 @@ export default function AddSiteModal({ branch , onClose }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    Inertia.post(`/employer/site/store/${branch.id}`, data);
+    router.post(`/employer/site/store/${branch.id}`, data);
+    closeModal();
   }
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>

@@ -51,7 +51,8 @@ export default function AccomplishmentSection({ accomplishment, studentID}) {
           onClose={() => setIsAddModalOpen(false)}
           title="Add Accomplishment"
         >
-          <AddAccomplishmentModal studentID={studentID}/>
+          <AddAccomplishmentModal studentID={studentID}
+           onClose={() => setIsAddModalOpen(false)}/>
         </Modal>
       )}
       {isEditModalOpen && selectedAccomplishment && (

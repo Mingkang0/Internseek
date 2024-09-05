@@ -8,6 +8,7 @@ export default function RegistrationRequestList({ employers }) {
   const [filter, setFilter] = useState('Pending');
   const { flash } = usePage().props;
 
+
   useEffect(() => {
     if (flash.success) {
       Swal.fire({

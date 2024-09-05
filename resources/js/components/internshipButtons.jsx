@@ -3,7 +3,7 @@ import { FaBookmark, FaFlag } from 'react-icons/fa';
 import { MdOutlineChatBubble } from 'react-icons/md';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 const InternshipButtons = ({ id, onReportClick }) => {
   const { flash } = usePage().props; // Get flash messages at the top level
 
@@ -11,7 +11,7 @@ const InternshipButtons = ({ id, onReportClick }) => {
   console.log(flash);
 
   const handleBookmark = (id) => {
-    Inertia.post(`/internships/${id}/bookmark`, {}, {
+    router.post(`/internships/${id}/bookmark`, {}, {
       preserveScroll: true,
       onFinish: () => {
       }
@@ -58,7 +58,7 @@ const InternshipButtons = ({ id, onReportClick }) => {
       textColor: 'text-gray-900',
       icon: <MdOutlineChatBubble className="text-gray-900" size={22} />,
       onClick: () => { 
-        Inertia.get(`/messages/${id}?receiverType=${encodeURIComponent('employer')}`) } // Redirect to the messages page
+        router.get(`/messages/${id}?receiverType=${encodeURIComponent('employer')}`) } // Redirect to the messages page
     },
     {
       label: 'Report',

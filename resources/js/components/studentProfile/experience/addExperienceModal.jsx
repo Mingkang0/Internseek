@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 import Swal from 'sweetalert2';
 
 
-export default function AddExperienceModal({ studentID }) {
+export default function AddExperienceModal({ studentID, onClose }) {
 
   const { data, setData, post, processing, errors, setError } = useForm({
     jobTitle: '',
@@ -37,15 +37,20 @@ export default function AddExperienceModal({ studentID }) {
       return;
     }
 
-    Inertia.post(`/experience/store/${studentID}`, data).
-      onError((error) => {
+    router.post(`/experience/store/${studentID}`, data, {
+      onError: (error) => {
         Swal.fire({
           title: 'Error',
           text: 'There was an error while adding the experience',
           icon: 'error',
           confirmButtonText: 'Ok',
         });
-      });
+      },
+      onSuccess: () => {
+        console.log('Success');
+      }
+    });
+    onClose();
   };
 
   return (

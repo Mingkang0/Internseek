@@ -5,6 +5,8 @@ import { useState } from "react";
 
 export default function registrationRequestDetails({ employer, contactPerson }) {
 
+  console.log(employer);
+  console.log(contactPerson);
   const { data, setData, errors, post } = useForm({
     registrationStatus: employer.registrationStatus,
     inquiryComment: employer.inquiryComment || '',

@@ -1,9 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { FaUser, FaCaretDown, FaBuilding, FaBell } from 'react-icons/fa';
 import { IoChatbubbleEllipses } from 'react-icons/io5';
-import { Inertia } from '@inertiajs/inertia';
 
 
 
@@ -29,7 +28,7 @@ export default function Navbar() {
   };
 
   const handleViewMessages = () => {
-    Inertia.get('/receivedMessages/list');
+    router.get('/receivedMessages/list');
   }
 
   return (
@@ -140,7 +139,7 @@ export default function Navbar() {
                           <li><a href="/student/profile" className="block px-4 py-2 hover:bg-gray-100">My Profile</a></li>
                           <li><a href="/student/my-report" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
                           <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">Industrial Training</a></li>
-                          <li><a href="/student/profile/settings" className="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
+                          <li><a href="/student/settings" className="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
                         </>
                       )}
 
@@ -148,8 +147,12 @@ export default function Navbar() {
                         <>
                           <li><a href="/employer/profileDetails" className="block px-4 py-2 hover:bg-gray-100">Company Profile</a></li>
                           <li><a href="/employer/branch-details" className="block px-4 py-2 hover:bg-gray-100">Branch & Site Info</a></li>
-                          <li><a href="/contact-person-details" className="block px-4 py-2 hover:bg-gray-100">Contact Person Details</a></li>
                           <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
+                        </>
+                      )}
+                      {userRole === 'employer' && (
+                        <>
+                          <li><a href="/contact-person-details" className="block px-4 py-2 hover:bg-gray-100">Contact Person Details</a></li>
                         </>
                       )}
 

@@ -54,7 +54,7 @@ export default function ExperienceSection( {experience, studentID} ) {
           onClose={() => setIsAddModalOpen(false)}
           title="Add Experience"
         >
-          <AddExperienceModal studentID={studentID}/>
+          <AddExperienceModal studentID={studentID} onClose={() => setIsAddModalOpen(false)}/>
         </Modal>
       )}
       {isEditModalOpen && selectedExperience && (

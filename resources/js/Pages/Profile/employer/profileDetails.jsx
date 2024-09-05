@@ -1,7 +1,6 @@
 import DefaultLayout from "@/layout/defaultLayout";
 import { useEffect, useState } from "react";
-import { useForm, usePage } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { useForm, usePage, router } from "@inertiajs/react";
 import { countries } from "@/components/country";
 import Swal from "sweetalert2";
 export default function CompanyProfileDetails({ employer }) {
@@ -10,6 +9,8 @@ export default function CompanyProfileDetails({ employer }) {
   const [logoPreview, setLogoPreview] = useState(
     employer.companyLogo ? `/storage/company/companyLogo/${employer.companyLogo}` : null);
   const [documentPreview, setDocumentPreview] = useState(null);
+
+  console.log(employer);
 
   const handleEditClick = () => {
     setIsEditMode(true);
@@ -40,6 +41,7 @@ export default function CompanyProfileDetails({ employer }) {
     companySize: employer.companySize || "",
     companyEmail: employer.companyEmail || "",
     businessRegNum: employer.businessRegNum || "",
+    documentType: employer.documentType || "",
     documentName: null,
     companyPhone: employer.companyPhone || "",
     companyWebsite: employer.companyWebsite || "",
@@ -74,7 +76,7 @@ export default function CompanyProfileDetails({ employer }) {
       formData.append("companyLogo", data.companyLogo);
     }
 
-    Inertia.post(route('employer.companydetails.update', {id: employer.id}) ,formData);
+    router.post(route('employer.companydetails.update', { id: employer.id }), formData); 
     setIsEditMode(false);
   };
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/react';
 
 export default function EditLanguageModal({ languages, onClose, studentID}) {
   const [languageProficiencyLevel, setLanguageProficiencyLevel] = useState(
@@ -25,7 +26,7 @@ export default function EditLanguageModal({ languages, onClose, studentID}) {
     event.preventDefault();
 
     // Send the updated language data to the server
-    Inertia.post(`/languages/update/${studentID}`, {
+    router.post(`/languages/update/${studentID}`, {
       languages: languageProficiencyLevel,
     }, {
       onSuccess: () => {

@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { FaEye, FaTimesCircle } from "react-icons/fa";
 import InternshipButtons from '@/components/internshipButtons';
 import DefaultLayout from '@/layout/defaultLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import Modal from '@/components/Modal';
 import { usePage } from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
 
 const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
@@ -42,7 +41,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
     const problemDesc = selectedReason === 'Other' ? otherReason : selectedReason;
   
     // Post the data using Inertia
-    Inertia.post(`/report-internship/${internship.id}`, {problemDesc}, {
+    router.post(`/report-internship/${internship.id}`, {problemDesc}, {
       onSuccess: () => {
         console.log('Report submitted successfully');
       },
@@ -59,6 +58,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount }) => {
         })
       }
     });
+    closeReportModal();
   };
 
   return (

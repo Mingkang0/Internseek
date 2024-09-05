@@ -1,9 +1,9 @@
 import React from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
 
-export default function AddRefereeModal({ studentID }) {
+export default function AddRefereeModal({ studentID, onClose }) {
   const { data, setData, post, processing, errors } = useForm({
     refereeName: '',
     refereeCompany: '',
@@ -14,15 +14,20 @@ export default function AddRefereeModal({ studentID }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    Inertia.post(`/referee/store/${studentID}`, data).
-      onError((error) => {
+    router.post(`/referee/store/${studentID}`, data, {
+    onSuccess: () => {
+      onClose(); // Close the modal on success
+    },
+      onError: (error) => {
         Swal.fire({
           title: 'Error',
           text: 'There was an error while adding the referee',
           icon: 'error',
           confirmButtonText: 'Ok',
         });
-      });
+      }
+    });
+    onClose();
   }
 
 

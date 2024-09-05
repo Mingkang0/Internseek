@@ -3,7 +3,7 @@ import { Inertia } from '@inertiajs/inertia';
 import { countries } from '../country';
 import { MalaysianStates } from '../state';
 import Swal from 'sweetalert2';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 
 export default function EditBranchModal({ branch, employerID, closeModal }) {
 
@@ -23,7 +23,7 @@ export default function EditBranchModal({ branch, employerID, closeModal }) {
 
   const handleEdit = (e) => {
     e.preventDefault();
-    Inertia.post(`/employer/branch/update/${branch.id}`, {
+    router.post(`/employer/branch/update/${branch.id}`, {
       branchName: data.branchName,
       branchCountry: data.branchCountry,
       branchAddress1: data.branchAddress1,
@@ -33,9 +33,8 @@ export default function EditBranchModal({ branch, employerID, closeModal }) {
       branchState: data.branchState,
       branchPhoneNum: data.branchPhoneNum,
       branchEmail: data.branchEmail
-    }).then(() => {
-      onClose(); // Close the modal after the request is successful
     });
+    closeModal();
   }
 
   const handleDelete = (e) => {
@@ -51,7 +50,8 @@ export default function EditBranchModal({ branch, employerID, closeModal }) {
       cancelButtonColor: '#6c757d'
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/employer/branch/delete/${branch.id}`);
+        router.post(`/employer/branch/delete/${branch.id}`);
+        closeModal();
       }
     });
 

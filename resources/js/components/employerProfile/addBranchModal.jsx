@@ -2,10 +2,9 @@
 import React, { useState } from 'react';
 import { countries } from '../country';
 import { MalaysianStates } from '../state';
-import { useForm } from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia';
+import { useForm, router } from '@inertiajs/react';
 
-export default function AddBranchModal({ employerID, onClose }) {
+export default function AddBranchModal({ employerID, closeModal }) {
 
   const { data, setData, post, errors, setError } = useForm({
     branchName: '',
@@ -20,7 +19,8 @@ export default function AddBranchModal({ employerID, onClose }) {
   });
   const handleSubmit = (event) => {
     event.preventDefault();
-    Inertia.post(`/employer/branch/store/${employerID}`, data);
+    router.post(`/employer/branch/store/${employerID}`, data);
+    closeModal();
   }
   return (
 

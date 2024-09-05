@@ -90,7 +90,7 @@ export default function EmployerDashboard({ internships, employer }) {
                     <div className="flex flex-col ">
                       <Link
                         href="/edit/registration-details"
-                        className="mt-4 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 pl-7 rounded-lg w-56"
+                        className="mt-4 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-center w-56"
                       >
                         Edit Registration Details
                       </Link>
@@ -116,7 +116,7 @@ export default function EmployerDashboard({ internships, employer }) {
                     </p>
                     <Link
                       href="/edit/registration-details"
-                      className="mt-4 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 pl-7 rounded-lg w-56"
+                      className="mt-4 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-center w-56"
                     >
                       Edit Registration Details
                     </Link>
@@ -147,7 +147,7 @@ export default function EmployerDashboard({ internships, employer }) {
                   </p>
                   <Link
                     href="/register/company"
-                    className="mt-4 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 pl-7 rounded-lg w-56"
+                    className="mt-4 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 text-center rounded-lg w-56"
                   >
                     Register new company
                   </Link>
@@ -158,7 +158,7 @@ export default function EmployerDashboard({ internships, employer }) {
                   </p>
                   <Link
                     href="/register/existing-employer"
-                    className="mt-4 bg-white text-gray-900 hover:bg-gray-100 font-semibold py-3 pl-8 border border-gray-900 border-2 rounded-lg w-64"
+                    className="mt-4 bg-white text-gray-900 hover:bg-gray-100 font-semibold py-3 text-center border border-gray-900 border-2 rounded-lg w-64"
                   >
                     Search existing company
                   </Link>

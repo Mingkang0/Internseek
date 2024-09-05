@@ -30,6 +30,9 @@ export default function ChangePasswordForm({ contactPerson }) {
           icon: 'error',
           title: 'Error',
           text: 'New Password is same as Current Password',
+          showConfirmButton: true,
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#3085d6',
         });
       }
     });

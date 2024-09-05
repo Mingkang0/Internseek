@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bookmarks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('internshipID');
-            $table->unsignedInteger('studentID');
+            $table->unsignedBigInteger('internshipID');
+            $table->unsignedBigInteger('studentID');
             $table->timestamps();
             $table->foreign('internshipID')->references('id')->on('internships');
             $table->foreign('studentID')->references('id')->on('students');

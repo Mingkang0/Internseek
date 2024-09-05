@@ -1,6 +1,5 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { Inertia } from "@inertiajs/inertia";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { useState } from 'react';
 
 export default function EditRegistrationDetails({ employer, contactPerson }) {
@@ -352,7 +351,7 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
                 </div>
                 <div className="text-center mt-4">
                   <button type="submit" className="px-5 py-2 text-sm font-semibold text-white bg-blue-800 rounded-md">Edit</button>
-                  <button type="button" onClick={() => { Inertia.visit('/employer/dashboard') }} className="px-4 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white border border-gray-900 rounded-md">Back</button>
+                  <button type="button" onClick={() => { router.visit('/employer/dashboard') }} className="px-4 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white border border-gray-900 rounded-md">Back</button>
                 </div>
               </form>
             )}

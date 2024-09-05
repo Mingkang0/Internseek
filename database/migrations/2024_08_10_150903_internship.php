@@ -25,7 +25,7 @@ return new class extends Migration
             $table->enum ('postingStatus', ['Archived', 'Published', 'Unpublished', 'Expired']);
             $table->enum ('workingMethod', ['Remote', 'Onsite', 'OnOffice' ,'Hybrid']);
             $table->enum ('studyScope', ['Software Engineering', 'Computer System & Networking', 'Cybersecurity', 'Graphic Design & Multimedia', 'Artificial Intelligence', 'Data Engineering']);
-            $table->unsignedInteger('employerID');
+            $table->unsignedBigInteger('employerID');
             $table->timestamps();
 
             $table->foreign('employerID')->references('id')->on('employers');

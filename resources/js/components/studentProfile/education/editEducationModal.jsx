@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StudyField } from './studyField';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
+import { router } from '@inertiajs/react';
 
 export default function EditEducationModal({ education, studentID, onClose }) {
   const [courseName, setCourseName] = useState(education.programName);
@@ -50,7 +51,7 @@ export default function EditEducationModal({ education, studentID, onClose }) {
       return;
     }
 
-    Inertia.post(`/education/update/${studentID}/${education.id}`, updatedEducation, {
+    router.post(`/education/update/${studentID}/${education.id}`, updatedEducation, {
       onSuccess: () => {
         onClose(); // Close the modal on success
       },
@@ -58,6 +59,8 @@ export default function EditEducationModal({ education, studentID, onClose }) {
         console.error(errors); // Handle errors if necessary
       },
     });
+    onClose();
+
   }
 
   const handleDelete = (e) => {
@@ -69,11 +72,14 @@ export default function EditEducationModal({ education, studentID, onClose }) {
       showCancelButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d'
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/education/delete/${studentID}/${education.id}`);
+        router.post(`/education/delete/${studentID}/${education.id}`);
       }
     });
+    onClose();
 
   }
 

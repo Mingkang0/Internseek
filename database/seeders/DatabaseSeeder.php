@@ -18,11 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        Internship::factory()->count(10)->create();
 
-        Employer::factory()->count(10)->create();
-
-        ContactPerson::factory()->count(10)->create();
 
         DB::table('admins')->insert([
             'firstName' => 'admin',
@@ -74,7 +70,7 @@ class DatabaseSeeder extends Seeder
             'postingStatus' => 'Published',
             'workingMethod' => 'Remote',
             'studyScope' => 'Software Engineering',
-            'employerID' => 21,
+            'employerID' => 1,
         ]);
 
         DB::table('students')->insert([
@@ -101,6 +97,17 @@ class DatabaseSeeder extends Seeder
             'nationality' => 'Malaysian',
             'gender' => 'Male',
             'profilePicture' => 'https://www.example.com/profile.jpg',
+        ]);
+
+        DB::table('contact_persons')->insert([
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNum' => '012-3456789',
+            'email' => 'employer@example.com',
+            'position' => 'HR Manager',
+            'department' => 'Human Resources',
+            'password' => bcrypt('1234'),
+            'employerID' => 1,
         ]);
 
 

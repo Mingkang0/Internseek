@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
+import { router } from '@inertiajs/react';
 
 
 export default function EditRefereeModal({ referee, studentID, onClose }) {
@@ -21,7 +22,7 @@ export default function EditRefereeModal({ referee, studentID, onClose }) {
       refereeEmail,
     };
 
-    Inertia.post(`/referee/update/${studentID}/${referee.id}`, updatedReferee, {
+    router.post(`/referee/update/${studentID}/${referee.id}`, updatedReferee, {
       onSuccess: () => {
         onClose(); // Close the modal on success
       },
@@ -35,6 +36,7 @@ export default function EditRefereeModal({ referee, studentID, onClose }) {
         });
       },
     });
+    onClose();
   };
 
   const handleDelete = (event) => {
@@ -47,11 +49,14 @@ export default function EditRefereeModal({ referee, studentID, onClose }) {
       showCancelButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/referee/delete/${studentID}/${referee.id}`);
+        router.post(`/referee/delete/${studentID}/${referee.id}`);
       }
     });
+    onClose();
   };
 
   return (

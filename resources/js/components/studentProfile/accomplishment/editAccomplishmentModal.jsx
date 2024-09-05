@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
+import { router } from '@inertiajs/react';
 
 export default function EditAccomplishmentModal({ accomplishment, studentID, onClose }) {
   const [name, setName] = useState(accomplishment.accomplishmentName);
@@ -24,7 +25,7 @@ export default function EditAccomplishmentModal({ accomplishment, studentID, onC
       accomplishmentDescription: description,
     };
 
-    Inertia.post(`/accomplishment/update/${studentID}/${accomplishment.id}`, updatedAccomplishment, {
+    router.post(`/accomplishment/update/${studentID}/${accomplishment.id}`, updatedAccomplishment, {
       onSuccess: () => {
         onClose(); // Close the modal on success
       },
@@ -37,6 +38,7 @@ export default function EditAccomplishmentModal({ accomplishment, studentID, onC
           confirmButtonText: 'Ok',
         });
       }});
+      onClose();
   };
 
   const handleDelete = (e) => {
@@ -48,11 +50,14 @@ export default function EditAccomplishmentModal({ accomplishment, studentID, onC
       showCancelButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/accomplishment/delete/${studentID}/${accomplishment.id}`);
+        router.post(`/accomplishment/delete/${studentID}/${accomplishment.id}`);
       }
     });
+    onClose();
   }
   return (
     <form className="space-y-4" onSubmit={handleEdit}>

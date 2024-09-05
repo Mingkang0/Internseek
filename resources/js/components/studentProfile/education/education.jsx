@@ -50,7 +50,8 @@ export default function EducationSection({ education, studentID }) {
           onClose={() => setIsAddModalOpen(false)}
           title="Add Education"
         >
-          <AddEducationModal studentID={studentID} />
+          <AddEducationModal studentID={studentID}
+            onClose={() => setIsAddModalOpen(false)} />
         </Modal>
       )}
       {isEditModalOpen && selectedEducation && (

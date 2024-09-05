@@ -11,6 +11,7 @@ const MessagePage = ({ conversations, userRole, userID }) => {
     const conversation = conversations.find((conversation) => conversation.partner.id === partnerId);
     setSelectedConversation(conversation);
   }
+  
 
   if (userRole === 'admin') {
     // Admins cannot use this feature, display a message or redirect them to a different page

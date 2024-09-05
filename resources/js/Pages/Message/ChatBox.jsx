@@ -1,8 +1,7 @@
 import DefaultLayout from '@/layout/defaultLayout';
 import React, { useState } from 'react';
 import { FaTimesCircle } from 'react-icons/fa';
-import { Link } from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia';
+import { Link, router } from '@inertiajs/react';
 
 const Chatbox = ({ messages, sender, receiver, receiverType }) => {
   const [messageText, setMessageText] = useState('');
@@ -47,7 +46,7 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
       formData.append('file', selectedFile);
     }
 
-    Inertia.post('/messages/send', formData, {
+    router.post('/messages/send', formData, {
       onSuccess: () => {
         setMessageText('');
         setSelectedImage(null);

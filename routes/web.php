@@ -93,6 +93,10 @@ Route::group(['middleware' => 'auth:student'], function () {
     Route::post('/profile/picture/{studentID}', [StudentController::class, 'updateProfilePicture']);
 
     Route::post('/profile/picture/delete/{studentID}', [StudentController::class, 'deleteProfilePicture']);
+
+    Route::get('/student/settings', [StudentController::class, 'settings'])->name('student.settings');
+
+    Route::post('/student/change-password', [StudentController::class, 'changePassword'])->name('student.change-password');
 });
 
 

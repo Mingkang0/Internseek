@@ -2,10 +2,10 @@ import { StudyField } from './studyField';
 import { useState, useRef, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
 
-export default function AddEducationModal({ studentID }) {
+export default function AddEducationModal({ studentID, onClose }) {
   const [selectedField, setSelectedField] = useState('');
   const [otherField, setOtherField] = useState('');
   const startDateRef = useRef(null);
@@ -56,15 +56,21 @@ export default function AddEducationModal({ studentID }) {
       return;
     }
 
-    Inertia.post(`/education/store/${studentID}`, data).
-      onError((error) => {
+    router.post(`/education/store/${studentID}`, data, {
+      onError: (error) => {
         Swal.fire({
           title: 'Error',
           text: 'There was an error while adding the education',
           icon: 'error',
           confirmButtonText: 'Ok',
         });
-      });
+      },
+      onSuccess: (response) => {
+        // Handle successful response if needed
+      },
+    });
+    onClose();
+    
   }
 
   return (

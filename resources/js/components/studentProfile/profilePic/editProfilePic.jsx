@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
+import { router } from '@inertiajs/react';
 
-export default function EditProfilePic({ profilePic, studentID }) {
+export default function EditProfilePic({ profilePic, studentID, closeModal }) {
   // Check if profilePic exists, if not, use the avatar image
   const initialImageSrc = profilePic ? `/storage/profile/student/profile_pictures/${profilePic}` : "../../assets/avatar.png";
   const [imageSrc, setImageSrc] = useState(initialImageSrc);
@@ -32,7 +33,7 @@ export default function EditProfilePic({ profilePic, studentID }) {
       const formData = new FormData();
       formData.append('image', file);
 
-      Inertia.post(`/profile/picture/${studentID}`, formData, {
+      router.post(`/profile/picture/${studentID}`, formData, {
         onSuccess: () => {
           Swal.fire({
             title: 'Success',
@@ -59,6 +60,7 @@ export default function EditProfilePic({ profilePic, studentID }) {
         confirmButtonText: 'Ok',
       });
     }
+    closeModal();
   };
 
   const handleDelete = () => {
@@ -69,9 +71,11 @@ export default function EditProfilePic({ profilePic, studentID }) {
       showCancelButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/profile/picture/delete/${studentID}`, {}, {
+        router.post(`/profile/picture/delete/${studentID}`, {}, {
           onSuccess: () => {
             setImageSrc("../../assets/avatar.png");
             Swal.fire({

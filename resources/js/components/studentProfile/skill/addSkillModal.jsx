@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import { useForm } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { router, useForm } from '@inertiajs/react';
 import { Inertia } from '@inertiajs/inertia';
-export default function AddSkillModal({studentID}) {
+export default function AddSkillModal({ studentID, onClose }) {
 
   const proficiencyLevels = ['Beginner', 'Average', 'Good', 'Intermediate', 'Advanced']; // Example levels as strings
 
@@ -19,7 +19,7 @@ export default function AddSkillModal({studentID}) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    Inertia.post(`/skills/store/${studentID}`, data, {
+    router.post(`/skills/store/${studentID}`, data, {
       onSuccess: () => {
         onClose(); // Close the modal on success
       },
@@ -27,6 +27,7 @@ export default function AddSkillModal({studentID}) {
         console.error(error);
       }
     });
+    onClose();
   };
 
   return (
@@ -47,7 +48,7 @@ export default function AddSkillModal({studentID}) {
       <div>
         <label htmlFor="proficiencyLevel" className="block mb-2 text-sm font-medium text-gray-900">Proficiency Level</label>
         <div className="flex flex-wrap justify-center">
-        {proficiencyLevels.map(level => (
+          {proficiencyLevels.map(level => (
             <div key={level} className="flex items-center me-4">
               <input
                 id={`level-${level}`}

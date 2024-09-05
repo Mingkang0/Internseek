@@ -6,7 +6,7 @@ import Modal from '../modal.jsx';
 import { FaEdit } from 'react-icons/fa';
 
 
-export default function RefereeSection( { referee, studentID } ) {
+export default function RefereeSection({ referee, studentID }) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedReferee, setSelectedReferee] = useState(null);
@@ -53,7 +53,8 @@ export default function RefereeSection( { referee, studentID } ) {
           onClose={() => setIsAddModalOpen(false)}
           title="Add Referee"
         >
-          <AddRefereeModal studentID={studentID}/>
+          <AddRefereeModal studentID={studentID}
+            onClose={() => setIsAddModalOpen(false)} />
         </Modal>
       )}
       {isEditModalOpen && selectedReferee && (

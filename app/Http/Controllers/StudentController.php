@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -51,25 +52,29 @@ class StudentController extends Controller
 
 
   public function settings(){
-    return Inertia::render('Profile/student/settings');
+    $guard = session('guard');
+    $student = Auth::guard($guard)->user();
+
+    return Inertia::render('Profile/student/settings', [
+      'student' => $student,
+    ]);
   }
 
   public function changePassword(Request $request){
     $guard = session('guard');
-    $student = Auth::guard($guard)->user(); 
-
-    // Retrieve all related information using the student ID
-    $studentID = $student->id;
+    $student = Auth::guard($guard)->user();
 
     $request->validate([
       'newPassword' => 'required',
       'confirmPassword' => 'required|same:newPassword',
     ]);
 
-    $currentPassword = Student::find($studentID)->password;
+    $currentPassword = $student->password;
 
-    if (!Hash::check($currentPassword, $student->password)){
-      return redirect()->back()->withErrors(['error'=>'Old password is incorrect']);
+    
+    // Ensure the new password is not the same as the current password
+    if (Hash::check($request->newPassword, $currentPassword)) {
+      return redirect()->back()->withErrors(['error' => 'The new password cannot be the same as the current password']);
     }
 
     if ($request->newPassword !== $request->confirmPassword) {
@@ -469,5 +474,6 @@ class StudentController extends Controller
         'reports' => $reports,
     ]);
   }
+
   
 }

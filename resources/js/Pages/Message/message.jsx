@@ -1,13 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/react';
 
 const Message = ({ conversation, userRole, userID }) => {
   const [messageText, setMessageText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const messagesContainerRef = useRef(null);
+  const [messages, setMessages] = useState(conversation.messages);
 
   console.log(conversation);
+
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -43,15 +46,14 @@ const Message = ({ conversation, userRole, userID }) => {
       formData.append('file', selectedFile);
     }
 
-    Inertia.post('/messages/send', formData, {
-      onSuccess: () => {
+    router.post('/messages/send', formData, {
+      onSuccess: (response) => {
+        console.log(response);
         setMessageText('');
         setSelectedImage(null);
         setSelectedFile(null);
-
-        // Assuming the server returns the updated list of messages:
-        const updatedMessages = page.props.messages;
-        setMessages(updatedMessages);
+        // Update the messages state
+        setMessages(response.props.conversations[0].messages); // Assuming conversations is an array with one conversation
       },
     });
   };
@@ -63,8 +65,12 @@ const Message = ({ conversation, userRole, userID }) => {
   };
 
   useEffect(() => {
-    scrollToBottom(); // Scroll to the latest message when the component mounts or messages change
+    setMessages(conversation.messages); // Ensure conversation.messages is up-to-date
   }, [conversation.messages]);
+
+  useEffect(() => {
+    scrollToBottom(); // Scroll to the latest message when the component mounts or messages change
+  }, [messages]);
 
 
   return (
@@ -79,52 +85,33 @@ const Message = ({ conversation, userRole, userID }) => {
       <hr className="my-2 border border-gray-900" />
 
       {/* Messages */}
-      <div className="overflow-y-auto h-72 flex flex-col-reverse"
-        ref={messagesContainerRef}>
-        {conversation.messages.map((message) => (
+      <div className="overflow-y-auto h-72 flex flex-col-reverse" ref={messagesContainerRef}>
+        {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.sender_id === userID && message.sender_type === userRole ? 'justify-end' : 'justify-start'} mb-4`}
           >
             <div className='flex'>
-              {message.receiver_id === conversation.partner.id &&  message.sender_type !== userRole && (
-                <img
-                  src="../../assets/avatar.png"
-                  alt="Avatar"
-                  className='w-12 h-12 mx-2 rounded-full border border-gray-900'
-                />
+              {message.receiver_id === conversation.partner.id && message.sender_type !== userRole && (
+                <img src="../../assets/avatar.png" alt="Avatar" className='w-12 h-12 mx-2 rounded-full border border-gray-900' />
               )}
-              <div
-                className={`p-4 border ${message.sender_id === conversation.sender_id ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}
-              >
+              <div className={`p-4 border ${message.sender_id === userID ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}>
                 <div className="flex gap-4 items-center mb-2 overflow-y-auto">
                   <h5 className="text-sm font-semibold text-gray-900">
-                    {message.sender_id === userID && message.sender_type === userRole ? 'You' : message.sender_type === 'student' ? conversation.partner.firstName + ' ' + conversation.partner.lastName : conversation.partner.companyName}
+                    {message.sender_id === userID ? 'You' : message.sender_type === 'student' ? conversation.partner.firstName + ' ' + conversation.partner.lastName : conversation.partner.companyName}
                   </h5>
                   <span className="text-sm text-gray-600">{formatDate(message.created_at)}</span>
                 </div>
                 <p className="text-sm text-gray-700">{message.messageDetails}</p>
-                {message.messageImage && (
-                  <img src={`/storage/messages/images/${message.messageImage}`} alt="Message Image" className="mt-2 max-w-xs" />
-                )}
-                {message.messageDocument && (
-                  <a href={`/storage/messages/files/${message.messageDocument}`} className="block mt-2 text-blue-500" download>
-                    Download File
-                  </a>
-                )}
+                {message.messageImage && <img src={`/storage/messages/images/${message.messageImage}`} alt="Message Image" className="mt-2 max-w-xs" />}
+                {message.messageDocument && <a href={`/storage/messages/files/${message.messageDocument}`} className="block mt-2 text-blue-500" download>Download File</a>}
               </div>
             </div>
-            {message.sender_id === userID && message.sender_type === userRole && (
-                  <img
-                    src="../../assets/avatar.png"
-                    alt="Avatar"
-                    className='w-12 h-12 mx-2 rounded-full border border-gray-900'
-                  />
-                )}
+            {message.sender_id === userID && message.sender_type === userRole && <img src="../../assets/avatar.png" alt="Avatar" className='w-12 h-12 mx-2 rounded-full border border-gray-900' />}
           </div>
-
         ))}
       </div>
+
 
       {/* Message Input Form */}
       <form form className="p-0 border-t border-gray-900 mt-4" onSubmit={handleSubmit} encType="multipart/form-data" >

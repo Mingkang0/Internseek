@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
+import { router } from '@inertiajs/react';
 
 export default function EditSkillModal({ skill, studentID, onClose }) {
   const [skillDesc, setSkillDesc] = useState(skill.skillDesc);
@@ -18,7 +19,7 @@ export default function EditSkillModal({ skill, studentID, onClose }) {
       proficiencyLevel,
     };
 
-    Inertia.post(`/skills/update/${studentID}/${skill.id}`, updatedSkill, {
+    router.post(`/skills/update/${studentID}/${skill.id}`, updatedSkill, {
       onSuccess: () => {
         onClose(); // Close the modal on success
       },
@@ -32,6 +33,7 @@ export default function EditSkillModal({ skill, studentID, onClose }) {
         });
       },
     });
+    onClose();
   };
 
   const handleDelete = (event) => {
@@ -42,11 +44,14 @@ export default function EditSkillModal({ skill, studentID, onClose }) {
       showCancelButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/skills/delete/${studentID}/${skill.id}`);
+        router.post(`/skills/delete/${studentID}/${skill.id}`);
       }
     });
+    onClose();
   }
 
 

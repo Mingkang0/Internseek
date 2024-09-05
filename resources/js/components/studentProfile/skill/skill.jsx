@@ -51,6 +51,7 @@ export default function SkillSection({skill, studentID}) {
           title="Add Skill"
         >
           <AddSkillModal studentID={studentID}
+            onClose={() => setIsAddModalOpen(false)}
           />
         </Modal>
       )}

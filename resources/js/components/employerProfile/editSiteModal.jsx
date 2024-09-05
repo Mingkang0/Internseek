@@ -3,9 +3,9 @@ import { Inertia } from '@inertiajs/inertia';
 import { countries } from '../country';
 import { MalaysianStates } from '../state';
 import Swal from 'sweetalert2';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 
-export default function EditSiteModal({ site, employerID, onClose }) {
+export default function EditSiteModal({ site, employerID, closeModal }) {
   const { data, setData, post, errors, setError } = useForm({
     siteName: site.siteName || '',
     siteCountry: site.siteCountry || '',
@@ -19,7 +19,7 @@ export default function EditSiteModal({ site, employerID, onClose }) {
   });
   const handleEdit = (e) => {
     e.preventDefault();
-    Inertia.post(`/employer/site/update/${site.id}`, {
+    router.post(`/employer/site/update/${site.id}`, {
       siteName: data.siteName,
       siteCountry: data.siteCountry,
       siteAddress1: data.siteAddress1,
@@ -29,10 +29,8 @@ export default function EditSiteModal({ site, employerID, onClose }) {
       siteState: data.siteState,
       sitePhone: data.sitePhone,
       siteEmail: data.siteEmail
-    }).then(() => {
-      onClose(); // Close the modal after the request is successful
-    });
-
+    })
+    closeModal();
   }
   const handleDelete = (e) => {
     e.preventDefault();
@@ -47,7 +45,8 @@ export default function EditSiteModal({ site, employerID, onClose }) {
       cancelButtonColor: '#6c757d'
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/employer/site/delete/${site.id}`);
+        router.post(`/employer/site/delete/${site.id}`);
+        closeModal();
       }
     });
   }

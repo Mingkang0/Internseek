@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('department')->nullable();
             // First, make the column nullable
             $table->unsignedBigInteger('employerID')->nullable();
+            $table->string('reset_password_token')->nullable();
 
             // Then, add the foreign key constraint
             $table->foreign('employerID')

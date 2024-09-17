@@ -1,15 +1,23 @@
 'use client';
-import { Head, useForm, usePage, Link } from '@inertiajs/react';
+import { Head, useForm, usePage, Link, router } from '@inertiajs/react';
 import DefaultLayout from "@/layout/defaultLayout";
-import { Inertia } from '@inertiajs/inertia';
 import { useState, useEffect } from 'react';
 
 
-const AddPostingForm = () => {
+const AddPostingForm = ({ branch }) => {
   const { auth } = usePage().props; // Assuming auth is passed from the backend.
   const [formErrors, setFormErrors] = useState({});
   const [today, setToday] = useState('');;
 
+  const [siteOptions, setSiteOptions] = useState([]);
+
+  const handleSelectBranch = (e) => { 
+    const selectedBranch = branch.find((branchItem) => branchItem.id === parseInt(e.target.value));
+    setSiteOptions(selectedBranch.site);
+    setData('branchID', e.target.value);
+  };
+
+  console.log(branch);
   useEffect(() => {
     const todayDate = new Date();
     const formattedDate = todayDate.toLocaleDateString('en-CA', { timeZone: 'Asia/Kuala_Lumpur' });
@@ -28,6 +36,8 @@ const AddPostingForm = () => {
     workingHour: '',
     studyScope: '',
     workingMethod: '',
+    branchID: '',
+    siteID: '',
   });
 
 
@@ -52,7 +62,7 @@ const AddPostingForm = () => {
     }
 
 
-    Inertia.post('/internship-postings/add', data, {
+    router.post('/internship-postings/add', data, {
       onError: (errors) => {
         console.error(errors);
       },
@@ -60,7 +70,7 @@ const AddPostingForm = () => {
   };
 
   const handleCancel = () => {
-    Inertia.get('/internship-postings');
+    router.get('/internship-postings');
   }
   return (
     <DefaultLayout>
@@ -232,26 +242,44 @@ const AddPostingForm = () => {
                   <option value="Remote">Remote</option>
                 </select>
               </div>
-              <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Branch</label>
-                <select
-                  name="branch"
-                  className="mt-2 block w-full px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="">Select Branch</option>
-                  {/* Options should be dynamically added here */}
-                </select>
-              </div>
-              <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Site</label>
-                <select
-                  name="site"
-                  className="mt-2 block w-full px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="">Select Site</option>
-                  {/* Options should be dynamically added here */}
-                </select>
-              </div>
+              {branch.length > 0 && (
+                <div className="col-span-4">
+                  <label className="block text-sm font-medium text-gray-700">Branch</label>
+
+                  <select
+                    name="branch"
+                    className="mt-2 block w-full px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={data.branchID}
+                    onChange={handleSelectBranch}
+                  >
+                    <option value="" selected disabled>Select Branch</option>
+                    {branch.map((branchItem) => (
+                      <option key={branchItem.id} value={branchItem.id}>
+                        {branchItem.branchName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {siteOptions.length > 0 && (
+                <div className="col-span-4">
+                  <label className="block text-sm font-medium text-gray-700">Site</label>
+                  <select
+                    name="site"
+                    className="mt-2 block w-full px-3 py-2 border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={data.siteID}
+                    onChange={(e) => setData('siteID', e.target.value)}
+                  >
+                    <option value="" selected disabled>Select Site</option>
+                    {siteOptions.map((site) => (
+                      <option key={site.id} value={site.id}>
+                        {site.siteName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <div className="mt-4 text-center">
               <button

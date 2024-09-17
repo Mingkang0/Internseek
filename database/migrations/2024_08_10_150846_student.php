@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('profilePicture')->nullable();
+            $table->string('reset_password_token')->nullable();
             $table->timestamps();
         });
     }

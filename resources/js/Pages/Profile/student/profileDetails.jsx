@@ -66,9 +66,9 @@ export default function StudentProfile({ student, accomplishment, referee, langu
   return (
     <DefaultLayout>
       <Head title="Student Profile" />
-      <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-0">
-        <div className="flex justify-center mx-0 mt-2 grid grid-cols-11 mx-auto gap-4">
-          <div className="flex flex-col col-span-8">
+      <div className="bg-gray-200 px-6 min-h-screen mx-auto overflow-y-auto lg:py-4">
+        <div className="flex flex-wrap justify-center mx-0 lg:flex-row">
+          <div className="lg:w-3/5 flex flex-col">
             <ProfilePicSection student={student} studentID={studentID} profileCompletion={profileCompletion} />
             <BasicInfoSection student={student} address={address} studentID={studentID} />
             <ExperienceSection experience={experience} studentID={studentID} />
@@ -78,60 +78,59 @@ export default function StudentProfile({ student, accomplishment, referee, langu
             <AccomplishmentSection accomplishment={accomplishment} studentID={studentID} />
             <RefereeSection referee={referee} studentID={studentID} />
           </div>
-          <div className="col-span-3 ml-20">
-            <div className="w-full flex justify-between h-fit-content p-2 mt-4 bg-white border border-gray-900 border-b-0">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Basic Info</p>
-              {student && address && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
+          <div className="lg:w-1/5 flex flex-col mt-4 lg:mt-0 lg:ml-20">
+              <div className="w-64 flex justify-between h-fit-content p-2 mt-4 bg-white border border-gray-900 border-b-0">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Basic Info</p>
+                {student && address && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0 ">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Experience</p>
+                {experience.length > 0 && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Education</p>
+                {education.length > 0 && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Skill</p>
+                {skill.length > 0 && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Speaking Language</p>
+                {languages.length > 0 && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Accomplishment</p>
+                {accomplishment.length > 0 && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Referee</p>
+                {referee.length > 0 && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
+                <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Profile Picture</p>
+                {student.profilePicture && (
+                  <FaCheckSquare size={20} className="text-green-500" />
+                )}
+              </div>
+              <div className="w-64 h-fit-content p-2 bg-white border border-gray-900 text-center">
+                <button className="bg-blue-700 hover:bg-blue-700 text-white text-base font-medium py-2 px-3 rounded-3xl" onClick={handleGenerateResume}>Generate Resume</button>
+              </div>
             </div>
-            <div className="w-full flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0 ">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Experience</p>
-              {experience.length > 0 && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
-            </div>
-            <div className="w-full flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Education</p>
-              {education.length > 0 && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
-            </div>
-            <div className="w-full flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Skill</p>
-              {skill.length > 0 && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
-            </div>
-            <div className="w-full flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Speaking Language</p>
-              {languages.length > 0 && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
-            </div>
-            <div className="w-full flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Accomplishment</p>
-              {accomplishment.length > 0 && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
-            </div>
-            <div className="w-full flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Referee</p>
-              {referee.length > 0 && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
-            </div>
-            <div className="w-full flex justify-between h-fit-content p-2 bg-white border border-gray-900 border-b-0">
-              <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Profile Picture</p>
-              {student.profilePicture && (
-                <FaCheckSquare size={20} className="text-green-500" />
-              )}
-            </div>
-            <div className="w-full h-fit-content p-2 bg-white border border-gray-900 text-center">
-              <button className="bg-blue-700 hover:bg-blue-700 text-white text-base font-medium py-2 px-3 rounded-3xl" onClick={handleGenerateResume}>Generate Resume</button>
-            </div>
-
-          </div>
         </div>
       </div>
       {isGenerateResumeModalOpen && (

@@ -459,21 +459,7 @@ class StudentController extends Controller
       return redirect()->back()->with('success', 'Profile picture removed successfully.');
   }
 
-  public function ReportList()
-  {
-      $guard = session('userGuard');
-      $student = Auth::guard($guard)->user();
-  
-      // Retrieve the reports with their associated internship information
-      // Retrieve the reports with their associated internship and employer information
-      $reports = Report::where('studentID', $student->id)
-                ->with(['internship.employer']) // Eager load the internship and employer relationships
-                ->get();
 
-      return Inertia::render('Internships/reportList', [
-        'reports' => $reports,
-    ]);
-  }
 
   
 }

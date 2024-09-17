@@ -8,15 +8,15 @@ const CompanyDetails = ({ employer }) => {
   return (
     <DefaultLayout>
       <Head title={`Company Details ${employer.companyName}`} />
-      <div className='bg-gray-200 px-6 py-12 min-h-screen overflow-y-auto lg:py-4'>
+      <div className='bg-gray-200 px-4 min-h-screen overflow-y-auto lg:py-6'>
         <div className="container flex justify-center items-center">
-          <div className="w-3/4 px-6 py-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
-            <div className="grid grid-cols-9 gap-4">
-              <div className="col-span-1">
-                <img src="../../assets/avatar.png" alt="CompanyLogo" className="w-128 h-128 rounded-full mx-auto border ring-1 ring-gray-900" />
+          <div className="px-6 py-6 mt-4 bg-white border border-gray-200 rounded-lg shadow lg:max-w-6xl">
+            <div className="flex flex-wrap gap-4">
+              <div className='mx-auto'>
+                <img src="../../assets/avatar.png" alt="CompanyLogo" className="w-28 h-28 rounded-full mx-auto border ring-1 ring-gray-900" />
               </div>
-              <div className="col-span-8">
-                <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-800 flex justify-between">
+              <div>
+                <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-800 flex justify-between items-center">
                   {employer.companyName}
                   <Link href='/companies'>
                     <FaTimesCircle size={20} className="mr-2 text-gray-600 cursor-pointer" />
@@ -40,21 +40,21 @@ const CompanyDetails = ({ employer }) => {
                   <h5 className="text-normal mb-2 font-semibold text-gray-900">Mission:</h5>
                   <p className="mt-2 text-sm text-gray-700">{employer.mission}</p>
                 </div>
-                <div className='grid grid-cols-12 gap-8 search-boxes mt-4'>
-                  <div className='col-span-6'>
-                    <h5 className="text-normal mb-2 font-semibold text-gray-900">Address:</h5>
+                <div className='flex flex-wrap mt-4 gap-4 md:gap-16'>
+                  <div className='flex flex-col'>
+                    <h5 className="text-normal font-semibold text-gray-900">Address:</h5>
                     <p className="mt-2 text-sm text-gray-700">{employer.companyAddress1}, {employer.companyAddress2}</p>
-                    <p className="mt-2 text-sm text-gray-700">{employer.companyPostalCode}, {employer.companyCity}, {employer.companyState}, {employer.companyCountry} </p>
+                    <p className="text-sm text-gray-700">{employer.companyPostalCode}, {employer.companyCity}, {employer.companyState}, {employer.companyCountry} </p>
 
                   </div>
-                  <div className='col-span-6'>
-                    <h5 className="text-normal mb-2 font-semibold text-gray-900">Email Address:</h5>
+                  <div className='flex flex-col md:ml-16'>
+                    <h5 className="text-normal font-semibold text-gray-900">Email Address:</h5>
                     <p className="mt-2 text-sm text-gray-700">{employer.companyEmail}</p>
                   </div>
                 </div>
-                <div className='grid grid-cols-12 gap-8 mt-6'>
-                  <div className='col-span-4'>
-                    <h5 className="text-normal mb-2 font-semibold text-gray-900">Company Type:</h5>
+                <div className='flex flex-wrap mt-4 gap-4 md:gap-16'>
+                  <div>
+                    <h5 className="text-normal font-semibold text-gray-900">Company Type:</h5>
                     {employer.companyType === 'SME' ? (
                       <p className="mt-2 text-sm text-gray-700">Small and Medium Enterprise (SMEs)</p>
                     ) : employer.companyType === 'MNC' ? (
@@ -69,15 +69,14 @@ const CompanyDetails = ({ employer }) => {
                       <p className="mt-2 text-sm text-gray-700">Government-Owned Company</p>
                     ) : null}
                   </div>
-                  <div className='col-span-4'>
-                    <h5 className="text-normal mb-2 font-semibold text-gray-900">Company Size:</h5>
+                  <div className='md:ml-16'>
+                    <h5 className="text-normal font-semibold text-gray-900">Company Size:</h5>
                     <p className="mt-2 text-sm text-gray-700">{employer.companySize}</p>
                   </div>
-                  <div className='col-span-4'>
-                    <h5 className="text-normal mb-2 font-semibold text-gray-900">Company Website:</h5>
-                    <p className="mt-2 text-sm text-gray-700">{employer.companyWebsite}</p>
+                  <div className='md:ml-16'>
+                    <h5 className="text-normal font-semibold text-gray-900">Company Website:</h5>
+                    <a href={employer.companyWebsite} target='_blank' className="mt-2 text-sm text-gray-700">{employer.companyWebsite}</a>
                   </div>
-
                 </div>
               </div>
             </div>

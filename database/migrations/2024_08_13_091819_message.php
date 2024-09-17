@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->morphs('sender'); // Creates sender_id and sender_type columns
             $table->morphs('receiver'); // Creates receiver_id and receiver_type columns
+            $table->unsignedBigInteger('contactPersonID')->nullable();
+            $table->foreign('contactPersonID')->references('id')->on('contact_persons');
             $table->boolean('isEmployerRead')->default(false);
             $table->boolean('isStudentRead')->default(false);
             $table->text('messageDetails');

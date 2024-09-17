@@ -225,7 +225,7 @@ export default function BranchAndSiteDetails({ branches, employerID }) {
                   <a
                     href="#"
                     onClick={() => paginate(currentPage + 1)}
-                    className={`flex items-center justify-center px-4 h-12 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'cursor-not-allowed' : ''}`}
+                    className={`flex items-center justify-center px-4 h-12 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'cursor-not-allowed' : ''}`}
                   >
                     Next
                   </a>

@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import InternshipCard from '@/components/internshipCard';
 import DefaultLayout from '@/layout/defaultLayout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
+import Swal from 'sweetalert2';
 
 const locationMap = {
   '1': 'Kuala Lumpur',
@@ -32,6 +33,29 @@ const InternshipListing = ({ internships }) => {
   const [filteredInternships, setFilteredInternships] = useState(internships);
   const [currentPage, setCurrentPage] = useState(1);
 
+
+  const { flash } = usePage().props;
+
+  useEffect(() => {
+    if (flash.error) {
+      Swal.fire({
+        title: 'Error',
+        text: flash.error,
+        icon: 'info',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+      });
+    }
+    if (flash.success) {
+      Swal.fire({
+        title: 'Success',
+        text: flash.success,
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+      });
+    }
+  }, [flash]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -83,16 +107,16 @@ const InternshipListing = ({ internships }) => {
   return (
     <DefaultLayout>
       <Head title="Internship Listing" />
-      <div className='bg-gray-200 px-6 py-12 min-h-screen overflow-y-auto lg:py-4'>
-        <div className="container flex  flex-col mx-auto px-2 py-2">
-          <div className="grid grid-cols-12 gap-8 search-boxes mt-2">
-            <div className="col-span-4">
+      <div className='bg-gray-200 px-6 min-h-screen overflow-y-auto mx-auto lg:py-4'>
+        <div className="flex flex-col">
+          <div className="flex flex-wrap gap-8 justify-center items-center search-boxes mt-2 lg:w-full">
+            <div>
               <label className="block mb-2 text-sm font-semibold text-gray-900">I'm Studying</label>
               <select
                 id="studyField"
                 value={studyField}
                 onChange={(e) => setStudyField(e.target.value)}
-                className="bg-white border border-gray-300 text-gray-900 w-full text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                className="bg-white border border-gray-300 text-gray-900 w-80 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 flex-grow"
               >
                 <option value="">Any Study Field</option>
                 <option value="Software Engineering">Software Engineering</option>
@@ -103,25 +127,25 @@ const InternshipListing = ({ internships }) => {
                 <option value="Data Engineering">Data Engineering</option>
               </select>
             </div>
-            <div className="col-span-5">
+            <div>
               <label className="block mb-2 text-sm font-semibold text-gray-900">I'm Looking For</label>
               <input
                 type="text"
                 id="keyword"
                 value={keyword}
                 onChange={handleKeywordChange}
-                className="bg-white border border-gray-300 text-gray-900 text-sm w-full rounded-lg focus:ring-blue-500 block p-2.5"
+                className="bg-white border border-gray-300 text-gray-900 text-sm w-80 rounded-lg focus:ring-blue-500 block p-2.5 flex-grow"
                 placeholder="Search Keyword"
                 required
               />
             </div>
-            <div className="col-span-3">
+            <div>
               <label className="block mb-2 text-sm font-semibold text-gray-900">Location</label>
               <select
                 id="location"
                 value={Object.keys(locationMap).find(key => locationMap[key] === location) || ""}
                 onChange={handleLocationChange}
-                className="bg-white border border-gray-300 text-gray-900 w-full text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                className="bg-white border border-gray-300 text-gray-900 w-80 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 flex-grow"
               >
                 <option value="">Select State</option>
                 {Object.entries(locationMap).map(([key, value]) => (

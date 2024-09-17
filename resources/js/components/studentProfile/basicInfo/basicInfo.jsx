@@ -20,33 +20,33 @@ export default function BasicInfoSection({ student, address }) {
           <FaEdit size={18} className="text-gray-600 cursor-pointer" onClick={handleEditModalOpen} />
         </h5>
         <hr className='border-1 border-gray-900 mt-1'></hr>
-        <div className='grid grid-cols-2 gap-4'>
-          <div className='col-span-1 ml-2 mt-2'>
-            <div className='flex mb-2 gap-2'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
+          <div className='col-span-1 mt-2'>
+            <div className='flex flex-wrap mb-2 gap-2'>
               <label className='text-gray-900 font-semibold text-sm'>Name: </label>
               <p className='text-gray-600 font-medium text-sm'>{student.firstName} {student.lastName}</p>
             </div>
-            <div className='flex mb-2 gap-2'>
+            <div className='flex flex-wrap mb-2 gap-2'>
               <label className='text-gray-900 font-semibold text-sm'>Email: </label>
               <p className='text-gray-600 font-medium text-sm'>{student.email}</p>
             </div>
-            <div className='flex mb-2 gap-2'>
+            <div className='flex flex-wrap mb-2 gap-2'>
               <label className='text-gray-900 font-semibold text-sm'>Phone Number: </label>
               <p className='text-gray-600 font-medium text-sm'>{student.phoneNum}</p>
             </div>
-            <div className='flex mb-2 gap-2'>
+            <div className='flex flex-wrap mb-2 gap-2'>
               <label className='text-gray-900 font-semibold text-sm'>Gender: </label>
               <p className='text-gray-600 font-medium text-sm'>{student.gender}</p>
             </div>
-            <div className='flex mb-2 gap-2'>
+            <div className='flex flex-wrap mb-2 gap-2'>
               <label className='text-gray-900 font-semibold text-sm'>IC Number: </label>
               <p className='text-gray-600 font-medium text-sm'>{student.ICNumber}</p>
             </div>
-            <div className='flex mb-2 gap-2'>
+            <div className='flex flex-wrap mb-2 gap-2'>
               <label className='text-gray-900 font-semibold text-sm'>Birth Date: </label>
               <p className='text-gray-600 font-medium text-sm'>{student.dateOfBirth}</p>
             </div>
-            <div className='flex mb-2 gap-2'>
+            <div className='flex flex-wrap mb-2 gap-2'>
               <label className='text-gray-900 font-semibold text-sm'>Nationality/Citizenship: </label>
               <p className='text-gray-600 font-medium text-sm'>{student.nationality}</p>
             </div>
@@ -55,7 +55,7 @@ export default function BasicInfoSection({ student, address }) {
             {address.length > 0 ? (
               <div>
                 {address.map(address => (
-                  <div key={address.id} className='mt-2'>
+                  <div key={address.id} className='sm:mt-2'>
                     <p className='text-gray-900 font-bold text-sm underline'>{address.type.charAt(0).toUpperCase() + address.type.slice(1)} Address</p>
                     <p className='text-gray-600 font-medium text-sm'>{address.address1}</p>
                     <p className='text-gray-600 font-medium text-sm'>{address.address2}</p>
@@ -65,7 +65,7 @@ export default function BasicInfoSection({ student, address }) {
               </div>
             ) : (
               <>
-                <p className='text-gray-900 font-bold text-sm underline mt-2'>Address</p>
+                <p className='text-gray-900 font-bold text-sm underline sm:mt-2'>Address</p>
                 <p>No addresses found.</p>
               </>
             )}

@@ -4,7 +4,7 @@ import { MdOutlineChatBubble } from 'react-icons/md';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
 import { router, usePage } from '@inertiajs/react';
-const InternshipButtons = ({ id, onReportClick }) => {
+const InternshipButtons = ({ id, employerID, onReportClick }) => {
   const { flash } = usePage().props; // Get flash messages at the top level
 
   const [hasShownMessage, setHasShownMessage] = useState(false);
@@ -42,6 +42,9 @@ const InternshipButtons = ({ id, onReportClick }) => {
       backgroundColor: 'bg-blue-900',
       textColor: 'text-white',
       borderColor: 'border-blue-900',
+      onClick: () => {
+        router.get(`/student/applyInternship/${id}`); // Redirect to /student/applyInternship/{id}
+      }
     },
     {
       label: 'Bookmark',
@@ -58,7 +61,7 @@ const InternshipButtons = ({ id, onReportClick }) => {
       textColor: 'text-gray-900',
       icon: <MdOutlineChatBubble className="text-gray-900" size={22} />,
       onClick: () => { 
-        router.get(`/messages/${id}?receiverType=${encodeURIComponent('employer')}`) } // Redirect to the messages page
+        router.get(`/messages/${employerID}?receiverType=${encodeURIComponent('employer')}`) } // Redirect to the messages page
     },
     {
       label: 'Report',

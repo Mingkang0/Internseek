@@ -13,20 +13,24 @@ class UpdateInternshipStatuses extends Command
 
     public function handle()
     {
-        $now = Carbon::now('Asia/Kuala_Lumpur');
-
+        try {
+            $now = Carbon::now('Asia/Kuala_Lumpur');
+    
             // Update statuses
             Internship::where('endPostingDate', '<', $now)
                 ->update(['postingStatus' => 'Expired']);
-
+    
             Internship::where('startPostingDate', '<=', $now)
                 ->where('endPostingDate', '>=', $now)
                 ->update(['postingStatus' => 'Published']);
-
+    
             Internship::where('startPostingDate', '>', $now)
                 ->update(['postingStatus' => 'Unpublished']);
-
+    
             $this->info('Internship statuses updated successfully.');
-        
+        } catch (\Exception $e) {
+            $this->error('Error updating internship statuses: ' . $e->getMessage());
+
+        }
     }
 }

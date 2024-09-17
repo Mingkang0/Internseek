@@ -13,10 +13,8 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
     return date.toLocaleString(); // Adjust format as needed
   };
 
-  console.log(sender);
+  console.log(messages);
 
-
-  console.log(receiver);
   const handleImageChange = (event) => {
     setSelectedImage(event.target.files[0]);
   };
@@ -28,6 +26,15 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
   const handleGoBack = () => {
     window.history.back();
   }
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -80,7 +87,7 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                 key={message.id}
                 className={`flex ${message.sender_id === sender.id && message.sender_type !== receiverType ? 'justify-end' : 'justify-start'} mb-4`}
               >
-                {message.receiver_id == receiver.id && message.sender_type == receiverType &&(
+                {message.receiver_id == receiver.id && message.sender_type == receiverType && (
                   <img src="../../assets/avatar.png" alt="Avatar" className="w-16 h-16 rounded-full border border-gray-900 ml-2" />
                 )}
                 <div
@@ -88,7 +95,9 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                 >
                   <div className="flex gap-4 items-center mb-2">
                     <h5 className="text-sm font-semibold text-gray-900">
-                      {(sender.id === message.sender_id && message.sender_type ==='student') ? 'You' : (message.sender_type === 'employer' && sender.id === message.sender_id) ? receiver.companyName: null}
+                      {
+                        message.sender_id == sender.id && message.sender_type !== receiverType ? 'You' : message.sender_type == 'employer' ? receiver.companyName : receiver.firstName + ' ' + receiver.lastName
+                      }
                     </h5>
                     <span className="text-sm text-gray-600">{formatDate(message.created_at)}</span>
                   </div>
@@ -101,16 +110,37 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                       Download File
                     </a>
                   )}
+                  <div className="flex justify-end mt-2">
+                    {message.contact_person && (
+                      <p className="text-sm text-gray-600">Sent By: {message.contact_person.firstName} {message.contact_person.lastName}</p>
+                    )}
+                  </div>
                 </div>
-                {message.sender_id == sender.id && message.sender_type !== receiverType &&(
+                {message.sender_id == sender.id && message.sender_type !== receiverType && (
                   <img src="../../assets/avatar.png" alt="Avatar" className="w-16 h-16 rounded-full border border-gray-900 ml-2" />
                 )}
               </div>
             ))}
+
           </div>
 
           {/* Message Input Form */}
-          <form className="p-0 border-t border-gray-900 mt-4" onSubmit={handleSubmit} encType="multipart/form-data">
+          <div className='content-end ml-2'>
+            {selectedImage && (
+              <div className='flex gap-4'>
+                <p className="text-sm text-gray-600">Selected Image: {selectedImage.name}</p>
+                <a href="#" className="text-sm text-blue-500" onClick={handleRemoveImage}>Remove Image</a>
+              </div>
+            )}
+            {selectedFile && (
+              <div className='flex mt-2 gap-4'>
+                <p className="text-sm text-gray-600">Selected File: {selectedFile.name}</p>
+
+                <a href="#" className="text-sm text-blue-500" onClick={handleRemoveFile}>Remove File</a>
+              </div>
+            )}
+          </div>
+          <form className="p-0 border-t border-gray-900 mt-2" onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="px-4 py-2 bg-white rounded-t-lg">
               <label htmlFor="comment" className="sr-only">Enter your message</label>
               <textarea

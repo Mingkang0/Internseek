@@ -8,9 +8,17 @@ const Message = ({ conversation, userRole, userID }) => {
   const messagesContainerRef = useRef(null);
   const [messages, setMessages] = useState(conversation.messages);
 
+  const [errors, setErrors] = useState({});
+
   console.log(conversation);
 
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+  };
 
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -54,6 +62,11 @@ const Message = ({ conversation, userRole, userID }) => {
         setSelectedFile(null);
         // Update the messages state
         setMessages(response.props.conversations[0].messages); // Assuming conversations is an array with one conversation
+        setErrors({});
+      },
+      onError: (errors) => {
+        console.error(errors);
+        setErrors(errors);
       },
     });
   };
@@ -98,13 +111,18 @@ const Message = ({ conversation, userRole, userID }) => {
               <div className={`p-4 border ${message.sender_id === userID ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}>
                 <div className="flex gap-4 items-center mb-2 overflow-y-auto">
                   <h5 className="text-sm font-semibold text-gray-900">
-                    {message.sender_id === userID ? 'You' : message.sender_type === 'student' ? conversation.partner.firstName + ' ' + conversation.partner.lastName : conversation.partner.companyName}
+                    {message.sender_id === userID && message.sender_type === userRole ? 'You' : message.receiver_type === 'student' ? conversation.partner.companyName : conversation.partner.firstName + ' ' + conversation.partner.lastName}
                   </h5>
                   <span className="text-sm text-gray-600">{formatDate(message.created_at)}</span>
                 </div>
                 <p className="text-sm text-gray-700">{message.messageDetails}</p>
                 {message.messageImage && <img src={`/storage/messages/images/${message.messageImage}`} alt="Message Image" className="mt-2 max-w-xs" />}
                 {message.messageDocument && <a href={`/storage/messages/files/${message.messageDocument}`} className="block mt-2 text-blue-500" download>Download File</a>}
+                <div className="flex justify-end mt-2">
+                  {message.contact_person && (
+                    <p className="text-sm text-gray-600">Sent By: {message.contact_person.firstName} {message.contact_person.lastName}</p>
+                  )}
+                </div>
               </div>
             </div>
             {message.sender_id === userID && message.sender_type === userRole && <img src="../../assets/avatar.png" alt="Avatar" className='w-12 h-12 mx-2 rounded-full border border-gray-900' />}
@@ -112,8 +130,33 @@ const Message = ({ conversation, userRole, userID }) => {
         ))}
       </div>
 
-
+      {Object.keys(errors).length > 0 && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+          <strong className="font-bold">Error:</strong>
+          <ul className="list-disc pl-5 mt-2">
+            {Object.entries(errors).map(([key, message]) => (
+              <li key={key}>{message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       {/* Message Input Form */}
+      <div className='content-end ml-2'>
+        {selectedImage && (
+          <div className='flex gap-4'>
+            <p className="text-sm text-gray-600">Selected Image: {selectedImage.name}</p>
+            <a href="#" className="text-sm text-blue-500" onClick={handleRemoveImage}>Remove Image</a>
+          </div>
+        )}
+        {selectedFile && (
+          <div className='flex mt-2 gap-4'>
+            <p className="text-sm text-gray-600">Selected File: {selectedFile.name}</p>
+
+            <a href="#" className="text-sm text-blue-500" onClick={handleRemoveFile}>Remove File</a>
+          </div>
+        )}
+
+      </div>
       <form form className="p-0 border-t border-gray-900 mt-4" onSubmit={handleSubmit} encType="multipart/form-data" >
         <div className="px-2 py-2 bg-white rounded-t-lg">
           <label htmlFor="comment" className="sr-only">Enter your message</label>

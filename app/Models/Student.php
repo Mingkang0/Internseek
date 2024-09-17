@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 
 class Student extends Authenticatable
 {
     use HasFactory;
+    use Notifiable;
     
     protected $fillable = 
     [
@@ -25,7 +27,7 @@ class Student extends Authenticatable
     'profilePicture',
     ];
     
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = ['password', 'remember_token', 'reset_password_token'];
 
     public function sentMessages()
     {
@@ -37,42 +39,61 @@ class Student extends Authenticatable
         return $this->morphMany(Message::class, 'receiver');
     }
 
-    public function Skills()
+    public function skills()
     {
         return $this->hasMany(Skill::class, 'studentID');
     }
 
-    public function Languages()
+    public function languages()
     {
         return $this->hasMany(Language::class, 'studentID');
     }
 
-    public function Accomplishments()
+    public function accomplishments()
     {
         return $this->hasMany(Accomplishment::class, 'studentID');
     }
 
-    public function Addresses()
+    public function addresses()
     {
         return $this->hasMany(Address::class, 'studentID');
     }
 
-    public function Educations()
+    public function educations()
     {
         return $this->hasMany(Education::class, 'studentID');
     }
 
-    public function Experiences()
+    public function experiences()
     {
         return $this->hasMany(Experience::class, 'studentID');
     }
 
-    public function Referees(){
+    public function referees(){
         return $this->hasMany(Referee::class, 'studentID');
     }
 
-    public function Report(){
+    public function report(){
         return $this->hasMany(Report::class, 'studentID');
     }
 
+    public function bookmarks(){
+        return $this->hasMany(Bookmark::class, 'studentID');
+    }
+
+    public function clicks(){
+        return $this->hasMany(Click::class, 'studentID');
+    }
+
+    public function internshipApplications()
+    {
+        return $this->hasMany(InternshipApplication::class, 'studentID');
+    }   
+
+    public function getRole()
+    {
+        return 'student';
+    }
+
+    
 }

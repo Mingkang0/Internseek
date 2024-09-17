@@ -25,10 +25,19 @@ class Internship extends Model
         'workingMethod',
         'studyScope',
         'employerID',
+        'createdBy',
+        'lastEditedBy',
+        'branchID',
+        'siteID',
     ];
     
     // Set to true if using timestamps
     public $timestamps = true;
+
+    public function applications()
+    {
+        return $this->hasMany(InternshipApplication::class, 'internshipID');
+    }
     
     // Define the relationship with Employer
     public function employer()
@@ -50,5 +59,26 @@ class Internship extends Model
     {
         return $this->hasMany(Report::class, 'internshipID');
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(ContactPerson::class, 'createdBy');
+    }
+
+    public function lastEditedBy()
+    {
+        return $this->belongsTo(ContactPerson::class, 'lastEditedBy');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branchID');
+    }
+
+    public function site()
+    {
+        return $this->belongsTo(Site::class, 'siteID');
+    }
+    
 
 }

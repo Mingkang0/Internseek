@@ -9,6 +9,7 @@ import { router } from "@inertiajs/react";
 
 const RegisterEmployerForm = ({ contactPerson }) => {
   const [step, setStep] = useState(1);
+  const [errors, setErrors] = useState(null);
   const [formData, setFormData] = useState({
     companyInfo: {
       companyName: "",
@@ -77,6 +78,14 @@ const RegisterEmployerForm = ({ contactPerson }) => {
           },
           onError: (errors) => {
             console.error("Form submission error:", errors);
+            Swal.fire({
+              title: 'Submission Error',
+              text: 'There was an error submitting your application. Please try again.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#3085d6',
+            });
+            setErrors(errors);
           },
         });
       }
@@ -130,24 +139,9 @@ const RegisterEmployerForm = ({ contactPerson }) => {
         return (
           <div>
             <p className="mb-4 text-sm text-gray-600 dark:text-gray-400 font-bold">
-              Step 4: Complete Your Information
+              Step 3: Complete Your Information
             </p>
             <Step3 formData={formData.contactPersonInfo} setFormData={updateContactPersonDetails} />
-          </div>
-        );
-      case 4:
-        return (
-          <div>
-            <p className="mb-4 text-sm text-gray-600 dark:text-gray-400 font-bold">
-              Step 5: Employer Registration Completed
-            </p>
-            <CompleteMessage />
-            <button
-              type="button"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full mt-4"
-            >
-              Done
-            </button>
           </div>
         );
       default:
@@ -166,23 +160,19 @@ const RegisterEmployerForm = ({ contactPerson }) => {
                 : step === 2
                   ? "Upload Company Logo"
                   : step === 3
-                    ? "Branch Info"
-                    : step === 4
-                      ? "Insert Contact Person Info"
-                      : step === 5
-                        ? "Registration Completed"
-                        : ""}
+                    ? "Insert Contact Person Info"
+                    :""}
             </h1>
             <form className="space-y-4 md:space-y-6">
               <div className="mx-auto w-full max-w-sm">
                 <ol className="flex items-center justify-center w-full mb-5">
-                  {[1, 2, 3, 4].map((num) => (
+                  {[1, 2, 3].map((num) => (
                     <li
                       key={num}
                       className={`flex w-full items-center ${step >= num
                         ? "text-blue-600 dark:text-blue-500"
                         : ""
-                        } ${num < 4 // Ensure the line appears only between steps, not after the last step
+                        } ${num < 3 // Ensure the line appears only between steps, not after the last step
                           ? step >= num
                             ? "after:content-[''] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block dark:after:border-blue-800"
                             : "after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block dark:after:border-gray-700"
@@ -200,6 +190,17 @@ const RegisterEmployerForm = ({ contactPerson }) => {
                 </ol>
               </div>
               {renderStepContent()}
+
+              {errors && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                  <strong className="font-bold">Error:</strong>
+                  <ul className="list-disc pl-5 mt-2">
+                    {Object.entries(errors).map(([key, message]) => (
+                      <li key={key}>{message}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="flex items-center justify-between mt-8">
                 {step > 1 && step < 5 && (
                   <button

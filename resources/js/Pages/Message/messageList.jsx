@@ -6,13 +6,13 @@ const MessageList = ({ conversations, userRole, onSelectConversation }) => {
   function formatDate(dateString) {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
-}
+  }
 
-// Function to format the time
-function formatTime(dateString) {
+  // Function to format the time
+  function formatTime(dateString) {
     const options = { hour: '2-digit', minute: '2-digit', hour12: true };
     return new Date(dateString).toLocaleTimeString(undefined, options);
-}
+  }
 
   console.log(conversations);
   return (
@@ -27,17 +27,17 @@ function formatTime(dateString) {
             className="flex p-2 cursor-pointer hover:bg-gray-200 border-b border-gray-900"
             onClick={() => onSelectConversation(conversation.partner.id)}
           >
-            <img src="../../assets/avatar.png" alt="Company Logo" className="w-16 h-16 ml-1 rounded-full border border-gray-900" />
+            <img src="../../assets/avatar.png" alt="Company Logo" className="w-10 h-10 my-auto rounded-full border border-gray-900" />
             <div className='flex flex-col w-full px-2 pt-2'>
               <div className="flex justify-between items-center">
                 <h5 className="text-sm font-semibold text-gray-900">
-                  {userRole === 'employer' ? conversation.partner.firstname + ' ' + conversation.partner.lastName : userRole === 'student' ? conversation.partner.companyName : null}
+                  {userRole === 'employer' ? conversation.partner.firstName + ' ' + conversation.partner.lastName : userRole === 'student' ? conversation.partner.companyName : null}
                 </h5>
                 <span className="text-xs text-gray-500">{formatDate(latestMessage.created_at)}</span>
               </div>
               <div className="flex justify-between items-center py-1">
-              <p className="text-xs text-gray-500 mt-1">{latestMessage.messageDetails}</p>
-              <p className="text-xs text-gray-500 mt-1">{formatTime(latestMessage.created_at)}</p>
+                <p className="text-xs text-gray-500 mt-1">{latestMessage.messageDetails}</p>
+                <p className="text-xs text-gray-500 mt-1">{formatTime(latestMessage.created_at)}</p>
               </div>
             </div>
           </div>

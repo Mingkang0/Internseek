@@ -69,16 +69,16 @@ const CompanyListing = ({ employers }) => {
   return (
     <DefaultLayout>
       <Head title="Company Listing" />
-      <div className='bg-gray-200 px-8 py-12 min-h-screen overflow-y-auto lg:py-4'>
+      <div className='bg-gray-200 px-2 min-h-screen overflow-y-auto lg:py-4'>
         <div className="container flex flex-col px-2 py-2 mx-auto">
-          <div className="grid grid-cols-12 gap-8 search-boxes mt-2 ml-2">
-            <div className="col-span-5">
+          <div className="flex flex-wrap gap-6 justify-center items-center search-boxes mt-2 lg:w-full">
+            <div>
               <label className="block mb-2 text-sm font-semibold text-gray-900">I'm Looking For</label>
               <input
                 type="text"
                 id="keyword"
                 onChange={handleKeywordChange}
-                className="bg-white border border-gray-300 text-gray-900 text-sm w-full rounded-lg focus:ring-blue-500 block p-2.5"
+                className="bg-white border border-gray-300 text-gray-900 text-sm w-80 rounded-lg focus:ring-blue-500 block p-2.5"
                 placeholder="Search Keyword"
                 required
               />
@@ -89,7 +89,7 @@ const CompanyListing = ({ employers }) => {
                 id="location"
                 value={Object.keys(locationMap).find(key => locationMap[key] === location) || ""}
                 onChange={handleLocationChange}
-                className="bg-white border border-gray-300 text-gray-900 w-full text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                className="bg-white border border-gray-300 text-gray-900 w-80 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
               >
                 <option value="">Select State</option>
                 {Object.entries(locationMap).map(([key, value]) => (
@@ -113,7 +113,7 @@ const CompanyListing = ({ employers }) => {
           <div className="flex flex-wrap items-center justify-center employer-listing mx-auto">
             {currentCards.length > 0 ? (
               currentCards.map((employer) => (
-                <div key={employer.id} className="w-1/2 p-4">
+                <div key={employer.id} className="lg:w-1/2">
                   <CompanyCard key={employer.id} employer={employer} />
                 </div>
               ))

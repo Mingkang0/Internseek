@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
 
 
 
+
         DB::table('admins')->insert([
             'firstName' => 'admin',
             'lastName' => 'admin',
@@ -28,6 +29,17 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('1234'),
             'ICNumber' => '011225060012',
             'gender' => 'Male',
+        ]);
+
+        DB::table('admins')->insert([
+            'firstName' => 'admin',
+            'lastName' => 'admin',
+            'phoneNum' => '012-3456789',
+            'email' => 'shoning858@gmail.com',
+            'password' => bcrypt('1234'),
+            'ICNumber' => '011225060012',
+            'gender' => 'Male',
+            'reset_password_token' => null,
         ]);
 
         DB::table('employers')->insert([
@@ -57,6 +69,18 @@ class DatabaseSeeder extends Seeder
             'documentName' => 'Tech Innovators Inc.',
         ]);
 
+        
+        DB::table('contact_persons')->insert([
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNum' => '012-3456789',
+            'email' => 'employer@example.com',
+            'position' => 'HR Manager',
+            'department' => 'Human Resources',
+            'password' => bcrypt('1234'),
+            'employerID' => 1,
+        ]);
+
         DB::table('internships')->insert([
             'internshipTitle' => 'Software Developer Intern',
             'internshipDescription' => 'We are looking for a software developer intern to join our team.',
@@ -71,6 +95,8 @@ class DatabaseSeeder extends Seeder
             'workingMethod' => 'Remote',
             'studyScope' => 'Software Engineering',
             'employerID' => 1,
+            'createdBy' => 1,
+            'lastEditedBy' => 1,
         ]);
 
         DB::table('students')->insert([
@@ -99,16 +125,6 @@ class DatabaseSeeder extends Seeder
             'profilePicture' => 'https://www.example.com/profile.jpg',
         ]);
 
-        DB::table('contact_persons')->insert([
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'phoneNum' => '012-3456789',
-            'email' => 'employer@example.com',
-            'position' => 'HR Manager',
-            'department' => 'Human Resources',
-            'password' => bcrypt('1234'),
-            'employerID' => 1,
-        ]);
 
 
         DB::table('skills')->insert([[

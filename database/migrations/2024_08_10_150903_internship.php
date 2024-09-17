@@ -26,9 +26,16 @@ return new class extends Migration
             $table->enum ('workingMethod', ['Remote', 'Onsite', 'OnOffice' ,'Hybrid']);
             $table->enum ('studyScope', ['Software Engineering', 'Computer System & Networking', 'Cybersecurity', 'Graphic Design & Multimedia', 'Artificial Intelligence', 'Data Engineering']);
             $table->unsignedBigInteger('employerID');
+            $table->unsignedBigInteger('createdBy');
+            $table->unsignedBigInteger('lastEditedBy');
+            $table->unsignedBigInteger('branchID')->nullable();
+            $table->unsignedBigInteger('siteID')->nullable();
+            $table->foreign('branchID')->references('id')->on('branch');
+            $table->foreign('siteID')->references('id')->on('site');
             $table->timestamps();
-
             $table->foreign('employerID')->references('id')->on('employers');
+            $table->foreign('createdBy')->references('id')->on('contact_persons');
+            $table->foreign('lastEditedBy')->references('id')->on('contact_persons');
     });
     }
 

@@ -13,6 +13,8 @@ use App\Http\Controllers\ContactPersonController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\InternshipApplicationController;
 
 use Inertia\Inertia;
 
@@ -34,6 +36,13 @@ Route::post('/login/{userRole}', [LoginController::class, 'login'])->name('login
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPassword'])->name('forgot-password.show');
+
+Route::post('/forgot-password/{role}', [ForgotPasswordController::class, 'forgotPassword'])->name('forgot-password');
+
+Route::get('/reset-password/{token}/{role}', [ForgotPasswordController::class, 'showResetPassword'])->name('reset-password.show');
+
+Route::post('/reset-password/{token}/{role}', [ForgotPasswordController::class, 'resetPassword'])->name('reset-password');
 
 Route::get('/internships', [InternshipController::class, 'index'])->name('internships.index');
 
@@ -48,7 +57,7 @@ Route::group(['middleware' => 'auth:student'], function () {
 
     Route::post('report-internship/{id}', [InternshipController::class, 'ReportInternship'])->name('internships.report');
 
-    Route::get('/student/my-report', [StudentController::class, 'ReportList'])->name('my-report');
+    Route::get('/student/my-report', [InternshipController::class, 'ReportList'])->name('my-report');
 
     Route::get('/student/profile', [StudentController::class, 'showProfile'])->name('student.profile');
 
@@ -97,6 +106,28 @@ Route::group(['middleware' => 'auth:student'], function () {
     Route::get('/student/settings', [StudentController::class, 'settings'])->name('student.settings');
 
     Route::post('/student/change-password', [StudentController::class, 'changePassword'])->name('student.change-password');
+
+    Route::get('/student/applyInternship/{id}', [InternshipApplicationController::class, 'applyInternship'])->name('student.applyinternship');
+
+    Route::post('/student/storeInternshipApplication/{id}', [InternshipApplicationController::class, 'store'])->name('student.storeinternshipapplication');
+
+    Route::get('/student/my-internships', [InternshipApplicationController::class, 'MyInternships'])->name('student.myinternships');
+
+    Route::post('/student/update-interview-status/{id}', [InternshipApplicationController::class, 'updateInterviewStatus'])->name('student.updateinterviewstatus');
+
+    Route::post('/internship-application/{id}/cancel', [InternshipApplicationController::class, 'cancelApplication'])->name('student.cancelapplication');
+
+    Route::post('/student/update-offer-status/{id}', [InternshipApplicationController::class, 'updateOfferStatus'])->name('student.updateofferstatus');
+
+    Route::get('/student/my-industrial-training/acceptedOffers', [InternshipApplicationController::class, 'acceptedOffers'])->name('student.acceptedoffers');
+
+    Route::post('/cancel-accepted-offer/{id}', [InternshipApplicationController::class, 'cancelAcceptedOffer'])->name('student.cancelacceptedoffer');
+
+    Route::get('/student/pre-internships', [InternshipApplicationController::class, 'preInternships'])->name('student.preinternships');
+
+    Route::get('/student/process-internships', [InternshipApplicationController::class, 'processInternships'])->name('student.processinternships');
+
+    Route::post('/internships/{id}/delete/bookmark', [InternshipController::class, 'deleteBookmark'])->name('internships.deletebookmark');
 });
 
 
@@ -191,8 +222,37 @@ Route::group(['middleware' => ['auth:employer']], function () {
     Route::post('/internship-postings/{id}/update', [PostingController::class, 'update'])->name('employer.updateinternship');
     
     Route::post('/internship-postings/{id}/delete', [PostingController::class, 'delete'])->name('employer.deleteinternship');
+
+    Route::get('/internship-applications/list', [InternshipApplicationController::class, 'ApplicantsList'])->name('employer.applicantslist');
     
+    Route::get('/internship-applications/{id}/update-status', [InternshipApplicationController::class, 'showUpdateStatus'])->name('employer.showupdatestatus');
+
+    Route::post('/internship-applications/{id}/update-application-status', [InternshipApplicationController::class, 'updateApplicationStatus'])->name('employer.updateapplicationstatus');
+
+    Route::get('/interviews-applicants/list', [InternshipApplicationController::class, 'InterviewApplicantList'])->name('employer.interviewapplicantslist');
+
+    Route::post('/interviews-applicants/{id}/update-interview-details', [InternshipApplicationController::class, 'updateInterviewDetails'])->name('employer.updateInterviewDetails');
+
+    Route::get('/interviews-applicants/{id}/update-interview-result', [InternshipApplicationController::class, 'showUpdateInterviewResult'])->name('employer.showupdateinterviewresult');
+
+    Route::post('/internship-applications/{id}/update-interview-result', [InternshipApplicationController::class, 'updateInterviewResult'])->name('employer.updateinterviewresult');
+
+    Route::get('/internship-applications/accepted-applicants', [InternshipApplicationController::class, 'acceptedApplicants'])->name('employer.acceptedapplicants');
+
+    Route::get('/accepted-offer/{id}/update-details', [InternshipApplicationController::class, 'showUpdateAcceptedOfferDetails'])->name('employer.showupdateacceptedofferdetails');
+
+    Route::get('/internship-applications/rejected-applicants', [InternshipApplicationController::class, 'rejectedApplicants'])->name('employer.rejectedapplicants');
+
+    Route::get('/internship-applications/shortlisted-approved-applicants', [InternshipApplicationController::class, 'approvedOrShortlistedApplicants'])->name('employer.shortlistedapprovedapplicants');
+
+    Route::post('/internship-applications/{id}/{applicationID}/update-accepted-offer-details', [InternshipApplicationController::class, 'updateAcceptedOfferDetails'])->name('employer.updateofferdetails');
+
+    Route::get('/internship-applcations/{id}/update-shortlisted-result', [InternshipApplicationController::class, 'showUpdateShortlistedResult'])->name('employer.showupdateshortlistedresult');
+
+    Route::post('/internship-applications/{id}/update-shortlisted-results', [InternshipApplicationController::class, 'updateShortlistedResult'])->name('employer.updateshortlistedresult');
 });
+
+
 
 
 Route::group(['middleware' => ['auth:student,employer']], function () {

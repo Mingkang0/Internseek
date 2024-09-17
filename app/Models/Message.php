@@ -11,4 +11,9 @@ class Message extends Model
 
     protected $table = 'messages'; 
 
+    public function contactPerson()
+    {
+        return $this->belongsTo(ContactPerson::class, 'contactPersonID');
+    }
+
 }

@@ -28,6 +28,7 @@ class DashboardController extends Controller
         $internships = Internship::where('employerID', $employer->id)
             ->with('employer')
             ->withCount('bookmarks', 'clicks')
+            ->with('createdBy', 'lastEditedBy')
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();

@@ -95,7 +95,7 @@ const LoginPage = () => {
                   <label className="text-gray-500">Remember me</label>
                 </div>
               </div>
-              <a href='/auth/forgot-password' className="text-sm font-medium text-primary-600 hover:underline">Forgot password?</a>
+              <a href='/forgot-password' className="text-sm font-medium text-primary-600 hover:underline">Forgot password?</a>
             </div>
             <button
               type="submit"

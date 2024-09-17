@@ -2,8 +2,8 @@ import generatePostingButtons from "./postingButtons";
 import { FaEye } from "react-icons/fa";
 
 
-export default function PostingCard ( { internship } ) {
-  const employer = internship.employer;
+export default function PostingCard({ internship }) {
+  console.log(internship);
   const postingButtons = generatePostingButtons(internship.id);
   return (
     <div className="w-full p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
@@ -33,14 +33,21 @@ export default function PostingCard ( { internship } ) {
           Last Apply:<span className="font-medium">{internship.endPostingDate}</span>
         </p>
       </div>
-      <div className="flex justify-center mt-4 gap-4">
+      <div className="flex justify-between mt-4">
         <p className="flex font-semibold text-normal text-blue-600 gap-2">
           Status: <span className="font-medium">{internship.postingStatus}</span>
         </p>
-        <span className='flex items-center text-sm font-semibold text-gray-600'>
-          <FaEye className='mr-2' size={20} /> {internship.clicks_count} views </span>
-        <span className='flex items-center text-sm font-semibold text-red-800'> {internship.application} applications </span>
-        <span className='flex items-center text-sm font-semibold text-blue-800'> {internship.bookmarks_count} bookmarks </span>
+        <div className="flex gap-4">
+          <span className='flex items-center text-sm font-semibold text-gray-600'>
+            <FaEye className='mr-2' size={20} /> {internship.clicks_count} views </span>
+          <span className='flex items-center text-sm font-semibold text-red-800'> {internship.application} applications </span>
+          <span className='flex items-center text-sm font-semibold text-blue-800'> {internship.bookmarks_count} bookmarks </span>
+        </div>
+        <div className="flex gap-4">
+          <p className="flex font-semibold text-normal text-gray-600 gap-2">Posted By: {internship.created_by.firstName} {internship.created_by.lastName}
+          </p>
+          <p className="flex font-semibold text-normal text-gray-600 gap-2">Edited By: {internship.last_edited_by.firstName} {internship.last_edited_by.lastName} </p>
+        </div>
       </div>
     </div>
   );

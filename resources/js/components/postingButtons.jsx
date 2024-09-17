@@ -1,7 +1,7 @@
 
 import { FaTrash, FaPen, FaSearch } from "react-icons/fa";
 import Swal from 'sweetalert2';
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 
 
 
@@ -20,18 +20,18 @@ const generatePostingButtons = (id) => {
       cancelButtonColor: '#d33',
     }).then((result) => {
       if (result.isConfirmed) {
-        Inertia.post(`/internship-postings/${id}/delete`);
+        router.post(`/internship-postings/${id}/delete`);
   }});
   }
 
   const handleEdit = (id) => {
     // Add your edit logic here
-    Inertia.get(`/internship-postings/${id}/edit`);
+    router.get(`/internship-postings/${id}/edit`);
   }
 
   const handleView = (id) => {
     // Add your view logic here
-    Inertia.get(`/internship-postings/${id}`);
+    router.get(`/internship-postings/${id}`);
   }
 
   return [

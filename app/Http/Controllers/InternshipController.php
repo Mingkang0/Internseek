@@ -8,6 +8,9 @@ use Inertia\Inertia;
 use App\Models\Click;
 use App\Models\Bookmark;
 use App\Models\Report;
+use App\Models\Student;
+use App\Models\Education;
+use App\Models\InternshipApplication;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,7 +20,8 @@ class InternshipController extends Controller
     {
         // Fetch internships with their associated employers
         $internships = Internship::with('employer')
-        ->withCount('bookmarks', 'clicks')
+        ->where('postingStatus', 'Published')
+        ->withCount('bookmarks', 'clicks', 'applications')
         ->get();
 
         // Return the data to the Inertia view
@@ -41,11 +45,15 @@ class InternshipController extends Controller
         // Get the bookmark count for this internship
         $bookmarkCount = $this->getBookmarkCount($id);
 
+        // Get the application count for this internship
+        $applicationCount = $this->getApplicationCount($id);
+
         // Return the data to the Inertia view
         return Inertia::render('Internships/details', [
             'internship' => $internship,
             'clickCount' => $clickCount,
             'bookmarkCount' => $bookmarkCount,
+            'applicationCount' => $applicationCount,
         ]);
     }
 
@@ -102,6 +110,11 @@ class InternshipController extends Controller
         return Bookmark::where('internshipID', $internshipId)->count();
     }
 
+    private function getApplicationCount($internshipId)
+    {
+        return InternshipApplication::where('internshipID', $internshipId)->count();
+    }
+
     private function getClickCount($internshipId)
     {
         return Click::where('internshipID', $internshipId)->count();
@@ -131,5 +144,44 @@ class InternshipController extends Controller
         return redirect()->back()             
             ->with('success', 'Successfully Report Internship!')
             ->with('message', 'You can view the status of your report at My Report page.');
+    }
+
+    public function ReportList()
+    {
+        $guard = session('userGuard');
+        $student = Auth::guard($guard)->user();
+    
+        // Retrieve the reports with their associated internship information
+        // Retrieve the reports with their associated internship and employer information
+        $reports = Report::where('studentID', $student->id)
+                  ->with(['internship.employer']) // Eager load the internship and employer relationships
+                  ->get();
+  
+        return Inertia::render('Internships/reportList', [
+          'reports' => $reports,
+      ]);
+    }
+
+
+    public function deleteBookmark($id){
+        $guard = session('userGuard');
+        $student = Auth::guard($guard)->user();
+        
+        $bookmark = Bookmark::where('studentID', $student->id)
+            ->where('internshipID', $id)
+            ->first();
+        
+        if ($bookmark) {
+            $bookmark->delete();
+            return redirect()->back() ->with([
+                'success' => 'Success',
+                'message' => 'Bookmark removed successfully!'
+            ])->withInput();
+        } else {
+            return redirect()->back() ->with([
+                'success' => 'Failed',
+                'message' => 'Bookmark not found!'
+            ])->withInput();
+        }
     }
 }

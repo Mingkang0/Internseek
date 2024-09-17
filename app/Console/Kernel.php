@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        // Schedule the command to run daily
-        $schedule->command('internships:update-statuses')->daily();
+        $schedule->command('internships:update-statuses')
+                 ->timezone('Asia/Kuala_Lumpur')
+                 ->dailyAt('23:59'); // Run daily at 23:59 Malaysia time
     }
 }

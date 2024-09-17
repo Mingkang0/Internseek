@@ -1,10 +1,9 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { Inertia } from "@inertiajs/inertia";
-import { Head, useForm } from "@inertiajs/react";
-import { useState } from "react";
+import { Head, router, useForm } from "@inertiajs/react";
+import { useState, useEffect } from "react";
 
-export default function EditPostingDetails({ internship }) {
-  const [formData, setFormData] = useState({
+export default function EditPostingDetails({ internship, branch }) {
+  const { data, setData, post } = useForm({
     internshipTitle: internship.internshipTitle,
     internshipAllowance: internship.internshipAllowance,
     internshipDescription: internship.internshipDescription,
@@ -16,20 +15,48 @@ export default function EditPostingDetails({ internship }) {
     workingHour: internship.workingHour,
     studyScope: internship.studyScope,
     workingMethod: internship.workingMethod,
+    branchID: internship.branchID || '',
+    siteID: internship.siteID || '',
   });
 
-  const { data, setData, post } = useForm(formData);
+  const [siteOptions, setSiteOptions] = useState([]);
+
+  // Handle branch change and update site options
+  const handleSelectBranch = (e) => {
+    const selectedBranchId = e.target.value;
+    const selectedBranch = branch.find((branchItem) => branchItem.id === parseInt(selectedBranchId));
+
+    if (selectedBranch) {
+      setSiteOptions(selectedBranch.site);
+    } else {
+      setSiteOptions([]); // Reset site options if no branch is selected
+    }
+
+    setData('branchID', selectedBranchId);
+    setData('siteID', ''); // Reset siteID when a new branch is selected
+  };
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     post(`/internship-postings/${internship.id}/update`);
-  }
+  };
+
   const handleCancel = () => {
-    Inertia.get('/internship-postings');
-  }
+    router.get('/internship-postings');
+  };
+
+  useEffect(() => {
+    // Preload site options based on initial branch
+    const selectedBranch = branch.find((branchItem) => branchItem.id === parseInt(data.branchID));
+    if (selectedBranch) {
+      setSiteOptions(selectedBranch.site);
+    }
+  }, [data.branchID, branch]);
+
   return (
     <DefaultLayout>
       <Head title="Edit Internship" />
@@ -37,7 +64,13 @@ export default function EditPostingDetails({ internship }) {
         <div className="container max-w-4xl mx-auto px-6 py-6 bg-white border border-gray-200 rounded-lg shadow">
           <div className="header-text">
             <h5 className="text-xl font-bold text-blue-800">Edit Internship</h5>
-            <p className="text-base font-medium mt-2">Company Name: ABC Company</p>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-base font-medium ">Company Name: {internship.employer.companyName}</p>
+              <div className="flex items-center gap-4">
+                <p className="text-base font-medium ">Posted By: {internship.created_by.firstName} {internship.created_by.lastName}</p>
+                <p className="text-base font-medium ">Last Edited By: {internship.last_edited_by.firstName} {internship.last_edited_by.lastName}</p>
+              </div>
+            </div>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-12 gap-6 mt-4">
@@ -176,16 +209,38 @@ export default function EditPostingDetails({ internship }) {
                   <option value="Remote">Remote</option>
                 </select>
               </div>
+              {/* Branch and Site */}
               <div className="col-span-4">
                 <label className="block text-sm font-medium text-gray-700">Branch</label>
-                <select id="branch" className="mt-2 block w-full px-3 py-2 bg-white border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <option>Select Branch</option>
+                <select
+                  name="branchID"
+                  value={data.branchID}
+                  onChange={handleSelectBranch}
+                  className="mt-2 block w-full px-3 py-2 bg-white border border-gray-500 rounded-md shadow-sm"
+                >
+                  <option value="">Select Branch</option>
+                  {branch.map((branchItem) => (
+                    <option key={branchItem.id} value={branchItem.id}>
+                      {branchItem.branchName}
+                    </option>
+                  ))}
                 </select>
               </div>
+
               <div className="col-span-4">
                 <label className="block text-sm font-medium text-gray-700">Site</label>
-                <select id="site" className="mt-2 block w-full px-3 py-2 bg-white border border-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <option>Select Site</option>
+                <select
+                  name="siteID"
+                  value={data.siteID}
+                  onChange={(e) => setData('siteID', e.target.value)}
+                  className="mt-2 block w-full px-3 py-2 bg-white border border-gray-500 rounded-md shadow-sm"
+                >
+                  <option value="">Select Site</option>
+                  {siteOptions.map((site) => (
+                    <option key={site.id} value={site.id}>
+                      {site.siteName}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

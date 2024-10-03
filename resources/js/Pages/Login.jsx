@@ -1,18 +1,23 @@
 'use client';
-import React from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, useForm, router } from '@inertiajs/react';
+import Cookies from 'js-cookie';
+import { FaLinkedin } from 'react-icons/fa';
 
-const LoginPage = () => {
-  const [userRole, setUserRole] = React.useState('');
+const LoginPage = ({ remember_email }) => {
+  const [userRole, setUserRole] = useState('');
+
+
   const handleUserRole = (e) => {
     setUserRole(e.target.value);
   }
   const { data, setData, post, processing, errors } = useForm({
-    email: '',
+    email: remember_email || '',
     password: '',
     role: '',
     remember: false,
   });
+
 
   const handleRoleChange = (e) => {
     setUserRole(e.target.value);
@@ -104,6 +109,17 @@ const LoginPage = () => {
             >
               {processing ? 'Signing In...' : 'Sign In'}
             </button>
+            {
+              userRole == 'student' && (
+                <a
+                  type="button"
+                  href='/auth/linkedin'
+                  className='w-full flex text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 justify-center items-center'
+                >
+                  <FaLinkedin size={24} className='me-2' /> Sign in with LinkedIn
+                </a>
+              )
+            }
             {userRole && userRole !== 'admin' && (
               <p className="text-sm font-light text-gray-500">
                 Don’t have an account yet? <a href={userRole === 'student' ? '/register/student' : userRole === 'employer' ? '/register/employer' : '#'} className="font-medium text-primary-600 hover:underline">Sign Up</a>

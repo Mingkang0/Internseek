@@ -25,7 +25,7 @@ export default function CardButtons({ internshipCount, employerCount, studentCou
     }
   ]
   return (
-    <div className="flex justify-between items-center w-full h-fit-content px-2 py-4 gap-8">
+    <div className="flex flex-wrap justify-center items-center w-full h-fit-content px-2 py-4 gap-4 lg:gap-16">
       {buttons.map((button, index) => (
         <div key={index} className="px-4 py-4 bg-blue-800 border border-gray-300 w-72 h-36 rounded-lg cursor-pointer">
           <Link href={button.link}>

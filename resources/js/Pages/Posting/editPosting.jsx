@@ -24,17 +24,21 @@ export default function EditPostingDetails({ internship, branch }) {
   // Handle branch change and update site options
   const handleSelectBranch = (e) => {
     const selectedBranchId = e.target.value;
-    const selectedBranch = branch.find((branchItem) => branchItem.id === parseInt(selectedBranchId));
+    const selectedBranch = branch.find(branchItem => branchItem.id === parseInt(selectedBranchId));
 
     if (selectedBranch) {
       setSiteOptions(selectedBranch.site);
     } else {
-      setSiteOptions([]); // Reset site options if no branch is selected
+      setSiteOptions([]);
     }
 
-    setData('branchID', selectedBranchId);
-    setData('siteID', ''); // Reset siteID when a new branch is selected
+    setData({
+      ...data,
+      branchID: selectedBranchId,
+      siteID: '',
+    });
   };
+
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -49,14 +53,20 @@ export default function EditPostingDetails({ internship, branch }) {
     router.get('/internship-postings');
   };
 
+
   useEffect(() => {
-    // Preload site options based on initial branch
-    const selectedBranch = branch.find((branchItem) => branchItem.id === parseInt(data.branchID));
+    const selectedBranch = branch.find(
+      (branchItem) => branchItem.id === parseInt(data.branchID)
+    );
     if (selectedBranch) {
       setSiteOptions(selectedBranch.site);
+    } else {
+      setSiteOptions([]); // Reset site options if no branch is selected
     }
-  }, [data.branchID, branch]);
+  }, [data.branchID, branch]); // Dependencies ensure this runs when branchID or branch data changes
 
+
+  
   return (
     <DefaultLayout>
       <Head title="Edit Internship" />
@@ -64,18 +74,27 @@ export default function EditPostingDetails({ internship, branch }) {
         <div className="container max-w-4xl mx-auto px-6 py-6 bg-white border border-gray-200 rounded-lg shadow">
           <div className="header-text">
             <h5 className="text-xl font-bold text-blue-800">Edit Internship</h5>
-            <div className="flex items-center justify-between mt-2">
-              <p className="text-base font-medium ">Company Name: {internship.employer.companyName}</p>
-              <div className="flex items-center gap-4">
-                <p className="text-base font-medium ">Posted By: {internship.created_by.firstName} {internship.created_by.lastName}</p>
-                <p className="text-base font-medium ">Last Edited By: {internship.last_edited_by.firstName} {internship.last_edited_by.lastName}</p>
+            <div className="flex flex-wrap items-center justify-between mt-2 gap-2">
+              <div className="flex gap-2">
+                <span className="text-base font-medium">Company Name: </span>
+                <p className="text-base"> {internship.company.companyName}</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex gap-2">
+                  <span className="text-base font-medium">Posted By: </span>
+                  <p className="text-base">{internship.created_by.firstName} {internship.created_by.lastName}</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-base font-medium">Last Edited By: </span>
+                  <p className="text-base ">{internship.last_edited_by.firstName} {internship.last_edited_by.lastName}</p>
+                </div>
               </div>
             </div>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-12 gap-6 mt-4">
+            <div className="grid grid-cols-6 lg:grid-cols-12 gap-6 mt-4">
               <div className="col-span-6">
-                <label className="block text-sm font-medium text-gray-700">Internship Title</label>
+                <label className="block text-sm font-semibold text-gray-700">Internship Title</label>
                 <input
                   type="text"
                   name="internshipTitle"
@@ -86,7 +105,7 @@ export default function EditPostingDetails({ internship, branch }) {
                 />
               </div>
               <div className="col-span-6">
-                <label className="block text-sm font-medium text-gray-700">Allowance (in RM)</label>
+                <label className="block text-sm font-semibold text-gray-700">Allowance (in RM)</label>
                 <input
                   type="text"
                   name="internshipAllowance"
@@ -98,7 +117,7 @@ export default function EditPostingDetails({ internship, branch }) {
               </div>
             </div>
             <div className="internship-desc mt-4">
-              <label className="block text-sm font-medium text-gray-700">Internship Description</label>
+              <label className="block text-sm font-semibold text-gray-700">Internship Description</label>
               <textarea
                 name="internshipDescription"
                 rows={3}
@@ -109,7 +128,7 @@ export default function EditPostingDetails({ internship, branch }) {
               ></textarea>
             </div>
             <div className="internship-reqs mt-4">
-              <label className="block text-sm font-medium text-gray-700">Internship Requirements</label>
+              <label className="block text-sm font-semibold text-gray-700">Internship Requirements</label>
               <textarea
                 name="internshipRequirement"
                 rows={5}
@@ -120,7 +139,7 @@ export default function EditPostingDetails({ internship, branch }) {
               ></textarea>
             </div>
             <div className="internship-responsibilities mt-4">
-              <label className="block text-sm font-medium text-gray-700">Internship Responsibilities</label>
+              <label className="block text-sm font-semibold text-gray-700">Internship Responsibilities</label>
               <textarea
                 name="internshipResponsibility"
                 rows={5}
@@ -130,9 +149,9 @@ export default function EditPostingDetails({ internship, branch }) {
                 placeholder="Enter Internship Responsibilities here..."
               ></textarea>
             </div>
-            <div className="grid grid-cols-12 date mt-4 gap-6">
+            <div className="grid grid-cols-6 lg:grid-cols-12 date mt-4 gap-6">
               <div className="col-span-6">
-                <label className="block text-sm font-medium text-gray-700">Start Posting Date</label>
+                <label className="block text-sm font-semibold text-gray-700">Start Posting Date</label>
                 <input
                   type="date"
                   name="startPostingDate"
@@ -142,7 +161,7 @@ export default function EditPostingDetails({ internship, branch }) {
                 />
               </div>
               <div className="col-span-6">
-                <label className="block text-sm font-medium text-gray-700">End Posting Date</label>
+                <label className="block text-sm font-semibold text-gray-700">End Posting Date</label>
                 <input
                   type="date"
                   name="endPostingDate"
@@ -152,9 +171,9 @@ export default function EditPostingDetails({ internship, branch }) {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-12 mt-4 gap-6">
+            <div className="grid grid-cols-4 lg:grid-cols-12 mt-4 gap-6">
               <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Internship Period (in months)</label>
+                <label className="block text-sm font-semibold text-gray-700">Internship Period (in months)</label>
                 <input
                   type="number"
                   name="internshipDuration"
@@ -165,7 +184,7 @@ export default function EditPostingDetails({ internship, branch }) {
                 />
               </div>
               <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Working Hour (per day)</label>
+                <label className="block text-sm font-semibold text-gray-700">Working Hour (per day)</label>
                 <input
                   type="number"
                   name="workingHour"
@@ -176,7 +195,7 @@ export default function EditPostingDetails({ internship, branch }) {
                 />
               </div>
               <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Study Scope</label>
+                <label className="block text-sm font-semibold text-gray-700">Study Scope</label>
                 <select
                   name="studyScope"
                   value={data.studyScope}
@@ -193,9 +212,9 @@ export default function EditPostingDetails({ internship, branch }) {
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-12 mt-4 gap-6">
+            <div className="grid grid-cols-4 lg:grid-cols-12 mt-4 gap-6">
               <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Working Method</label>
+                <label className="block text-sm font-semibold text-gray-700">Working Method</label>
                 <select
                   name="workingMethod"
                   value={data.workingMethod}
@@ -211,7 +230,7 @@ export default function EditPostingDetails({ internship, branch }) {
               </div>
               {/* Branch and Site */}
               <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Branch</label>
+                <label className="block text-sm font-semibold text-gray-700">Branch</label>
                 <select
                   name="branchID"
                   value={data.branchID}
@@ -228,7 +247,7 @@ export default function EditPostingDetails({ internship, branch }) {
               </div>
 
               <div className="col-span-4">
-                <label className="block text-sm font-medium text-gray-700">Site</label>
+                <label className="block text-sm font-semibold text-gray-700">Site</label>
                 <select
                   name="siteID"
                   value={data.siteID}
@@ -242,6 +261,10 @@ export default function EditPostingDetails({ internship, branch }) {
                     </option>
                   ))}
                 </select>
+                {/* Only show this if sites are available */}
+                {data.branchID && siteOptions.length === 0 && (
+                  <p className="text-sm text-gray-500 mt-1">No sites available for this branch</p>
+                )}
               </div>
             </div>
             <div className="mt-4 text-center">

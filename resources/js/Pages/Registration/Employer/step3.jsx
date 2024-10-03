@@ -4,7 +4,7 @@ const Step3 = ( { formData, setFormData }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-2 gap-4 mt-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <div className="col-span-1">
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-900">First Name</label>
@@ -20,11 +20,11 @@ const Step3 = ( { formData, setFormData }) => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4 mt-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
       <div className="col-span-1">
         <label className="block mb-2 text-sm font-medium text-gray-900">Email</label>
-        <input type="email" name="email" value={formData.email}  onChange={(e) => setFormData({email: e.target.value})} className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
-          placeholder="Enter email" />
+        <input type="email" name="email" value={formData.email} className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
+          placeholder="Enter email" disabled />
       </div>
       <div className="col-span-1">
         <label className="block mb-2 text-sm font-medium text-gray-900">Phone Number</label>
@@ -32,7 +32,7 @@ const Step3 = ( { formData, setFormData }) => {
           placeholder="Enter phone number" />
       </div>
       </div>
-      <div className="grid grid-cols-2 gap-4 mt-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <div className="col-span-1">
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-900">Job Position</label>

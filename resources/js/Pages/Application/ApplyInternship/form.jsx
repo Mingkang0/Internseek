@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { FaTimesCircle } from 'react-icons/fa';
 import ApplyStep1 from "./step1";
-import { Link, router } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import DefaultLayout from "@/layout/defaultLayout";
 import ApplyStep2 from "./step2";
 import ApplyStep3 from "./step3";
@@ -59,7 +59,7 @@ const ApplyInternshipForm = ({ internship, student }) => {
     setStep((prevStep) => prevStep - 1);
   };
 
-  const employer = internship.employer;
+  const company = internship.company;
 
   const renderStepContent = () => {
     switch (step) {
@@ -137,6 +137,7 @@ const ApplyInternshipForm = ({ internship, student }) => {
 
   return (
     <DefaultLayout>
+      <Head title="Apply Internship" />
       <div className="bg-gray-200 px-6 py-10 min-h-screen lg:py-4">
         <div className="px-6 py-6 mt-4 bg-white border border-gray-200 rounded-lg shadow mx-auto lg:max-w-5xl lg:w-full">
           <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 flex justify-between items-center">
@@ -146,18 +147,28 @@ const ApplyInternshipForm = ({ internship, student }) => {
 
           <div className="flex flex-wrap gap-4">
             <div className="md:ml:2 mx-auto lg:mx-0">
-              <img src={`/storage/company/companyLogo/${employer.companyLogo}`} alt="CompanyLogo" className="w-24 h-24 rounded-full border ring-1 ring-gray-900" />
+              <img src={`/storage/company/companyLogo/${company.companyLogo}`} alt="CompanyLogo" className="w-24 h-24 rounded-full border ring-1 ring-gray-900" />
             </div>
             <div className="w-full">
+              <div className="flex gap-2">
               <p className="mb-3 font-semibold text-normal text-gray-700">
-                {employer?.companyName}
+                Company Name:
               </p>
-              <p className="mb-3 font-semibold text-normal text-gray-700">
-                {employer?.companyCity}, {employer?.companyState}
+              <p className="mb-3 text-normal text-gray-700">
+                {company?.companyName}
               </p>
+              </div>
+              <div className="flex gap-2">
+                <p className="mb-3 font-semibold text-normal text-gray-700">
+                  Company Location:
+                </p>
+              <p className="mb-3 text-normal text-gray-700">
+                {company?.companyCity}, {company?.companyState}
+              </p>
+              </div>
               <div className="flex flex-wrap gap-2 md:gap-4">
                 <span className="inline-block px-3 py-2 text-sm font-semibold text-gray-600 bg-gray-200 rounded-lg">Allowance: RM {internship.internshipAllowance}</span>
-                <span className="inline-block px-3 py-2 text-sm font-semibold text-gray-600 bg-gray-200 rounded-lg">Internship Period: {internship.internshipPeriod} months</span>
+                <span className="inline-block px-3 py-2 text-sm font-semibold text-gray-600 bg-gray-200 rounded-lg">Internship Period: {internship.internshipDuration} months</span>
                 <span className="inline-block px-3 py-2 text-sm font-semibold text-gray-600 bg-gray-200 rounded-lg">Working Hour: {internship.workingHour} hours per day</span>
                 <span className="inline-block px-3 py-2 text-sm font-semibold text-gray-600 bg-gray-200 rounded-lg">{internship.studyScope}</span>
               </div>

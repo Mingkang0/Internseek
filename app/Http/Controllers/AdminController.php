@@ -14,7 +14,12 @@ use App\Models\Employer;
 use App\Models\Branch;
 use App\Models\Site;
 use App\Models\Report;
-use App\Models\ContactPerson;
+use App\Models\Company;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\CompanyRegistrationStatus;
+use Illuminate\Notifications\Notifiable;
+use App\Notifications\InternshipPostingArchived;
 
 class AdminController extends Controller
 {
@@ -34,7 +39,6 @@ class AdminController extends Controller
         $request->validate([
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
             'phoneNum' => 'required|string|max:15',
             'ICNumber' => 'required|string|max:12',
             'gender' => 'required|string|max:6',
@@ -45,7 +49,6 @@ class AdminController extends Controller
         $admin->update([
             'firstName' => $request->input('firstName'),
             'lastName' => $request->input('lastName'),
-            'email' => $request->input('email'),
             'phoneNum' => $request->input('phoneNum'),
             'ICNumber' => $request->input('ICNumber'),
             'gender' => $request->input('gender'),
@@ -80,7 +83,7 @@ class AdminController extends Controller
     }
 
     public function internshipsList(){
-        $internships = Internship::with('employer')->get();
+        $internships = Internship::with('company')->get();
 
 
         return Inertia::render('Reporting/admin/internshipList', [
@@ -89,8 +92,8 @@ class AdminController extends Controller
     }
 
     public function internshipDetails($id){
-        $internship = Internship::with('employer')->find($id);
-
+        $internship = Internship::with(['company', 'site', 'branch'])->find($id);
+        
         return Inertia::render('Reporting/admin/internshipDetails', [
             'internship' => $internship,
         ]);
@@ -114,20 +117,20 @@ class AdminController extends Controller
         ]);
     }
 
-    public function employerList(){
-        $employers = Employer::where('registrationStatus', 'Approved')->get();
+    public function companyList(){
+        $companies = Company::where('registrationStatus', 'Approved')->get();
 
-        return Inertia::render('Reporting/admin/employerList', [
-            'employers' => $employers
+        return Inertia::render('Reporting/admin/companyList', [
+            'companies' => $companies
         ]);
     }
 
-    public function employerDetails($id){
-        $employer = Employer::find($id);
+    public function companyDetails($id){
+        $company = Company::find($id);
 
-        $contactPerson = ContactPerson::where('employerID', $employer->id)->get();
+        $employers = Employer::where('companyID', $company->id)->get();
 
-        $branches = Branch::where('employerID', $employer->id)->get();
+        $branches = Branch::where('companyID', $company->id)->get();
 
         if ($branches->isEmpty()) {
             // No branches exist for this employer, so there will be no sites.
@@ -138,9 +141,9 @@ class AdminController extends Controller
             $sites = Site::whereIn('branchID', $branchIds)->get();
         }
 
-        return Inertia::render('Reporting/admin/employerDetails', [
-            'employer' => $employer,
-            'contactPersons' => $contactPerson,
+        return Inertia::render('Reporting/admin/companyDetails', [
+            'company' => $company,
+            'employers' => $employers,
             'branches' => $branches,
             'sites' => $sites,
         ]);
@@ -148,7 +151,7 @@ class AdminController extends Controller
     }
 
     public function ProblemReportList(){
-        $problemReports = Report::with('internship.employer', 'student')->get();
+        $problemReports = Report::with('internship.company', 'student')->get();
 
         return Inertia::render('Reporting/admin/internshipReportList', [
             'problemReports' => $problemReports,
@@ -156,7 +159,7 @@ class AdminController extends Controller
     }
 
     public function ProblemReportDetails($id){
-        $report = Report::with('internship.employer', 'student')->find($id);
+        $report = Report::with('internship.company','internship.branch', 'internship.site' , 'student')->find($id);
 
         return Inertia::render('Reporting/admin/internshipReportDetails', [
             'report' => $report,
@@ -166,6 +169,8 @@ class AdminController extends Controller
     public function updateReportStatus(Request $request, $id)
     {
         $report = Report::findOrFail($id);
+
+        $internship = Internship::find($report->internshipID);
     
         $request->validate([
             'reportStatus' => 'required|string|max:255',
@@ -180,6 +185,30 @@ class AdminController extends Controller
             $report->update([
                 'reasonArchived' => $request->input('reasonArchived'),
             ]);
+
+            $internship->update([
+                'postingStatus' => 'Archived',
+            ]);
+
+            Notification::sendNow($internship->company, new InternshipPostingArchived($data = [
+                'message' => 'Your internship posting has been archived.',
+            ]));
+        }
+
+        if ($request->input('actionTaken') == 'Unarchived') {
+            if($internship->startPostingDate <= date('Y-m-d') && $internship->endPostingDate >= date('Y-m-d')){
+                $internship->update([
+                    'postingStatus' => 'Published',
+                ]);
+            } else if($internship->endPostingDate < date('Y-m-d')){
+                $internship->update([
+                    'postingStatus' => 'Expired',
+                ]);
+            } else if ($internship->startPostingDate > date('Y-m-d')){
+                $internship->update([
+                    'postingStatus' => 'Unpublished',
+                ]);
+            }
         }
     
         $report->update([
@@ -192,36 +221,70 @@ class AdminController extends Controller
     }
     
 
-    public function EmployerRequestList(){
-        $employers = Employer::all();
+    public function CompanyRequestList(){
+        $companies = Company::all();
 
         return Inertia::render('Reporting/admin/registrationRequestList', [
-            'employers' => $employers,
+            'companies' => $companies,
         ]);
     }
 
-    public function EmployerRequestDetails($id){
-        $employer = Employer::find($id);
+    public function CompanyRequestDetails($id){
 
-        $contactPerson = ContactPerson::where('employerID', $employer->id)->first();
+        $company = Company::find($id);
+
+        $employer = Employer::where('companyID', $company->id)->first();
+        
 
         return Inertia::render('Reporting/admin/registrationRequestDetails', [
             'employer' => $employer,
-            'contactPerson' => $contactPerson,
+            'company' => $company,
         ]);
     }
     
     public function updateRegistrationStatus(Request $request, $id)
     {
-        $employer = Employer::find($id);
+        $company = Company::find($id);
 
-        $employer->registrationStatus = $request->input('registrationStatus');
+        $request->validate([
+            'registrationStatus' =>'required|string',
+        ]);
+
+        $company->registrationStatus = $request->input('registrationStatus');
 
         if($request->input('registrationStatus') == 'Inquiry'){
-           $employer->inquiryComment = $request->input('inquiryComment');
+            $request->validate([
+                'inquiryComment' => 'required|string',
+            ]);
+            $company->inquiryComment = $request->input('inquiryComment');
         }
 
-        $employer->save();
+        $message = '';
+
+        switch(request('registrationStatus')){
+            case 'Approved':
+                $message = 'Your registration request has been approved.';
+                break;
+
+            case 'Inquiry':
+                $message = 'Your registration request is under inquiry. Please modify the necessary details.';
+                break;
+
+            default:
+                $message = 'Your registration request has been updated.';
+                break;
+        }
+
+        $employer = Employer::where('companyID', $company->id)->first();
+
+        Notification::sendNow([$company,$employer], new CompanyRegistrationStatus($data = [
+            'message' => $message,
+            'registrationStatus' => $request->input('registrationStatus'),
+            'inquiryComment' => $request->input('inquiryComment'),
+        ]));
+
+
+        $company->save();
 
         return redirect()->route('admin.employerrequests')->with('success', 'Registration status updated successfully');
     }
@@ -229,12 +292,16 @@ class AdminController extends Controller
 
     public function updateCompanyRating(Request $request, $id)
     {
-        $employer = Employer::find($id);
+        $company = Company::find($id);
 
-        $employer->companyRating = $request->input('rating');
+        $request->validate([
+            'rating' =>'required|string',
+        ]);
 
-        $employer->save();
+        $company->companyRating = $request->input('rating');
 
-        return redirect()->route('admin.employers')->with('success', 'Company rating updated successfully');
+        $company->save();
+
+        return redirect()->route('admin.companies')->with('success', 'Company rating updated successfully');
     }
 }

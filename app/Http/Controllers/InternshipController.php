@@ -18,8 +18,8 @@ class InternshipController extends Controller
 {
     public function index()
     {
-        // Fetch internships with their associated employers
-        $internships = Internship::with('employer')
+        // Fetch internships with their associated companies
+        $internships = Internship::with('company')
         ->where('postingStatus', 'Published')
         ->withCount('bookmarks', 'clicks', 'applications')
         ->get();
@@ -32,8 +32,8 @@ class InternshipController extends Controller
 
     public function show($id)
     {
-        // Fetch the internship with the associated employer
-        $internship = Internship::with('employer')->find($id);
+        // Fetch the internship with the associated company
+        $internship = Internship::with('company')->find($id);
 
         if(Auth::guard('student')->check()) {
             $this->createClicks($id);
@@ -125,6 +125,10 @@ class InternshipController extends Controller
         $guard = session('userGuard');
         $student = Auth::guard($guard)->user();
         
+        $existingReport = Report::where('studentID', $student->id)
+            ->where('internshipID', $id)
+            ->first();
+        
         $validateData = $request->validate ([
             'problemDesc' => 'required|string'
         ]);
@@ -152,9 +156,9 @@ class InternshipController extends Controller
         $student = Auth::guard($guard)->user();
     
         // Retrieve the reports with their associated internship information
-        // Retrieve the reports with their associated internship and employer information
+        // Retrieve the reports with their associated internship and company information
         $reports = Report::where('studentID', $student->id)
-                  ->with(['internship.employer']) // Eager load the internship and employer relationships
+                  ->with(['internship.company'])
                   ->get();
   
         return Inertia::render('Internships/reportList', [

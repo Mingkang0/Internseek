@@ -5,9 +5,9 @@ import Step3 from "./step3";
 import CompleteMessage from "./completeMessage";
 import Swal from "sweetalert2";
 import DefaultLayout from "@/layout/defaultLayout";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
-const RegisterEmployerForm = ({ contactPerson }) => {
+const RegisterEmployerForm = ({ employer }) => {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState(null);
   const [formData, setFormData] = useState({
@@ -35,11 +35,11 @@ const RegisterEmployerForm = ({ contactPerson }) => {
       logo: '',
       companyLogo: "",
     },
-    contactPersonInfo: {
-      firstName: contactPerson.firstName,
-      lastName: contactPerson.lastName,
-      email: contactPerson.email,
-      phoneNum: contactPerson.phoneNum,
+    employerInfo: {
+      firstName: employer.firstName,
+      lastName: employer.lastName,
+      email: employer.email,
+      phoneNum: employer.phoneNum,
       position: "",
       department: "",
     },
@@ -102,11 +102,11 @@ const RegisterEmployerForm = ({ contactPerson }) => {
     }));
   };
 
-  const updateContactPersonDetails = (newDetails) => {
+  const updateEmployerDetails = (newDetails) => {
     setFormData((prevData) => ({
       ...prevData,
-      contactPersonInfo: {
-        ...prevData.contactPersonInfo,
+      employerInfo: {
+        ...prevData.employerInfo,
         ...newDetails,
       },
     }));
@@ -141,7 +141,7 @@ const RegisterEmployerForm = ({ contactPerson }) => {
             <p className="mb-4 text-sm text-gray-600 dark:text-gray-400 font-bold">
               Step 3: Complete Your Information
             </p>
-            <Step3 formData={formData.contactPersonInfo} setFormData={updateContactPersonDetails} />
+            <Step3 formData={formData.employerInfo} setFormData={updateEmployerDetails} />
           </div>
         );
       default:
@@ -151,8 +151,9 @@ const RegisterEmployerForm = ({ contactPerson }) => {
 
   return (
     <DefaultLayout>
+      <Head title="Company Registration" />
       <div className="bg-gray-200 px-6 py-10 min-h-screen lg:py-4">
-        <div className="w-full bg-white rounded-lg shadow dark:border mx-auto mt-5 mb-5 sm:max-w-2xl xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full bg-white rounded-lg shadow dark:border p-4 mx-auto mt-5 mb-5 lg:max-w-2xl lg:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="space-y-8 md:space-y-6 sm:p-8">
             <h1 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-2xl dark:text-white">
               {step === 1

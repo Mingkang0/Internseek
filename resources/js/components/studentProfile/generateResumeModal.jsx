@@ -11,14 +11,14 @@ export default function GenerateResumeModal({ student, accomplishment, referee, 
         orientation: "p", // 'p' for portrait, 'l' for landscape
         unit: "mm",
       });
-  
+
       // Set the page size to match the original image dimensions
       pdf.internal.pageSize.setWidth(canvas.width);
       pdf.internal.pageSize.setHeight(canvas.height);
-  
+
       // Add image to the PDF
       pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-  
+
       // Save the PDF
       pdf.save("resume.pdf");
     });
@@ -29,8 +29,26 @@ export default function GenerateResumeModal({ student, accomplishment, referee, 
   return (
     <>
       <div className="w-full h-fit-content p-4 mx-2 my-2 bg-white border border-gray-900 rounded-lg mx-auto" id="resume-content">
-        <div className="flex bg-gray-100 p-4 rounded-xl justify-between text-left">
-          <img className="w-24 h-24 rounded-full ml-4 border border-gray-900" src={`/storage/profile/student/profile_pictures/${student.profilePicture}`} alt="Profile Pic" />
+        <div className="flex flex-wrap bg-gray-100 p-4 rounded-xl justify-between text-left gap-2 md:gap-4">
+          {student.linkedin_id && student.profilePicture && typeof student.profilePicture === 'string' && student.profilePicture.startsWith('http') ? (
+            <img
+              className="w-24 h-24 rounded-full ml-2 border border-gray-900"
+              src={student.profilePicture}
+              alt="LinkedIn Profile Pic"
+            />
+          ) : student.profilePicture && typeof student.profilePicture === 'string' ? (
+            <img
+              className="w-24 h-24 rounded-full ml-2 border border-gray-900"
+              src={`/storage/profile/student/profile_pictures/${student.profilePicture}`}
+              alt="Local Profile Pic"
+            />
+          ) : (
+            <img
+              className="w-24 h-24 rounded-full ml-2 border border-gray-900"
+              src="../../assets/avatar.png"
+              alt="Default Avatar"
+            />
+          )}
           <div className="basicInfo">
             <p className="text-base font-bold tracking-tight text-gray-800">Name: {student.firstName} {student.lastName}</p>
             <p className="text-sm font-medium tracking-tight text-gray-600">Email: {student.email}</p>
@@ -79,7 +97,7 @@ export default function GenerateResumeModal({ student, accomplishment, referee, 
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-8 mt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mt-4">
           <div className="col-span-1 skill text-left">
             <h5 className="text-base font-bold tracking-tight text-gray-900 text-left">Skills</h5>
             <hr className='border-1 border-gray-900 mt-1'></hr>

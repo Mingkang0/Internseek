@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, Head } from '@inertiajs/react';
 
 const ResetPasswordForm = ({ token, role }) => {
 
@@ -18,6 +18,7 @@ const ResetPasswordForm = ({ token, role }) => {
   };
   return (
     <div className="bg-gray-200 min-h-screen flex items-center justify-center">
+      <Head title='Reset Password' />
       <div className="bg-white shadow-md rounded-lg p-8 max-w-lg w-full">
         <div className="flex flex-col items-center mb-6">
           <a href="/">

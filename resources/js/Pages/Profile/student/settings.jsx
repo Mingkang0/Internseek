@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import Swal from "sweetalert2";
 import DefaultLayout from "@/layout/defaultLayout";
 import { useEffect } from "react";
@@ -53,12 +53,13 @@ export default function ChangePasswordForm({ student }) {
 
   return (
     <DefaultLayout>
+      <Head title="Settings" />
       <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-0">
         <div className="container mx-auto bg-white border border-gray-900 rounded-lg p-6 max-w-4xl mt-4">
           <h1 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">
             Change Password
           </h1>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex flex-wrap justify-between items-center mb-4">
             <p className="text-base font-medium text-gray-900">Name: {student.firstName} {student.lastName}</p>
             <p className="text-base font-medium text-gray-900">Email: {student.email} </p>
           </div>

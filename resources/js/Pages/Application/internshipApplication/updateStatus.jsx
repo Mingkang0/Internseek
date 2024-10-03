@@ -1,5 +1,5 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState } from 'react';
 
 export default function UpdateApplicationStatus({ application }) {
@@ -32,9 +32,11 @@ export default function UpdateApplicationStatus({ application }) {
       meetingLink: meetingMethod === 'Online' ? meetingLink : null,
     };
 
-    if (startTime >= endTime) {
-      setErrors({ startTime: 'Start time must be less than end time' });
-      return;
+    if (applicationStatus == 'Interview') {
+      if (startTime >= endTime) {
+        setErrors({ startTime: 'Start time must be less than end time' });
+        return;
+      }
     }
 
     router.post(`/internship-applications/${application.id}/update-application-status`, data, {
@@ -47,21 +49,29 @@ export default function UpdateApplicationStatus({ application }) {
 
   return (
     <DefaultLayout>
-      <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4">
-        <div className="w-3/4 p-5 mt-2 mx-auto bg-white border border-gray-200 rounded-lg shadow">
+      <Head title="Update Application Status" />
+      <div className="bg-gray-200 px-6 py-4 min-h-screen mx-auto overflow-y-auto lg:py-4">
+        <div className="w-full p-5 mt-2 mx-auto bg-white border border-gray-200 rounded-lg shadow lg:max-w-2xl">
           <h5 className="text-center mb-2 text-lg font-bold tracking-tight text-gray-900">
             Update Application Status
           </h5>
 
-          <div className="flex justify-between mt-4">
-            <p className="flex font-semibold text-base text-gray-700 gap-2">
-              Name: <span className="font-medium">{application.student.firstName} {application.student.lastName}</span>
-            </p>
-            <p className="flex font-semibold text-base text-gray-700 gap-2">
-              Applied Internship: <span className="font-medium">{application.internship.internshipTitle}</span>
-            </p>
+          <div className="flex flex-wrap justify-between mt-4">
+            <div className="flex flex-wrap gap-2">
+              <p className="flex font-semibold text-base text-gray-700 gap-2">
+                Name:
+              </p>
+
+              <span className="">{application.student.firstName} {application.student.lastName}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <p className="flex font-semibold text-base text-gray-700 ">
+                Applied Internship:
+              </p>
+              <span className="">{application.internship.internshipTitle}</span>
+            </div>
           </div>
-          <div className="grid grid-cols-12 gap-6 text-left mt-2">
+          <div className="grid grid-cols-6 lg:grid-cols-12 gap-6 text-left mt-2">
             <div className="col-span-6">
               <label className="block text-sm font-medium text-gray-700">Application Status</label>
               <select
@@ -198,6 +208,6 @@ export default function UpdateApplicationStatus({ application }) {
 
         </div>
       </div>
-    </DefaultLayout>
+    </DefaultLayout >
   );
 }

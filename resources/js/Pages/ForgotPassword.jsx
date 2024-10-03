@@ -36,6 +36,7 @@ const ForgotPasswordForm = () => {
 
   return (
     <div className="bg-gray-200 min-h-screen flex items-center justify-center">
+      <Head title="Forgot Password" />
       <div className="bg-white shadow-md rounded-lg p-8 max-w-lg w-full">
         <div className="flex flex-col items-center mb-6">
           <a href="/">

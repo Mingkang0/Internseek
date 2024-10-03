@@ -36,11 +36,11 @@ export default function ChangePasswordForm({ admin }) {
   };
 
   return (
-    <div className="container mx-auto bg-white border border-gray-900 rounded-lg p-6 max-w-4xl mt-4">
+    <div className="container mx-auto bg-white rounded-lg p-6 max-w-4xl mt-4 shadow-inner">
       <h1 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">
         Change Password
       </h1>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <p className="text-base font-medium text-gray-900">Name: {admin.firstName} {admin.lastName}</p>
         <p className="text-base font-medium text-gray-900">Email: {admin.email} </p>
       </div>
@@ -63,6 +63,7 @@ export default function ChangePasswordForm({ admin }) {
         </div>
         <div className="text-center">
           <button type="submit" disabled={processing} className="text-white bg-blue-800 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Submit</button>
+          <button type="button" onClick={() => window.history.back()} className="text-gray-800 font-semibold bg-white hover:bg-gray-100 focus:ring-4 border border-gray-800 rounded-lg text-sm px-5 py-2.5 text-center ml-2">Back</button>
         </div>
       </form>
     </div>

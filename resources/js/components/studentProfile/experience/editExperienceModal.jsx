@@ -110,7 +110,7 @@ export default function EditExperienceModal({ experience, onClose, studentID }) 
           required
         />
       </div>
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
         <div className='col-span-1'>
           <label htmlFor="startDate" className="block mb-2 text-sm font-medium text-gray-900">Start Date</label>
           <input

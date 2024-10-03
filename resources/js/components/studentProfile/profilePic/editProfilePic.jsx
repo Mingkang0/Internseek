@@ -4,9 +4,14 @@ import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
 import { router } from '@inertiajs/react';
 
-export default function EditProfilePic({ profilePic, studentID, closeModal }) {
+export default function EditProfilePic({ profilePic, studentID, linkedin_id, closeModal }) {
   // Check if profilePic exists, if not, use the avatar image
-  const initialImageSrc = profilePic ? `/storage/profile/student/profile_pictures/${profilePic}` : "../../assets/avatar.png";
+  const initialImageSrc = linkedin_id && profilePic && typeof profilePic === 'string' && profilePic.startsWith('http')
+    ? profilePic // Use the LinkedIn profile picture URL
+    : profilePic && typeof profilePic === 'string'
+      ? `/storage/profile/student/profile_pictures/${profilePic}` // Construct the path for local profile pictures
+      : "../../assets/avatar.png"; // Fallback to default avatar
+
   const [imageSrc, setImageSrc] = useState(initialImageSrc);
   const [file, setFile] = useState(null);
 

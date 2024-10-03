@@ -4,60 +4,66 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Employer extends Model
+
+class Employer extends Authenticatable
 {
     use HasFactory;
+    use Notifiable;
 
+    protected $table = 'employers';
     protected $fillable = [
-        'companyName',
-        'companyEmail',
-        'companyPhone',
-        'documentType',
-        'documentName',
-        'companyAddress1',
-        'companyAddress2',
-        'companyPostalCode',
-        'companyCity',
-        'companyState',
-        'companyCountry',
-        'companySector',
-        'companySize',
-        'companyWebsite',
-        'companyType',
-        'businessRegNum',
-        'businessRegDate',
-        'registrationStatus',
-        'companyLogo',
-        'mission',
-        'vision',
-        'companyDescription',
+        'firstName', 
+        'lastName',
+        'phoneNum',
+        'email', 
+        'password',
+        'department',
+        'position',
+        'companyID',
+        'status',
+        'userType',
     ];
 
-    protected $hidden = ['password', 'remember_token'];
 
-    public function internships()
+
+    protected $hidden = ['password', 'remember_token', 'reset_password_token'];
+    protected $with = ['company'];
+
+    public function company()
     {
-        return $this->hasMany(Internship::class, 'employerID');
+        return $this->belongsTo(Company::class, 'companyID');
+    }
+
+    public function internshipCreated()
+    {
+        return $this->hasMany(Internship::class, 'createdBy');
+    }
+
+    public function internshipEdited()
+    {
+        return $this->hasMany(Internship::class, 'lastEditedBy');
     }
 
     public function messages()
     {
-        return $this->morphMany(Message::class, 'sender');
+        return $this->hasMany(Message::class, 'employerID');
     }
 
-    public function receivedMessages()
+    public function applicationUpdated()
     {
-        return $this->morphMany(Message::class, 'receiver');
+        return $this->hasMany(InternshipApplication::class, 'employerID');
     }
 
-    public function contactPersons()
+    public function acceptedOfferDetails()
     {
-        return $this->hasMany(ContactPerson::class, 'employerID');
+        return $this->hasManyThrough(AcceptedOffer::class, InternshipApplication::class, 'employerID', 'applicationID');
     }
 
-    public function branches()
+    public function getRole()
     {
-        return $this->hasMany(Branch::class, 'employerID');
+        return 'employer';
     }
 }

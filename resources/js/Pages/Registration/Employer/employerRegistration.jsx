@@ -34,7 +34,7 @@ const RegisterContactPersonForm = () => {
     <>
       <Head title="Employer Registration" />
       <div className='bg-gray-200 px-6 min-h-screen overflow-y-auto'>
-        <div className="bg-white shadow-md rounded-lg p-6 max-w-lg w-full my-4 mx-auto">
+        <div className="bg-white shadow-md rounded-lg p-6 w-full lg:max-w-lg my-4 mx-auto">
           <div className="flex flex-col items-center mb-2">
             <a href="/">
               <img src="../../assets/logo.png" className="w-40 h-12" alt="Internseek Logo" />
@@ -44,7 +44,7 @@ const RegisterContactPersonForm = () => {
             Sign Up for Employer
           </h1>
           <form className="space-y-2 md:space-y-4" action="#" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-12 gap-8">
+            <div className="grid grid-cols-6 lg:grid-cols-12 gap-2 lg:gap-8">
               <div className="col-span-6">
                 <label className="block mb-2 text-sm font-medium text-gray-900">First Name</label>
                 <input type="text" name="firstName" id="firstName"
@@ -95,7 +95,7 @@ const RegisterContactPersonForm = () => {
                 onChange={(e) => setData('confirmPassword', e.target.value)}
                 placeholder="Confirm your password" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required />
             </div>
-            <button type="submit" className="w-full text-black bg-yellow-300 hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center " disabled={processing}>Sign Up</button>
+            <button type="submit" className="w-full mt-2 text-black bg-yellow-300 hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center " disabled={processing}>Sign Up</button>
             <p className="text-sm font-light text-gray-500">
               Already have an account? <a href='/auth/login' className="font-medium text-primary-600 hover:underline">Sign In</a>
             </p>

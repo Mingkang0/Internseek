@@ -1,16 +1,16 @@
 import DefaultLayout from "@/layout/defaultLayout";
 import { useEffect, useState } from "react";
-import { useForm, usePage, router } from "@inertiajs/react";
+import { useForm, usePage, router, Head } from "@inertiajs/react";
 import { countries } from "@/components/country";
 import Swal from "sweetalert2";
-export default function CompanyProfileDetails({ employer }) {
+export default function CompanyProfileDetails({ company }) {
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [logoPreview, setLogoPreview] = useState(
-    employer.companyLogo ? `/storage/company/companyLogo/${employer.companyLogo}` : null);
+    company.companyLogo ? `/storage/company/companyLogo/${company.companyLogo}` : null);
   const [documentPreview, setDocumentPreview] = useState(null);
 
-  console.log(employer);
+  console.log(company.documentType);
 
   const handleEditClick = () => {
     setIsEditMode(true);
@@ -33,31 +33,31 @@ export default function CompanyProfileDetails({ employer }) {
 
   const { data, setData, post, processing, errors } = useForm({
     companyLogo: null,
-    companyDescription: employer.companyDescription || "",
-    companyCountry: employer.companyCountry || "",
-    companyName: employer.companyName || "",
-    businessRegDate: employer.businessRegDate || "",
-    companyType: employer.companyType || "",
-    companySize: employer.companySize || "",
-    companyEmail: employer.companyEmail || "",
-    businessRegNum: employer.businessRegNum || "",
-    documentType: employer.documentType || "",
+    companyDescription: company.companyDescription || "",
+    companyCountry: company.companyCountry || "",
+    companyName: company.companyName || "",
+    businessRegDate: company.businessRegDate || "",
+    companyType: company.companyType || "",
+    companySize: company.companySize || "",
+    businessRegNum: company.businessRegNum || "",
+    documentType: company.documentType || "",
     documentName: null,
-    companyPhone: employer.companyPhone || "",
-    companyWebsite: employer.companyWebsite || "",
-    companySector: employer.companySector || "",
-    companyAddress1: employer.companyAddress1 || "",
-    companyAddress2: employer.companyAddress2 || "",
-    companyPostalCode: employer.companyPostalCode || "",
-    companyCity: employer.companyCity || "",
-    companyState: employer.companyState || "",
-    mission: employer.mission || "",
-    vision: employer.vision || "",
+    companyPhone: company.companyPhone || "",
+    companyWebsite: company.companyWebsite || "",
+    companySector: company.companySector || "",
+    companyAddress1: company.companyAddress1 || "",
+    companyAddress2: company.companyAddress2 || "",
+    companyPostalCode: company.companyPostalCode || "",
+    companyCity: company.companyCity || "",
+    companyState: company.companyState || "",
+    mission: company.mission || "",
+    vision: company.vision || "",
   });
 
 
+
   const handleSaveChanges = () => {
-  
+
     const formData = new FormData();
 
     // Append non-file data
@@ -76,7 +76,7 @@ export default function CompanyProfileDetails({ employer }) {
       formData.append("companyLogo", data.companyLogo);
     }
 
-    router.post(route('employer.companydetails.update', { id: employer.id }), formData); 
+    router.post(route('employer.companydetails.update', { id: company.id }), formData);
     setIsEditMode(false);
   };
 
@@ -141,6 +141,7 @@ export default function CompanyProfileDetails({ employer }) {
   return (
     <DefaultLayout>
       <div className="bg-gray-200 min-h-screen overflow-y-auto lg:py-4">
+        <Head title="Company Profile Details" />
         <div className="container mx-auto bg-white border border-gray-900 rounded-lg p-6 max-w-4xl">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">
@@ -158,8 +159,8 @@ export default function CompanyProfileDetails({ employer }) {
             </div>
           </div>
           <form>
-            <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-3">
+            <div className="grid grid-cols-3 lg:grid-cols-12 gap-6">
+              <div className="col-span-9 lg:col-span-3">
                 <div className="companyLogo">
                   <label>
                     <div className="relative cursor-pointer">
@@ -201,7 +202,7 @@ export default function CompanyProfileDetails({ employer }) {
                 </div>
               </div>
               <div className="col-span-9">
-                <div className="grid grid-cols-12 gap-6">
+                <div className="grid grid-cols-6 lg:grid-cols-12 gap-6">
                   <div className="col-span-6">
                     <div className="companyName">
                       <label className="block mb-2 text-sm font-medium text-gray-900">Company Name</label>
@@ -238,7 +239,7 @@ export default function CompanyProfileDetails({ employer }) {
                   <div className="col-span-6">
                     <div className="companyEmail">
                       <label className="block mb-2 text-sm font-medium text-gray-900">Company Email</label>
-                      <input type="email" name="companyEmail" id="companyEmail" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Company Email" value={data.companyEmail} onChange={(e) => setData("companyEmail", e.target.value)} disabled={!isEditMode} required />
+                      <input type="email" name="companyEmail" id="companyEmail" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Company Email" value={company.companyEmail} disabled/>
                     </div>
                     <div className="BusinessRegNum mt-2">
                       <label className="block mb-2 text-sm font-medium text-gray-900">Business Registration Number</label>
@@ -247,7 +248,7 @@ export default function CompanyProfileDetails({ employer }) {
                     <div className="SSMDocument mt-2">
                       <label className="block mb-2 text-sm font-medium text-gray-900">{data.documentType}</label>
                       <div className="flex items-center gap-2">
-                        <a id="download-link" href={`/storage/company/businessRegDocuments/${employer.documentName}`} target="_blank" style={{ display: 'none' }} />
+                        <a id="download-link" href={`/storage/company/businessRegDocuments/${company.documentName}`} target="_blank" style={{ display: 'none' }} />
                         <button onClick={(e) => { e.preventDefault(); document.getElementById('download-link').click() }} className="mt-1 px-4 py-2 border border-gray-300 rounded-md bg-red-600 text-white">Download</button>
                         <input
                           type="file"
@@ -259,7 +260,7 @@ export default function CompanyProfileDetails({ employer }) {
                         />
                         <label
                           htmlFor="documentName"
-                          className="mt-1 p-2 rounded-md bg-blue-800 text-white cursor-pointer"
+                          className="mt-1 p-2 rounded-md bg-blue-800 text-white cursor-pointer text-center"
                         >
                           Upload New Document
                         </label>
@@ -270,27 +271,8 @@ export default function CompanyProfileDetails({ employer }) {
                     </div>
                     <div className="Sector mt-2">
                       <label className="block mb-2 text-sm font-medium text-gray-900">Sector</label>
-                      <input type="text" name="companySector" id="companySector" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Company Sector" value={employer.companySector} onChange={(e) => setData("companySector", e.target.value)} disabled={!isEditMode} required />
+                      <input type="text" name="companySector" id="companySector" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Company Sector" value={data.companySector} onChange={(e) => setData("companySector", e.target.value)} disabled={!isEditMode} required />
                     </div>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <label className="block mb-2 text-sm font-medium text-gray-900">Company Address</label>
-                  <input type="text" name="address1" id="address1" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Address Line 1" value={employer.companyAddress1} onChange={(e) => setData("companyAddress1", e.target.value)} disabled={!isEditMode} required />
-                  <input type="text" name="address2" id="address2" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mt-2" placeholder="Address Line 2" value={employer.companyAddress2} onChange={(e) => setData("companyAddress2", e.target.value)} disabled={!isEditMode} />
-                </div>
-                <div className="grid grid-cols-12 gap-4 mt-2">
-                  <div className="col-span-4">
-                    <label className="block mb-2 text-sm font-medium text-gray-900">Postcode</label>
-                    <input type="text" name="postcode" id="postcode" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Postcode" value={data.companyPostalCode} onChange={(e) => setData("companyPostalCode", e.target.value)} disabled={!isEditMode} required />
-                  </div>
-                  <div className="col-span-4">
-                    <label className="block mb-2 text-sm font-medium text-gray-900">City</label>
-                    <input type="text" name="city" id="city" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="City" value={data.companyCity} onChange={(e) => setData("companyCity", e.target.value)} disabled={!isEditMode} required />
-                  </div>
-                  <div className="col-span-4">
-                    <label className="block mb-2 text-sm font-medium text-gray-900">State</label>
-                    <input type="text" name="state" id="state" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="State" value={data.companyState} onChange={(e) => setData("companyState", e.target.value)} disabled={!isEditMode} required />
                   </div>
                 </div>
                 <div className="mt-2">
@@ -304,7 +286,28 @@ export default function CompanyProfileDetails({ employer }) {
                 <div className="mt-2">
                   <label className="block mb-2 text-sm font-medium text-gray-900">Company Website</label>
                   <input type="url" name="companyWebsite" id="companyWebsite" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Company Website" value={data.companyWebsite} onChange={(e) => setData("companyWebsite", e.target.value)} disabled={!isEditMode} required />
-              </div>
+                </div>
+                <div className="mt-2">
+                  <h5 className="text-base font-semibold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">Company Address</h5>
+                  <label className="block mb-2 text-sm font-medium text-gray-900">Company Address</label>
+                  <input type="text" name="address1" id="address1" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Address Line 1" value={data.companyAddress1} onChange={(e) => setData("companyAddress1", e.target.value)} disabled={!isEditMode} required />
+                  <input type="text" name="address2" id="address2" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mt-2" placeholder="Address Line 2" value={data.companyAddress2} onChange={(e) => setData("companyAddress2", e.target.value)} disabled={!isEditMode} />
+                </div>
+                <div className="grid grid-cols-4 lg:grid-cols-12 gap-4 mt-4">
+                  <div className="col-span-4">
+                    <label className="block mb-2 text-sm font-medium text-gray-900">Postcode</label>
+                    <input type="text" name="postcode" id="postcode" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Postcode" value={data.companyPostalCode} onChange={(e) => setData("companyPostalCode", e.target.value)} disabled={!isEditMode} required />
+                  </div>
+                  <div className="col-span-4">
+                    <label className="block mb-2 text-sm font-medium text-gray-900">City</label>
+                    <input type="text" name="city" id="city" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="City" value={data.companyCity} onChange={(e) => setData("companyCity", e.target.value)} disabled={!isEditMode} required />
+                  </div>
+                  <div className="col-span-4">
+                    <label className="block mb-2 text-sm font-medium text-gray-900">State</label>
+                    <input type="text" name="state" id="state" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="State" value={data.companyState} onChange={(e) => setData("companyState", e.target.value)} disabled={!isEditMode} required />
+                  </div>
+                </div>
+
               </div>
             </div>
           </form>

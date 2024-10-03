@@ -1,16 +1,16 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { useForm, Link, router } from "@inertiajs/react";
+import { useForm, Link, router, Head } from "@inertiajs/react";
 
 
 
-const SearchExistingCompany = ({ employers }) => {
-  const { data, setData, post, processing, errors } = useForm({
+const SearchExistingCompany = ({ companies }) => {
+  const { data, setData, post, get, processing, errors } = useForm({
     companyName: '',
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.get('/search-existing-employer', {
+    get('/search-existing-company', {data}, {
       onError: () => {
         errors.companyName = 'Company not found';
         console.log('Company not found');
@@ -20,6 +20,7 @@ const SearchExistingCompany = ({ employers }) => {
 
   return (
     <DefaultLayout>
+      <Head title="Search Existing Company" />
       <div className="bg-gray-200 px-6 min-h-screen overflow-y-auto lg:py-4">
         <div className="bg-white shadow-md rounded-lg p-6 max-w-2xl w-full my-4 mx-auto">
           <h5 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">Search Existing Company</h5>
@@ -39,14 +40,14 @@ const SearchExistingCompany = ({ employers }) => {
           </form>
 
           {/* Display search results here */}
-          {employers && (
+          {companies && (
             <div className="mt-4">
               <h2 className="text-lg font-bold">Search Results</h2>
 
               <div className="companyList mt-2">
-                {employers.length > 0 && (
+                {companies.length > 0 && (
                   <ul>
-                    {employers.map((employer) => (
+                    {companies.map((employer) => (
                       <li key={employer.id}>
                         <div className="flex justify-between items-center company border border-gray-300 rounded-lg px-4 py-2 mb-2">
                           <div className="company-details flex gap-8">
@@ -56,7 +57,7 @@ const SearchExistingCompany = ({ employers }) => {
                           <div className="">
                             <form onSubmit={(e) => {
                               e.preventDefault();
-                              router.post(`/add-existing-employer/${employer.id}`);
+                              router.post(`/add-existing-company/${employer.id}`);
                             }}>
                               <button type="submit"
                                 className="bg-blue-800 hover:bg-blue-700 text-white font-semibold px-4 h-10 rounded-lg  rounded-full my-auto"
@@ -70,7 +71,7 @@ const SearchExistingCompany = ({ employers }) => {
                     ))}
                   </ul>
                 )}
-                {employers.length === 0 && (
+                {companies.length === 0 && (
                   <p className="text-gray-500 text-sm font-semibold mt-2">The company is not found, you can register it <a href="/register-company" className="text-blue-600">here</a></p>
                 )}
               </div>

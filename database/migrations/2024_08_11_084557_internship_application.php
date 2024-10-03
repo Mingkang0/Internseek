@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('internshipID');
             $table->unsignedBigInteger('studentID');
-            $table->unsignedBigInteger('contactPersonID')->nullable();
+            $table->unsignedBigInteger('employerID')->nullable();
             $table->foreign('internshipID')->references('id')->on('internships');
             $table->foreign('studentID')->references('id')->on('students');
-            $table->foreign('contactPersonID')->references('id')->on('contact_persons');
+            $table->foreign('employerID')->references('id')->on('employers');
             $table->string('applicationStatus')->default('Reviewing');
             $table->string('coverLetter');
             $table->string('ownResume')->nullable();
@@ -31,6 +31,11 @@ return new class extends Migration
             $table->string('offerLetter')->nullable();
             $table->string('actualAllowance')->nullable();
             $table->string('reasonRejected')->nullable();
+            $table->tinyInteger('technicalRating')->nullable();
+            $table->tinyInteger('softRating')->nullable();
+            $table->tinyInteger('performanceRating')->nullable();
+            $table->tinyInteger('overallRating')->nullable();
+            $table->string('interviewComment')->nullable();
             $table->timestamps();
         });
     }

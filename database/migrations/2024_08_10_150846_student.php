@@ -15,15 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('firstName');
             $table->string('lastName');
-            $table->string('phoneNum');
+            $table->string('phoneNum')->nullable();
             $table->string('ICNumber')->nullable();
             $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->date('dateOfBirth')->nullable();
             $table->string('nationality')->nullable();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('profilePicture')->nullable();
+            $table->string('profilePicture', 500)->nullable(); // Increase size to 500 or more
+            $table->string('remember_token')->nullable();
             $table->string('reset_password_token')->nullable();
+            $table->string('passportNo')->nullable();
+            $table->string('linkedin_id')->nullable(); // LinkedIn ID
+            $table->string('linkedin_token', 500)->nullable(); // Increase size to 500 or more
+            $table->string('linkedin_public_url')->nullable(); // Increase size to 500 or more
             $table->timestamps();
         });
     }

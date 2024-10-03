@@ -1,22 +1,20 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
 
 
-export default function registrationRequestDetails({ employer, contactPerson }) {
+export default function registrationRequestDetails({ employer, company }) {
 
-  console.log(employer);
-  console.log(contactPerson);
   const { data, setData, errors, post } = useForm({
-    registrationStatus: employer.registrationStatus,
-    inquiryComment: employer.inquiryComment || '',
+    registrationStatus: company.registrationStatus,
+    inquiryComment: company.inquiryComment || '',
   });
 
   // State to manage the registration status and comment
-  const [registrationStatus, setRegistrationStatus] = useState(employer.registrationStatus);
-  const [inquiryComment, setInquiryComment] = useState(employer.inquiryComment || '');
+  const [registrationStatus, setRegistrationStatus] = useState(company.registrationStatus);
+  const [inquiryComment, setInquiryComment] = useState(company.inquiryComment || '');
 
-  const isApproved = employer.registrationStatus === 'Approved';
+  const isApproved = company.registrationStatus === 'Approved';
   // Handle status change
   const handleStatusChange = (e) => {
     setRegistrationStatus(e.target.value);
@@ -35,7 +33,7 @@ export default function registrationRequestDetails({ employer, contactPerson }) 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post(`/update-registration-status/${employer.id}`, {
+    post(`/update-registration-status/${company.id}`, {
       onSuccess: () => {
         // Handle success response
       },
@@ -48,129 +46,134 @@ export default function registrationRequestDetails({ employer, contactPerson }) 
 
   return (
     <DefaultLayout>
+      <Head title="Employer Registration Request Details" />
       <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4">
-        <div className="container mx-auto max-w-3xl">
+      <div className="mx-auto w-full lg:max-w-4xl">
           <div className="w-full p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
-            <h5 className="text-xl font-bold text-gray-900">Employer Details</h5>
-            <p className="text-base text-gray-500">Status: {employer.registrationStatus}</p>
+          <h5 className="text-xl font-bold text-gray-900">Company Details</h5>
+            <div className="flex gap-2">
+              <p className="text-base font-semibold text-gray-800">Status: </p>
+              <p className="text-base text-gray-800">{company.registrationStatus}</p>
+            </div>
             <div className="companyDetails">
               <p className="mb-2 text-lg font-bold tracking-tight text-blue-800">Company Details </p>
-              <div className="grid grid-cols-2 gap-8 mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Company Name</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyName} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyName} disabled />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Company Email</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={employer.companyEmail} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={company.companyEmail} disabled />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Business Registration No.</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.businessRegNum} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.businessRegNum} disabled />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Business Registration Date</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={employer.businessRegDate} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={company.businessRegDate} disabled />
                 </div>
                 <div className="col-span-1">
-                  <label className="block text-sm font-semibold text-gray-700">{employer.documentType}</label>
+                  <label className="block text-sm font-semibold text-gray-700">{company.documentType}</label>
                   <div className="flex items-center gap-4">
-                    <a id="download-link" href={`/storage/company/businessRegDocuments/${employer.documentName}`} target="_blank" style={{ display: 'none' }} />
+                    <a id="download-link" href={`/storage/company/businessRegDocuments/${company.documentName}`} target="_blank" style={{ display: 'none' }} />
                     <button onClick={(e) => { e.preventDefault(); document.getElementById('download-link').click() }} className="mt-1 px-4 py-2 border border-gray-300 rounded-md bg-red-600 text-white">Download</button>
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Company Phone</label>
-                  <input name="companyPhone" className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyPhone} />
+                  <input name="companyPhone" className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyPhone} />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Company Sector</label>
-                  <input name="companySector" className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companySector} />
+                  <input name="companySector" className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companySector} />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Company Website</label>
-                  <input name="companyWebsite" className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyWebsite} />
+                  <input name="companyWebsite" className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyWebsite} />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Company Size</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companySize} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companySize} disabled />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Company Type</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyType} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyType} disabled />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Country</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyCountry} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyCountry} disabled />
                 </div>
               </div>
               <div className="mt-4">
-                <label className="block text-sm font-semibold text-gray-700">Company Address</label>
-                <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" value={employer.companyAddress1} disabled />
-                <input className="mt-2 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" value={employer.companyAddress2} disabled />
+                <h5 className="mb-2 text-lg font-bold tracking-tight text-blue-800">Company Address</h5>
+                <label className="block text-sm font-semibold text-gray-700 mt-2">Company Address</label>
+                <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" value={company.companyAddress1} disabled />
+                <input className="mt-2 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" value={company.companyAddress2} disabled />
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">Postal code</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyPostalCode} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyPostalCode} disabled />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">City</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyCity} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyCity} disabled />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-sm font-semibold text-gray-700">State</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.companyState} disabled />
+                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyState} disabled />
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-12 p-2 gap-8">
-              <div className="companyLogo col-span-3">
+            <div className="grid grid-cols-9 lg:grid-cols-12 p-2 gap-8">
+              <div className="companyLogo col-span-9 lg:col-span-3">
                 <p className="mb-2 text-xl font-bold tracking-tight text-blue-800">Company Logo</p>
                 <img
-                  src={`/storage/company/companyLogo/${employer.companyLogo}`}
+                  src={`/storage/company/companyLogo/${company.companyLogo}`}
                   alt="CompanyLogo"
                   className="w-36 h-36 rounded-full mx-auto border ring-1 ring-gray-900"
                 />
               </div>
-              <div className="contactPerson col-span-9">
-                <p className="mb-2 text-lg font-bold tracking-tight text-blue-800">Contact Person Details</p>
-                <div className="grid grid-cols-2 gap-4 mt-2">
+              <div className="contactPerson col-span-9 lg:col-span-9">
+                <p className="mb-2 text-lg font-bold tracking-tight text-blue-800">Employer Details</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-gray-700">Name</label>
-                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={`${contactPerson.firstName} ${contactPerson.lastName}`} disabled />
+                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={`${employer.firstName} ${employer.lastName}`} disabled />
                   </div>
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-gray-700">Email</label>
-                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={contactPerson.email} disabled />
+                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={employer.email} disabled />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 mt-2">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-2">
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-gray-700">Phone Number</label>
-                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={contactPerson.phoneNum} disabled />
+                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.phoneNum} disabled />
                   </div>
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-gray-700">Position</label>
-                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={contactPerson.position} disabled />
+                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.position} disabled />
                   </div>
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-gray-700">Department</label>
-                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={contactPerson.department} disabled />
+                    <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={employer.department} disabled />
                   </div>
                 </div>
               </div>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-3 gap-4 mt-2">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-2">
                 <div className="col-span-1">
                   <div className="update-status">
                     <label className="block text-sm font-semibold text-gray-700">Status</label>

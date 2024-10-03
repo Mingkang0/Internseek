@@ -9,18 +9,17 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostingController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ContactPersonController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\InternshipApplicationController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\HomeController;
 
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/register/student', [RegistrationController::class, 'createStudent'])->name('register.student');
 
@@ -33,6 +32,10 @@ Route::post('/create/employer', [RegistrationController::class, 'storeEmployer']
 Route:: get('/login', [LoginController::class, 'showLogin'])->name('login');
 
 Route::post('/login/{userRole}', [LoginController::class, 'login'])->name('login.post');
+
+Route::get('/auth/linkedin', [LoginController::class, 'redirectToLinkedIn'])->name('linkedin.login');
+
+Route::get('linkedin/callback', [LoginController::class, 'handleLinkedInCallback']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -128,6 +131,14 @@ Route::group(['middleware' => 'auth:student'], function () {
     Route::get('/student/process-internships', [InternshipApplicationController::class, 'processInternships'])->name('student.processinternships');
 
     Route::post('/internships/{id}/delete/bookmark', [InternshipController::class, 'deleteBookmark'])->name('internships.deletebookmark');
+
+    Route::post('/student/notifications/markAsRead', [NotificationController::class, 'markAllAsRead'])->name('student.notifications.markAllAsRead');
+
+    Route::get('/student/notifications', [NotificationController::class, 'index'])->name('student.notifications');
+
+    Route::post('/student/delete-all-notifications', [NotificationController::class, 'deleteAllNotifications'])->name('student.notifications.deleteall');
+
+    Route::post('/student/linkedin/store/{id}', [StudentController::class, 'storeLinkedIn'])->name('student.linkedin.store');
 });
 
 
@@ -149,17 +160,17 @@ Route::group(['middleware' => 'auth:admin'], function () {
 
     Route::get('/admin/internseekers/{id}', [AdminController::class, 'internseekerDetails'])->name('admin.internseekerdetails');
     
-    Route::get('/admin/employers', [AdminController::class, 'employerList'])->name('admin.employers');
+    Route::get('/admin/employers', [AdminController::class, 'companyList'])->name('admin.companies');
 
-    Route::get('/admin/employers/{id}', [AdminController::class, 'employerDetails'])->name('admin.employerdetails');
+    Route::get('/admin/employers/{id}', [AdminController::class, 'companyDetails'])->name('admin.companydetails');
 
     Route::get('/admin/problems-reports', [AdminController::class, 'ProblemReportList'])->name('admin.problemreports');
 
     Route::get('/admin/problems-reports/{id}', [AdminController::class, 'ProblemReportDetails'])->name('admin.problemreportdetails');
 
-    Route::get('/admin/employer-requests', [AdminController::class, 'EmployerRequestList'])->name('admin.employerrequests');
+    Route::get('/admin/employer-requests', [AdminController::class, 'CompanyRequestList'])->name('admin.employerrequests');
 
-    Route::get('/admin/employer-requests/{id}', [AdminController::class, 'EmployerRequestDetails'])->name('admin.employerrequestdetails');
+    Route::get('/admin/employer-requests/{id}', [AdminController::class, 'CompanyRequestDetails'])->name('admin.employerrequestdetails');
 
     Route::post('/update-registration-status/{id}', [AdminController::class, 'updateRegistrationStatus'])->name('admin.updateregistrationstatus');
 
@@ -169,11 +180,12 @@ Route::group(['middleware' => 'auth:admin'], function () {
 });
 
 Route::group(['middleware' => ['auth:employer']], function () {
+    
     Route::get('/employer/dashboard', [DashboardController::class, 'indexEmployer'])->name('employer.dashboard');
 
-    Route::get('/register/existing-employer', [RegistrationController::class, 'addExistingEmployer'])->name('register.existingemployer');
+    Route::get('/register/existing-company', [RegistrationController::class, 'addExistingCompany'])->name('register.existingcompany');
 
-    Route::get('/search-existing-employer', [RegistrationController::class, 'searchExistingEmployer'])->name('register.searchexistingemployer');
+    Route::get('/search-existing-company', [RegistrationController::class, 'searchExistingCompany'])->name('register.searchexistingcompany');
 
     Route::get('/register/company', [RegistrationController::class, 'createCompany'])->name('register.company');
 
@@ -183,31 +195,31 @@ Route::group(['middleware' => ['auth:employer']], function () {
 
     Route::post('/update/registration-details/{id}', [RegistrationController::class, 'updateRegistrationDetails'])->name('register.updateregistationdetails');
 
-    Route::post('/add-existing-employer/{id}', [RegistrationController::class, 'addExistingEmployerToContactPerson'])->name('register.addexistingemployer');
+    Route::post('/add-existing-company/{id}', [RegistrationController::class, 'addExistingCompanyToEmployer'])->name('register.addexistingcompany');
 
-    Route::get('/employer/branch-details', [EmployerController::class, 'branchDetails'])->name('employer.branchdetails');
+    Route::get('/employer/branch-details', [CompanyController::class, 'branchDetails'])->name('employer.branchdetails');
 
-    Route::post('/employer/branch/store/{id}', [EmployerController::class, 'storeBranch'])->name('employer.storebranch');
+    Route::post('/employer/branch/store/{id}', [CompanyController::class, 'storeBranch'])->name('employer.storebranch');
 
-    Route::post('/employer/branch/update/{id}', [EmployerController::class, 'updateBranch'])->name('employer.updatebranch');
+    Route::post('/employer/branch/update/{id}', [CompanyController::class, 'updateBranch'])->name('employer.updatebranch');
 
-    Route::post('/employer/branch/delete/{id}', [EmployerController::class, 'deleteBranch'])->name('employer.deletebranch');
+    Route::post('/employer/branch/delete/{id}', [CompanyController::class, 'deleteBranch'])->name('employer.deletebranch');
 
-    Route::post('/employer/site/store/{id}', [EmployerController::class, 'storeSite'])->name('employer.storesite');
+    Route::post('/employer/site/store/{id}', [CompanyController::class, 'storeSite'])->name('employer.storesite');
 
-    Route::post('/employer/site/update/{id}', [EmployerController::class, 'updateSite'])->name('employer.updatesite');
+    Route::post('/employer/site/update/{id}', [CompanyController::class, 'updateSite'])->name('employer.updatesite');
 
-    Route::post('/employer/site/delete/{id}', [EmployerController::class, 'deleteSite'])->name('employer.deletesite');
+    Route::post('/employer/site/delete/{id}', [CompanyController::class, 'deleteSite'])->name('employer.deletesite');
 
-    Route::get('/employer/profileDetails', [EmployerController::class, 'companyDetails'])->name('employer.companydetails');
+    Route::get('/employer/profileDetails', [CompanyController::class, 'companyDetails'])->name('employer.companydetails');
 
-    Route::post('/employer/profileDetails/update/{id}', [EmployerController::class, 'updateCompanyDetails'])->name('employer.companydetails.update');
+    Route::post('/employer/profileDetails/update/{id}', [CompanyController::class, 'updateCompanyDetails'])->name('employer.companydetails.update');
 
-    Route::get('/contact-person-details', [ContactPersonController::class, 'show'])->name('employer.contactpersondetails');
+    Route::get('/employer-details', [EmployerController::class, 'show'])->name('employer.employerdetails');
 
-    Route::post('/contact-person-details/{id}/update', [ContactPersonController::class, 'update'])->name('contact-person-details.update');
+    Route::post('/employer-details/{id}/update', [EmployerController::class, 'update'])->name('employer-details.update');
 
-    Route::post('/contact-person/change-password/{id}', [ContactPersonController::class, 'changePassword'])->name('contact-person-change-password');
+    Route::post('/employer/change-password/{id}', [EmployerController::class, 'changePassword'])->name('employer-change-password');
 
     Route::get('/internship-postings', [PostingController::class, 'index'])->name('employer.postedinternships');
 
@@ -250,6 +262,18 @@ Route::group(['middleware' => ['auth:employer']], function () {
     Route::get('/internship-applcations/{id}/update-shortlisted-result', [InternshipApplicationController::class, 'showUpdateShortlistedResult'])->name('employer.showupdateshortlistedresult');
 
     Route::post('/internship-applications/{id}/update-shortlisted-results', [InternshipApplicationController::class, 'updateShortlistedResult'])->name('employer.updateshortlistedresult');
+
+    Route::post('/employer/notifications/markAsRead', [NotificationController::class, 'markAllAsRead'])->name('employer.notifications.markAllAsRead');
+
+    Route::get('/employer/notifications', [NotificationController::class, 'index'])->name('employer.notifications');
+
+    Route::post('/employer/delete-all-notifications', [NotificationController::class, 'deleteAllNotifications'])->name('employer.notifications.deleteall');
+
+    Route::get('/employer/my-report', [InternshipApplicationController::class, 'myReport'])->name('employer.myreport');
+
+    Route::get('/employer/admin/userManagement', [CompanyController::class, 'userManagement'])->name('employer.usermanagement');
+
+    Route::post('/employer/admin/update-status/{id}', [CompanyController::class, 'updateUserStatus'])->name('employer.updateuserstatus');
 });
 
 
@@ -258,6 +282,9 @@ Route::group(['middleware' => ['auth:employer']], function () {
 Route::group(['middleware' => ['auth:student,employer']], function () {
     Route::get('/messages/{id}', [MessageController::class, 'showChatBox'])
     ->name('messages.show');
+
+    Route::post('/messages/markAsRead/{id}', [MessageController::class, 'markAsRead'])
+    ->name('messages.markAsRead');
 
     Route::post('/messages/send', [MessageController::class, 'sendMessage'])
     ->name('messages.send');

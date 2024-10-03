@@ -1,11 +1,11 @@
 import { useState,useEffect } from "react";
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import DefaultLayout from "@/layout/defaultLayout";
 import Swal from "sweetalert2";
 import ChangePasswordForm from "./changePassword";
 
 
-export default function ContactPersonDetails({ contactPerson }) {
+export default function EmployerDetails({ employer }) {
   const { flash } = usePage().props;
 
   useEffect(() => {
@@ -24,14 +24,13 @@ export default function ContactPersonDetails({ contactPerson }) {
 
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // Initialize the form with the contact person's existing data
+  // Initialize the form with the employer's existing data
   const { data, setData, post, processing, errors } = useForm({
-    firstName: contactPerson?.firstName || "",
-    lastName: contactPerson?.lastName || "",
-    email: contactPerson?.email || "",
-    phoneNum: contactPerson?.phoneNum || "",
-    position: contactPerson?.position || "",
-    department: contactPerson?.department || "",
+    firstName: employer?.firstName || "",
+    lastName: employer?.lastName || "",
+    phoneNum: employer?.phoneNum || "",
+    position: employer?.position || "",
+    department: employer?.department || "",
   });
 
   const handleEditClick = () => {
@@ -39,7 +38,7 @@ export default function ContactPersonDetails({ contactPerson }) {
   };
 
   const handleSaveChanges = () => {
-    post(route('contact-person-details.update', contactPerson.id), {
+    post(route('employer-details.update', employer.id), {
       preserveScroll: true,
       onSuccess: () => setIsEditMode(false), // Exit edit mode on success
     });
@@ -47,14 +46,14 @@ export default function ContactPersonDetails({ contactPerson }) {
 
   const handleCancel = () => {
     setIsEditMode(false);
-    // Revert form data to the original contact person's data
+    // Revert form data to the original employer's data
     setData({
-      firstName: contactPerson?.firstName || "",
-      lastName: contactPerson?.lastName || "",
-      email: contactPerson?.email || "",
-      phoneNum: contactPerson?.phoneNum || "",
-      position: contactPerson?.position || "",
-      department: contactPerson?.department || "",
+      firstName: employer?.firstName || "",
+      lastName: employer?.lastName || "",
+      email: employer?.email || "",
+      phoneNum: employer?.phoneNum || "",
+      position: employer?.position || "",
+      department: employer?.department || "",
     });
   };
 
@@ -65,11 +64,12 @@ export default function ContactPersonDetails({ contactPerson }) {
 
   return (
     <DefaultLayout>
-      <div className="bg-gray-200 min-h-screen overflow-y-auto lg:py-4">
-        <div className="container mx-auto bg-white border border-gray-900 rounded-lg p-6 max-w-4xl">
+      <div className="bg-gray-200 min-h-screen px-4 py-4 overflow-y-auto lg:py-4">
+        <Head title="Employer Details" />
+        <div className="mx-auto bg-white border border-gray-900 rounded-lg p-6 w-full lg:max-w-4xl">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">
-              Contact Person Details
+              Employer Details
             </h1>
             <div className="flex items-center">
               {isEditMode ? (
@@ -98,7 +98,7 @@ export default function ContactPersonDetails({ contactPerson }) {
             </div>
           </div>
           <form className="space-y-4 md:space-y-6" onSubmit={handleSaveChanges}>
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-6 lg:grid-cols-12 gap-4 lg:gap-6">
               <div className="col-span-6">
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                   First Name
@@ -142,10 +142,8 @@ export default function ContactPersonDetails({ contactPerson }) {
                 id="email"
                 className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="Enter Email Address"
-                value={data.email}
-                onChange={handleInputChange}
-                disabled={!isEditMode}
-                required
+                value={employer.email}
+                disabled
               />
             </div>
             <div>
@@ -164,7 +162,7 @@ export default function ContactPersonDetails({ contactPerson }) {
                 required
               />
             </div>
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-6 lg:grid-cols-12 gap-4 lg:gap-6">
               <div className="col-span-6">
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                   Job Position
@@ -200,7 +198,7 @@ export default function ContactPersonDetails({ contactPerson }) {
             </div>
           </form>
         </div>
-        <ChangePasswordForm contactPerson={contactPerson}/>
+        <ChangePasswordForm employer={employer}/>
       </div>
     </DefaultLayout>
   );

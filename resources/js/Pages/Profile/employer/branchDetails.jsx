@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import Swal from 'sweetalert2';
 import { FaPlus, FaEdit } from "react-icons/fa";
-import AddBranchModal from "@/components/employerProfile/addBranchModal";
-import AddSiteModal from "@/components/employerProfile/addSiteModal";
-import EditBranchModal from "@/components/employerProfile/editBranchModal";
-import EditSiteModal from "@/components/employerProfile/editSiteModal";
-import Modal from "@/components/employerProfile/modal";
-import { usePage } from "@inertiajs/react";
+import AddBranchModal from "@/components/companyProfile/addBranchModal";
+import AddSiteModal from "@/components/companyProfile/addSiteModal";
+import EditBranchModal from "@/components/companyProfile/editBranchModal";
+import EditSiteModal from "@/components/companyProfile/editSiteModal";
+import Modal from "@/components/companyProfile/modal";
+import { Head, usePage } from "@inertiajs/react";
 import DefaultLayout from "@/layout/defaultLayout";
 
-export default function BranchAndSiteDetails({ branches, employerID }) {
+export default function BranchAndSiteDetails({ branches, companyID }) {
   const { flash } = usePage().props;
 
   const [isAddBranchModalOpen, setIsAddBranchModalOpen] = useState(false);
@@ -69,8 +69,9 @@ export default function BranchAndSiteDetails({ branches, employerID }) {
 
   return (
     <DefaultLayout>
-      <div className="bg-gray-200 min-h-screen overflow-y-auto lg:py-4">
-        <div className="w-3/4 h-fit-content p-4 mx-auto my-2 bg-white border border-gray-900 rounded-lg">
+      <div className="bg-gray-200 px-4 py-4 min-h-screen overflow-y-auto lg:py-4">
+        <Head title="Branch and Site Details" />
+        <div className="lg:w-3/4 h-fit-content p-4 mx-auto my-2 bg-white border border-gray-900 rounded-lg">
           <h5 className="text-lg ml-1 font-bold tracking-tight text-gray-900 flex justify-between">
             Branch Details
             <FaPlus
@@ -142,7 +143,7 @@ export default function BranchAndSiteDetails({ branches, employerID }) {
                   selectedBranch.site.map((site,index) => (
                     <div key={site.id} className="mb-1">
                       <div className="flex justify-between p-1">
-                        <div className="flex p-1 gap-8">
+                        <div className="flex flex-wrap p-1 gap-2 lg:gap-8">
                           <div>
                             <p className="font-bold text-gray-900 text-base underline">Site {index + 1} </p>
                             <div className='flex'>
@@ -242,7 +243,7 @@ export default function BranchAndSiteDetails({ branches, employerID }) {
         onClose={() => setIsAddBranchModalOpen(false)}
         title="Add Branch"
       >
-        <AddBranchModal closeModal={() => setIsAddBranchModalOpen(false)} employerID={employerID} />
+        <AddBranchModal closeModal={() => setIsAddBranchModalOpen(false)} companyID={companyID} />
       </Modal>
 
       {/* Edit Branch Modal */}
@@ -255,7 +256,7 @@ export default function BranchAndSiteDetails({ branches, employerID }) {
           <EditBranchModal
             closeModal={() => setIsEditBranchModalOpen(false)}
             branch={selectedBranch}
-            employerID={employerID}
+            companyID={companyID}
           />
         )}
       </Modal>

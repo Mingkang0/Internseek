@@ -1,12 +1,17 @@
 import DefaultLayout from '@/layout/defaultLayout';
 import React, { useState } from 'react';
 import { FaTimesCircle } from 'react-icons/fa';
-import { Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 
 const Chatbox = ({ messages, sender, receiver, receiverType }) => {
   const [messageText, setMessageText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+
+
+  console.log(receiver);
+
+  const { auth } = usePage().props;
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -68,12 +73,42 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
 
   return (
     <DefaultLayout>
+      <Head title="Chatbox" />
       <div className='bg-gray-200 px-6 py-10 min-h-screen lg:py-6'>
-        <div className="w-3/4 mx-auto p-4 bg-white border border-gray-900 rounded-lg">
+        <div className="mx-auto p-4 bg-white border border-gray-900 rounded-lg lg:w-3/4">
           {/* Header */}
           <div className="flex items-center mb-4 justify-between">
             <div className='flex gap-2 items-center'>
-              <img src="../../assets/avatar.png" alt="Avatar" className="w-12 h-12 rounded-full border border-gray-900" />
+              {auth.role === 'student' && receiverType !== auth.role ? (
+                <img
+                  src={`/storage/company/companyLogo/${receiver.companyLogo}`}
+                  alt="CompanyLogo"
+                  className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                />
+              ) : auth.role === 'employer' && receiverType !== auth.role ? (
+                <>
+                  {receiver.profilePicture && typeof receiver.profilePicture === 'string' ? (
+                    <img
+                      src={`/storage/profile/student/profile_pictures/${receiver.profilePicture}`}
+                      alt="Local Profile Pic"
+                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                    />
+                  ) : receiver.linkedin_id && receiver.profilePicture && typeof receiver.profilePicture === 'string' && receiver.profilePicture.startsWith('http') ? (
+                    <img
+                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                      src={receiver.profilePicture}
+                      alt="LinkedIn Profile Pic"
+                    />
+                  ) : (
+                    <img
+                      src="../../assets/avatar.png"
+                      alt="Default Avatar"
+                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                    />
+                  )}
+                </>
+              )
+                : null}
               <h5 className="text-base font-bold text-gray-900">{receiver && receiverType === 'employer' ? receiver.companyName : receiver.firstName + ' ' + receiver.lastName}</h5>
             </div>
             <Link><FaTimesCircle className="text-black-900 cursor-pointer" onClick={handleGoBack} /></Link>
@@ -87,13 +122,42 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                 key={message.id}
                 className={`flex ${message.sender_id === sender.id && message.sender_type !== receiverType ? 'justify-end' : 'justify-start'} mb-4`}
               >
-                {message.receiver_id == receiver.id && message.sender_type == receiverType && (
-                  <img src="../../assets/avatar.png" alt="Avatar" className="w-16 h-16 rounded-full border border-gray-900 ml-2" />
+                {message.receiver_id == receiver.id && message.sender_type == receiverType && message.sender_type == 'employer' && (
+                  <img
+                    src={`/storage/company/companyLogo/${receiver.companyLogo}`}
+                    alt="CompanyLogo"
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                  />
                 )}
+                {
+                  message.receiver_id == receiver.id && message.sender_type == receiverType && message.sender_type == 'student' && (
+                    <>
+                      {receiver.profilePicture && typeof receiver.profilePicture === 'string' ? (
+                        <img
+                          src={`/storage/profile/student/profile_pictures/${receiver.profilePicture}`}
+                          alt="Local Profile Pic"
+                          className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                        />
+                      ) : receiver.linkedin_id && receiver.profilePicture && typeof receiver.profilePicture === 'string' && receiver.profilePicture.startsWith('http') ? (
+                        <img
+                          className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                          src={receiver.profilePicture}
+                          alt="LinkedIn Profile Pic"
+                        />
+                      ) : (
+                        <img
+                          src="../../assets/avatar.png"
+                          alt="Default Avatar"
+                          className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                        />
+                      )}
+                    </>
+                  )
+                }
                 <div
-                  className={`p-4 ml-2 border ${message.sender_id === sender.id ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}
+                  className={`p-3 ml-2 border ${message.sender_id === sender.id ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}
                 >
-                  <div className="flex gap-4 items-center mb-2">
+                  <div className="flex flex-wrap gap-4 items-center mb-2">
                     <h5 className="text-sm font-semibold text-gray-900">
                       {
                         message.sender_id == sender.id && message.sender_type !== receiverType ? 'You' : message.sender_type == 'employer' ? receiver.companyName : receiver.firstName + ' ' + receiver.lastName
@@ -103,7 +167,7 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                   </div>
                   <p className="text-sm text-gray-700">{message.messageDetails}</p>
                   {message.messageImage && (
-                    <img src={`/storage/messages/images/${message.messageImage}`} alt="Message Image" className="mt-2 max-w-xs" />
+                    <img src={`/storage/messages/images/${message.messageImage}`} alt="Message Image" className="mt-2 w-fit-screen lg:w-64" />
                   )}
                   {message.messageDocument && (
                     <a href={`/storage/messages/files/${message.messageDocument}`} className="block mt-2 text-blue-500" download>
@@ -116,9 +180,37 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                     )}
                   </div>
                 </div>
-                {message.sender_id == sender.id && message.sender_type !== receiverType && (
-                  <img src="../../assets/avatar.png" alt="Avatar" className="w-16 h-16 rounded-full border border-gray-900 ml-2" />
+                {message.sender_id == sender.id && message.sender_type == 'employer' && receiverType !== message.sender_type && (
+                  <img
+                    src={`/storage/company/companyLogo/${receiver.companyLogo}`}
+                    alt="CompanyLogo"
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                  />
                 )}
+                {message.sender_id == sender.id && message.sender_type == 'student' && receiverType !== message.sender_type && (
+                  <>
+                    {sender.profilePicture && typeof sender.profilePicture === 'string' ? (
+                      <img
+                        src={`/storage/profile/student/profile_pictures/${sender.profilePicture}`}
+                        alt="Local Profile Pic"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                      />
+                    ) : sender.linkedin_id && sender.profilePicture && typeof sender.profilePicture === 'string' && sender.profilePicture.startsWith('http') ? (
+                      <img
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                        src={sender.profilePicture}
+                        alt="LinkedIn Profile Pic"
+                      />
+                    ) : (
+                      <img
+                        src="../../assets/avatar.png"
+                        alt="Default Avatar"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                      />
+                    )}
+                  </>
+                )}
+
               </div>
             ))}
 

@@ -1,6 +1,6 @@
 import DefaultLayout from "@/layout/defaultLayout";
 import { useState } from "react";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
 export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
   const [startDate, setStartDate] = useState('' || acceptedOffer.startDate);
@@ -67,26 +67,34 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
 
   return (
     <DefaultLayout>
+      <Head title="Update Accepted Offer Details" />
       <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4">
-        <div className="w-4/5 p-5 mt-2 mx-auto bg-white border border-gray-200 rounded-lg shadow">
+        <div className="w-full p-5 mt-2 mx-auto bg-white border border-gray-200 rounded-lg shadow lg:max-w-3xl">
 
           <h5 className="text-center mb-2 text-lg font-bold tracking-tight text-gray-900">
             Update Accepted Offer Details
           </h5>
 
           
-          <div className="flex justify-between mt-4">
-            <p className="flex font-semibold text-base text-gray-700 gap-2">
-              Name: <span className="font-medium">{acceptedOffer.application.student.firstName} {acceptedOffer.application.student.lastName}</span>
-            </p>
-            <p className="flex font-semibold text-base text-gray-700 gap-2">
-              Applied Internship: <span className="font-medium">{acceptedOffer.application.internship.internshipTitle}</span>
-            </p>
+          <div className="flex flex-wrap justify-between mt-4">
+            <div className="flex flex-wrap gap-2">
+              <p className="flex font-semibold text-base text-gray-700 gap-2">
+                Name:
+              </p>
+
+              <span className="">{acceptedOffer.application.student.firstName} {acceptedOffer.application.student.lastName}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <p className="flex font-semibold text-base text-gray-700 ">
+                Applied Internship:
+              </p>
+              <span className="">{acceptedOffer.application.internship.internshipTitle}</span>
+            </div>
           </div>
 
           <form className="mt-4" onSubmit={handleSubmit}>
-            <div className="flex">
-              <div className="w-1/2 pr-2">
+            <div className="flex flex-col lg:flex-row">
+              <div className="w-full lg:w-1/2 pr-2">
                 <div className="flex items-center mb-2">
                   <input
                     type="checkbox"
@@ -105,7 +113,7 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                   className="w-full p-2 border border-gray-300 rounded-lg" />
                   {errors.startDate && <p className="text-red-600">{errors.startDate}</p>}
               </div>
-              <div className="w-1/2 pl-2">
+              <div className="w-full lg:w-1/2 mt-4 lg:mt-0 lg:pl-2">
                 <div className="flex items-center mb-2">
                   <input
                     type="checkbox"
@@ -125,8 +133,8 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                   {errors.endDate && <p className="text-red-600">{errors.endDate}</p>}
               </div>
             </div>
-            <div className="flex mt-4">
-              <div className="w-1/2 pr-2">
+            <div className="flex flex-col lg:flex-row mt-4">
+              <div className="w-full lg:w-1/2 pr-2">
                 <label className="block mb-2 font-semibold text-gray-700">Supervisor Name</label>
                 <input type="text"
                   value={supervisorName}
@@ -134,7 +142,7 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                   placeholder="Enter supervisor name"
                   className="w-full p-2 border border-gray-300 rounded-lg" />
               </div>
-              <div className="w-1/2 pl-2">
+              <div className="w-full lg:w-1/2 mt-4 lg:mt-0 lg:pl-2">
                 <label className="block mb-2 font-semibold text-gray-700">Supervisor Email</label>
                 <input type="email"
                   placeholder="Enter email address"
@@ -143,8 +151,8 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                   className="w-full p-2 border border-gray-300 rounded-lg" />
               </div>
             </div>
-            <div className="flex mt-4">
-              <div className="w-1/2 pr-2">
+            <div className="flex flex-col lg:flex-row mt-4">
+              <div className="w-full lg:w-1/2 pr-2">
                 <label className="block mb-2 font-semibold text-gray-700">Supervisor Phone</label>
                 <input type="text"
                   placeholder="Enter phone number"
@@ -152,7 +160,7 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                   onChange={(e) => setSupervisorPhone(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg" />
               </div>
-              <div className="w-1/2 pl-2">
+              <div className="w-full lg:w-1/2 mt-4 lg:mt-0 lg:pl-2">
                 <label className="block mb-2 font-semibold text-gray-700">Supervisor Position</label>
                 <input type="text"
                   placeholder="Enter supervisor position"
@@ -161,8 +169,8 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                   className="w-full p-2 border border-gray-300 rounded-lg" />
               </div>
             </div>
-            <div className="flex mt-4">
-              <div className="w-1/2 pr-2">
+            <div className="flex flex-col lg:flex-row mt-4">
+              <div className="w-full lg:w-1/2 pr-2">
                 <label className="block mb-2 font-semibold text-gray-700">Supervisor Department</label>
                 <input type="text"
                   placeholder="Enter supervisor department"
@@ -170,8 +178,8 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                   onChange={(e) => setSupervisorDepartment(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg" />
               </div>
-              <div className="w-1/2 pl-2">
-                <label className="block mb-2 font-semibold text-gray-700">Working Days</label>
+              <div className="w-full lg:w-1/2 mt-4 lg:mt-0 lg:pl-2">
+                <label className="block mb-2 font-semibold text-gray-700">Working Days Per Week</label>
                 <input type="text"
                   placeholder="Enter working days"
                   value={workingDays}
@@ -180,8 +188,8 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
               </div>
             </div>
 
-            <div className="flex mt-4">
-              <div className="w-1/2 pr-2">
+            <div className="flex flex-col lg:flex-row mt-4">
+              <div className="w-full lg:w-1/2 pr-2">
                 <label className="block mb-2 font-semibold text-gray-700">Start Time</label>
                 <div class="relative">
                   <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
@@ -199,7 +207,7 @@ export default function UpdateAcceptedOfferDetails({ acceptedOffer }) {
                     required />
                 </div>
               </div>
-              <div className="w-1/2 pl-2">
+              <div className="w-full lg:w-1/2 mt-4 lg:mt-0 lg:pl-2">
                 <label className="block mb-2 font-semibold text-gray-700">End Time</label>
                 <div class="relative">
                   <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">

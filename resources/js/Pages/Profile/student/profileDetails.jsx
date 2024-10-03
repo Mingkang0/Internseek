@@ -81,7 +81,7 @@ export default function StudentProfile({ student, accomplishment, referee, langu
           <div className="lg:w-1/5 flex flex-col mt-4 lg:mt-0 lg:ml-20">
               <div className="w-64 flex justify-between h-fit-content p-2 mt-4 bg-white border border-gray-900 border-b-0">
                 <p className="text-base ml-1 font-medium tracking-tight text-gray-900">Basic Info</p>
-                {student && address && (
+                {student && address.length > 0 && (
                   <FaCheckSquare size={20} className="text-green-500" />
                 )}
               </div>

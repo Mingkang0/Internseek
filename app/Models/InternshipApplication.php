@@ -14,7 +14,7 @@ class InternshipApplication extends Model
     protected $fillable = [
         'internshipID',
         'studentID',
-        'contactPersonID',
+        'employerID',
         'applicationStatus',
         'coverLetter',
         'ownResume',
@@ -47,5 +47,10 @@ class InternshipApplication extends Model
     public function acceptedOffer()
     {
         return $this->hasOne(AcceptedOffer::class, 'applicationID');
+    }
+
+    public function employer()
+    {
+        return $this->belongsTo(Employer::class, 'employerID');
     }
 }

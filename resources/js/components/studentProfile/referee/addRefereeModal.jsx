@@ -61,7 +61,7 @@ export default function AddRefereeModal({ studentID, onClose }) {
         />
         {errors.refereeCompany && <p className="text-red-500 text-xs mt-1">{errors.refereeCompany}</p>}
       </div>
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
         <div className='col-span-1'>
           <label htmlFor="refereePosition" className="block mb-2 text-sm font-medium text-gray-900">Job Position</label>
           <input

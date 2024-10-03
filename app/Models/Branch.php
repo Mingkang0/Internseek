@@ -19,7 +19,7 @@ class Branch extends Model
         'branchPhoneNum',
         'branchPostcode',
         'branchEmail',
-        'employerID',
+        'companyID',
     ];
 
     protected $table='branch';

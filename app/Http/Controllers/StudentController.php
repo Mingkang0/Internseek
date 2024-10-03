@@ -96,9 +96,9 @@ class StudentController extends Controller
         'student' => 'required|array',
         'student.firstName' => 'required|string',
         'student.lastName' => 'required|string',
-        'student.email' => 'required|email',
         'student.phoneNum' => 'required|string',
-        'student.ICNumber' => 'required|string',
+        'student.ICNumber' => 'nullable|string',
+        'student.passportNo' => 'nullable|string',
         'student.dateOfBirth' => 'required|date',
         'student.gender' => 'required|string',
         'student.nationality' => 'required|string',
@@ -459,7 +459,22 @@ class StudentController extends Controller
       return redirect()->back()->with('success', 'Profile picture removed successfully.');
   }
 
+  public function storeLinkedIn(Request $request, $id)
+  {
+      // Validate the incoming data
+      $validatedData = $request->validate([
+          'linkedin_public_url' => 'required',
+      ]);
 
+      // Retrieve the student by ID
+      $student = Student::findOrFail($id);
 
+      // Update the LinkedIn public URL
+      $student->linkedin_public_url = $validatedData['linkedin_public_url'];
+      $student->save();
+
+      // Optionally, you could flash a success message to the session
+      return redirect()->back()->with('success', 'LinkedIn public URL updated successfully.');
+  }
   
 }

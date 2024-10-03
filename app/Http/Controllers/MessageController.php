@@ -7,7 +7,7 @@ use App\Models\Message;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employer;
-use App\Models\ContactPerson;
+use App\Models\Company;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -33,28 +33,28 @@ class MessageController extends Controller
         $userRole = session('userRole');
         $sender = Auth::guard($guard)->user();
 
-        // Check if the sender is a ContactPerson and get the employer
-        if ($sender instanceof ContactPerson) {
-            $contactPersonID = $sender->id; // Get the ContactPerson's ID
-            $sender = Employer::find($sender->employerID); // Set sender as Employer
+        // Check if the sender is using a company account by checking the employerID
+        if ($sender instanceof Employer) {
+            $employerID = $sender->id;
+            $sender = Company::find($sender->companyID); // Set sender as Company
         } else {
-        $contactPersonID = null; // Not a contact person
+        $employerID = null;
         }
 
         $id = $request->route('id');
         $receiverType = $request->query('receiverType'); // Use query() to get query parameters
 
-        $receiver = ($receiverType == 'employer') ? Employer::find($id) : Student::find($id);
+        $receiver = ($receiverType == 'employer') ? Company::find($id) : Student::find($id);
 
         
-        $messages = Message::where(function ($query) use ($sender, $contactPersonID, $receiver) {
-            // If the sender is an employer or has a contact person, include contact_person_id
-            if ($sender instanceof Employer && $contactPersonID) {
+        $messages = Message::where(function ($query) use ($sender, $employerID, $receiver) {
+            // If the sender is using company, check for the employerID
+            if ($sender instanceof Company && $employerID) {
                 $query->where('sender_id', $sender->id)
                       ->where('receiver_id', $receiver->id)
-                      ->where('contactPersonID', $contactPersonID); // Only include if the sender is via contact person
+                      ->where('employerID', $employerID); // Only include if the sender is an employer
             } else {
-                // If the sender is a student, or contact person isn't applicable, ignore contact_person_id
+                // If the sender is a student, check for the student ID
                 $query->where('sender_id', $sender->id)
                       ->where('receiver_id', $receiver->id);
             }
@@ -64,7 +64,7 @@ class MessageController extends Controller
             $query->where('receiver_id', $sender->id)
                   ->where('sender_id', $receiver->id);
         })
-        ->with('contactPerson') // Eager-load the ContactPerson relationship
+        ->with('employer') // Eager-load employer relation if applicable
         ->get();
 
         return Inertia::render('Message/ChatBox', [
@@ -72,7 +72,7 @@ class MessageController extends Controller
             'receiver' => $receiver,
             'sender' => $sender,
             'receiverType' => $receiverType,
-            'contactPersonID' => $contactPersonID,
+            'employerID' => $employerID,
         ]);
     }
     
@@ -83,12 +83,12 @@ class MessageController extends Controller
         $sender = Auth::guard($guard)->user();
 
     
-        // If the sender is a ContactPerson, set the contactPersonID and find the associated Employer
-        if ($sender instanceof ContactPerson) {
-            $contactPersonID = $sender->id; // ContactPerson's ID
-            $sender = Employer::find($sender->employerID); // Set sender as Employer
+        // If the sender is using a company account, check for the employerID
+        if ($sender instanceof Employer) {
+            $employerID = $sender->id;
+            $sender = Company::find($sender->companyID); // Set sender as Company
         } else {
-            $contactPersonID = null; // Not a contact person
+            $employerID = null;
         }
     
         // Validate the message input, image, and file
@@ -125,8 +125,8 @@ class MessageController extends Controller
 
 
         // If the sender is a contact person, attach their ID
-        if ($contactPersonID) {
-            $message->contactPersonID = $contactPersonID;
+        if ($employerID) {
+            $message->employerID = $employerID;
         }
     
         // Save the message
@@ -145,14 +145,14 @@ class MessageController extends Controller
         return redirect()->route('admin.dashboard');
     }
 
-    // Determine the sender (either Employer or ContactPerson)
+    // Determine the sender based on the user role
     $guard = session('userGuard');
     $sender = Auth::guard($guard)->user();
-    $contactPersonID = null;
+    $employerID = null;
 
-    if ($sender instanceof ContactPerson) {
-        $contactPersonID = $sender->id;
-        $sender = Employer::find($sender->employerID); // Set sender as Employer
+    if ($sender instanceof Employer) {
+        $employerID = $sender->id;
+        $sender = Company::find($sender->companyID); // Set sender as Company
         $userID = $sender->id;
     } else {
         $userID = $sender->id;
@@ -184,11 +184,11 @@ class MessageController extends Controller
             });
         })
         ->orderBy('created_at', 'desc')
-        ->with('contactPerson') // Eager-load ContactPerson relation if applicable
+        ->with('employer') // Eager-load employer relation if applicable
         ->get();
 
         // Fetch the partner details based on role
-        $partner = ($userRole === 'student') ? Employer::find($partnerId) : Student::find($partnerId);
+        $partner = ($userRole === 'student') ? Company::find($partnerId) : Student::find($partnerId);
         
         // Add each conversation to the array
         $conversations[] = [
@@ -202,5 +202,16 @@ class MessageController extends Controller
         'userRole' => $userRole,
         'userID' => $userID,
     ]);
+}
+
+public function markAsRead(Request $request, $id)
+{
+    // Retrieve the message and update the read status
+    $message = Message::find($id);
+    if ($message->receiver_id == $request->user()->id) {
+        $message->messageStatus = 'read';
+        $message->save();
+    }
+    
 }
 }

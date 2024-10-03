@@ -17,10 +17,14 @@ use App\Models\Bookmark;
 use App\Models\Accompishment;
 use App\Models\Language;
 use Inertia\Inertia;
-use App\Models\ContactPerson;
+use App\Models\Company;
 use App\Models\Employer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Notifications\Notifiable;
+use App\Notifications\UpdateApplicationStatus;
+use App\Notifications\UpdateOfferDetails;
 
 class InternshipApplicationController extends Controller
 {
@@ -28,7 +32,7 @@ class InternshipApplicationController extends Controller
     {
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
-        $internship = Internship::with('employer')->find($id);
+        $internship = Internship::with('company')->find($id);
 
         // Check if the student has already applied for this internship
          $existingApplication = InternshipApplication::where('studentID', $user->id)
@@ -101,6 +105,12 @@ class InternshipApplicationController extends Controller
         $applicationData['studentID'] = $validatedData['studentID'];
         $applicationData['applicationStatus'] = $validatedData['applicationStatus'];
     
+        $company = Internship::find($id)->company;
+        $internship = Internship::find($id);
+
+        Notification::sendNow($company, new UpdateApplicationStatus($data = [
+            'message' => "You have received a new application for {$internship->internshipTitle}",
+        ]));
         // Store the internship application
         InternshipApplication::create($applicationData);
 
@@ -114,7 +124,7 @@ class InternshipApplicationController extends Controller
     
         // Retrieve the bookmarked internships with their associated employer information
         $bookmarks = Bookmark::where('studentID', $student->id)
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->limit(2)
                     ->get();
@@ -126,7 +136,8 @@ class InternshipApplicationController extends Controller
         $studyFields = $educations->pluck('studyField');
                   
         $matchs = Internship::whereIn('studyScope', $studyFields)
-                ->with(['employer']) // Eager load the employer relationship
+                ->with(['company']) // Eager load the employer relationship
+                ->where('postingStatus', 'Published')
                 ->withCount('bookmarks', 'clicks', 'applications')
                 ->orderBy('created_at', 'desc')
                 ->limit(2)
@@ -134,8 +145,10 @@ class InternshipApplicationController extends Controller
         
 
         $appliedInternships = InternshipApplication::where('studentID', $student->id)
-                    ->where('applicationStatus', 'Reviewing', 'Unsuccessful')
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->where('applicationStatus', 'Reviewing')
+                    ->orWhere('applicationStatus', 'Unsuccessful')
+                    ->where('studentID', $student->id)  
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->limit(2)
                     ->get();
@@ -143,21 +156,23 @@ class InternshipApplicationController extends Controller
         
         $interviews = Interview::whereHas('application', function ($query) use ($student) {
                      $query->where('studentID', $student->id);
-                    })->with(['application.internship.employer'])
+                    })->with(['application.internship.company'])
                         ->orderBy('created_at', 'desc')
                         ->limit(2)
                         ->get();
 
         $approvedInternships = InternshipApplication::where('studentID', $student->id)
                     ->where('applicationStatus', 'Approved')
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->where('studentID', $student->id)  
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->limit(2)
                     ->get();
         
         $shortlistedInternships = InternshipApplication::where('studentID', $student->id)
                     ->where('applicationStatus', 'Shortlisted')
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->where('studentID', $student->id)  
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->limit(2)
                     ->get();
@@ -178,7 +193,7 @@ class InternshipApplicationController extends Controller
     
         // Retrieve the bookmarked internships with their associated employer information
         $bookmarks = Bookmark::where('studentID', $student->id)
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->get();
 
@@ -189,7 +204,8 @@ class InternshipApplicationController extends Controller
         $studyFields = $educations->pluck('studyField');
                   
         $matchs = Internship::whereIn('studyScope', $studyFields)
-                ->with(['employer']) // Eager load the employer relationship
+                ->with(['company']) // Eager load the employer relationship
+                ->where('postingStatus', 'Published')
                 ->withCount('bookmarks', 'clicks', 'applications')
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -207,27 +223,31 @@ class InternshipApplicationController extends Controller
 
 
         $appliedInternships = InternshipApplication::where('studentID', $student->id)
-                    ->where('applicationStatus', 'Reviewing', 'Unsuccessful')
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->where('applicationStatus', 'Reviewing')
+                    ->orWhere('applicationStatus', 'Unsuccessful')
+                    ->where('studentID', $student->id)  
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->get();
 
         
         $interviews = Interview::whereHas('application', function ($query) use ($student) {
                      $query->where('studentID', $student->id);
-                    })->with(['application.internship.employer'])
+                    })->with(['application.internship.company'])
                         ->orderBy('created_at', 'desc')
                         ->get();
 
         $approvedInternships = InternshipApplication::where('studentID', $student->id)
                     ->where('applicationStatus', 'Approved')
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->where('studentID', $student->id)  
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->get();
         
         $shortlistedInternships = InternshipApplication::where('studentID', $student->id)
                     ->where('applicationStatus', 'Shortlisted')
-                    ->with(['internship.employer', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
+                    ->where('studentID', $student->id)
+                    ->with(['internship.company', 'internship.bookmarks', 'internship.clicks', 'internship.applications']) // Eager load the internship, employer, bookmarks, and clicks relationships
                     ->orderBy('created_at', 'desc')
                     ->get();
     
@@ -254,6 +274,11 @@ class InternshipApplicationController extends Controller
         // Check if the application exists
         if ($application) {
             // Delete the application
+            
+            Notification::sendNow($application->internship->employer, new UpdateApplicationStatus($data = [
+                'message' => "The student ({$student->firstName} {$student->lastName}) has cancelled their application for {$application->internship->internshipTitle}",
+            ]));
+
             $application->delete();
     
             // Redirect back with a success message
@@ -269,11 +294,11 @@ class InternshipApplicationController extends Controller
         $user = Auth::guard($guard)->user();
 
         
-        if ($user instanceof ContactPerson) {
-            if($user->employerID) {
-                $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            if($user->companyID) {
+                $company = Company::find($user->companyID);
 
-            $internship = Internship::where('employerID', $employer->id)->get();
+            $internship = Internship::where('companyID', $company->id)->get();
 
             $applications = InternshipApplication::whereIn('internshipID', $internship->pluck('id'))
                 ->where('applicationStatus', 'Reviewing')
@@ -281,7 +306,6 @@ class InternshipApplicationController extends Controller
                 ->with(['internship']) 
                 ->get();
                 
-
                 return Inertia::render('Application/internshipApplication/list', [
                     'applications' => $applications,
                 ]);
@@ -298,7 +322,6 @@ class InternshipApplicationController extends Controller
     public function showUpdateStatus(Request $request, $id)
     {
 
-
         $application = InternshipApplication::with(['student', 'student.skills', 'student.languages', 'student.accomplishments', 'student.addresses', 'student.educations', 'student.experiences', 'student.referees'])
                     ->with(['internship'])
                     ->find($id);
@@ -312,24 +335,37 @@ class InternshipApplicationController extends Controller
     {
         $application = InternshipApplication::find($id);
 
-        $contactPerson = Auth::guard('employer')->user();
+        $employer = Auth::guard('employer')->user();
 
         $validatedData = $request->validate([
             'applicationStatus' => 'required|string',
         ]);
 
-    
+
         if($validatedData['applicationStatus'] == 'Unsuccessful' || $validatedData['applicationStatus'] == 'Reviewing') {
             $application->applicationStatus = $validatedData['applicationStatus'];
-            $application->contactPersonID = $contactPerson->id;
+            $application->employerID = $employer->id;
+
+
+            if($validatedData['applicationStatus'] == 'Unsuccessful') {
+               Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                    'message' => "Your application for {$application->internship->internshipTitle} is unsuccessful",
+                ]));
+            }
+
+            if($validatedData['applicationStatus'] == 'Reviewing') {
+                Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                    'message' => "Your application for {$application->internship->internshipTitle} is under review",
+                ]));
+            }
 
             $application->save();
 
-            return redirect()->route('applications.list')->with('success', 'Application status updated successfully');
+            return redirect()->route('employer.applicantslist')->with('success', 'Application status updated successfully');
         }
 
         if($validatedData['applicationStatus'] == 'Interview') {
-           $validatedData = $request->validate([
+           $extraData = $request->validate([
                 'meetingDate' => 'required|date',
                 'startTime' => 'required',
                 'endTime' => 'required',
@@ -338,26 +374,30 @@ class InternshipApplicationController extends Controller
                 'meetingLink' => 'nullable|string',
             ]);
 
-            if($validatedData['startTime'] >= $validatedData['endTime']) {
+            if($extraData['startTime'] >= $extraData['endTime']) {
                 return redirect()->back()->with('error', 'Start time must be less than end time');
             }
 
             $interview = new Interview();
             $interview->applicationID = $id;
-            $interview->interviewDate = $validatedData['meetingDate'];
-            $interview->interviewStartTime = $validatedData['startTime'];
-            $interview->interviewEndTime = $validatedData['endTime'];
-            $interview->interviewMethod = $validatedData['meetingMethod'];
+            $interview->interviewDate = $extraData['meetingDate'];
+            $interview->interviewStartTime = $extraData['startTime'];
+            $interview->interviewEndTime = $extraData['endTime'];
+            $interview->interviewMethod = $extraData['meetingMethod'];
 
-            if($validatedData['location']) {
-                $interview->interviewLocation = $validatedData['location'];
+            if(isset($extraData['location'])) {
+                $interview->interviewLocation = $extraData['location'];
             }
 
-            if($validatedData['meetingLink']) {
-                $interview->interviewLink = $validatedData['meetingLink'];
+            if(isset($extraData['meetingLink'])) {
+                $interview->interviewLink = $extraData['meetingLink'];
             }
             $application->applicationStatus = 'Interview';
-            $application->contactPersonID = $contactPerson->id;
+            $application->employerID = $employer->id;
+
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Your application for {$application->internship->internshipTitle} has been selected for an interview",
+            ]));
             $application->save();
             $interview->save();
 
@@ -373,11 +413,24 @@ class InternshipApplicationController extends Controller
             'interviewStatus' => 'required|string',
         ]);
         
+        $student = Auth::guard('student')->user();
 
-    
         $interview = Interview::find($id);
 
+        $company = $interview->application->internship->company;
+
         $interview->interviewStatus = $validatedData['interviewStatus'];
+
+        if($validatedData['interviewStatus']=='Available'){
+            Notification::sendNow($company, new UpdateApplicationStatus($data = [
+                'message' => "The applicant ({$student->firstName} {$student->lastName}) is available for the interview of the {$interview->application->internship->internshipTitle}",
+            ]));
+        }
+        else {
+            Notification::sendNow($company, new UpdateApplicationStatus($data = [
+                'message' => "The applicant ({$student->firstName} {$student->lastName}) is not available for the interview of the {$interview->application->internship->internshipTitle}",
+            ]));
+        }
 
         $interview->save();
 
@@ -391,16 +444,16 @@ class InternshipApplicationController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if($user instanceof ContactPerson) {
-            if($user->employerID) {
-                $employer = Employer::find($user->employerID);
+        if($user instanceof Employer) {
+            if($user->companyID) {
+                $company = Company::find($user->companyID);
 
-                $internship = Internship::where('employerID', $employer->id)->get();
+                $internship = Internship::where('companyID', $company->id)->get();
 
                 $applications = InternshipApplication::whereIn('internshipID', $internship->pluck('id'))
                     ->where('applicationStatus', 'Interview')
                     ->with(['student', 'student.skills', 'student.languages', 'student.accomplishments', 'student.addresses', 'student.educations', 'student.experiences', 'student.referees'])
-                    ->with(['internship', 'interview']) 
+                    ->with(['internship', 'interview', 'employer']) 
                     ->get();
 
     
@@ -453,6 +506,10 @@ class InternshipApplicationController extends Controller
 
         $interview->interviewStatus = $validatedData['interviewStatus'];
 
+        Notification::sendNow($interview->application->student, new UpdateApplicationStatus($data = [
+            'message' => "The interview for {$interview->application->internship->internshipTitle} has been rescheduled",
+        ]));
+
         $interview->save();
 
         return redirect()->back()->with('success', 'Interview details updated successfully');
@@ -475,14 +532,24 @@ class InternshipApplicationController extends Controller
         // Initial validation
         $validatedData = $request->validate([
             'applicationStatus' => 'required|string',
+            'interviewComment' => 'required|string',
+            'overallRating' => 'required|numeric|min:1|max:5',
+            'performanceRating' => 'required|numeric|min:1|max:5',
+            'softRating' => 'required|numeric|min:1|max:5',
+            'technicalRating' => 'required|numeric|min:1|max:5',
         ]);
     
-        $contactPerson = Auth::guard('employer')->user();
+        $employer = Auth::guard('employer')->user();
         $application = InternshipApplication::find($id);
     
         // Update application status
         $application->applicationStatus = $validatedData['applicationStatus'];
-        $application->contactPersonID = $contactPerson->id;
+        $application->employerID = $employer->id;
+        $application->interviewComment = $validatedData['interviewComment'];
+        $application->overallRating = $validatedData['overallRating'];
+        $application->performanceRating = $validatedData['performanceRating'];
+        $application->softRating = $validatedData['softRating'];
+        $application->technicalRating = $validatedData['technicalRating'];
     
         // Handle Interview Status
         if ($validatedData['applicationStatus'] == 'Interview') {
@@ -511,6 +578,7 @@ class InternshipApplicationController extends Controller
             $interview->interviewStartTime = $interviewData['interviewStartTime'];
             $interview->interviewEndTime = $interviewData['interviewEndTime'];
             $interview->interviewMethod = $interviewData['interviewMethod'];
+
     
             if (isset($interviewData['interviewLocation'])) {
                 $interview->interviewLocation = $interviewData['interviewLocation'];
@@ -520,6 +588,9 @@ class InternshipApplicationController extends Controller
                 $interview->interviewLink = $interviewData['interviewLink'];
             }
     
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Unfortunately, your application for {$application->internship->internshipTitle} requires an additional interview",
+            ]));
             $interview->save();
         }
     
@@ -537,6 +608,22 @@ class InternshipApplicationController extends Controller
             $application->actualAllowance = $approvedData['actualAllowance'];
         }
     
+        if($validatedData['applicationStatus'] == 'Shortlisted') {
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Your application for {$application->internship->internshipTitle} has been entered into the shortlist",
+            ]));
+        }
+        if($validatedData['applicationStatus'] == 'Approved') {
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Congratulations! Your application for {$application->internship->internshipTitle} has been approved",
+            ]));
+        }
+
+        if($validatedData['applicationStatus'] == 'Unsuccessful') {
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Unfortunately, Your application for {$application->internship->internshipTitle} is unsuccessful",
+            ]));
+        }
         $application->save();
     
         return redirect()->route('employer.interviewapplicantslist')->with('success', 'Interview Result updated successfully');
@@ -570,9 +657,61 @@ class InternshipApplicationController extends Controller
             $documentPath = $request->file('offerLetter')->store("public/InternshipApplication/documents/offerLetter/{$application->studentID}");
             $application->offerLetter = basename($documentPath);
             $application->actualAllowance = $extraData['actualAllowance'];
+
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Congratulations! Your application for {$application->internship->internshipTitle} has been approved",
+            ]));
+        }
+
+        if($validatedData['applicationStatus'] == 'Interview') {
+            Interview::where('applicationID', $id)->delete();
+            $extraData = $request->validate([
+                'interviewDate' => 'required|date',
+                'startTime' => 'required',
+                'endTime' => 'required',
+                'location' => 'nullable|string',
+                'interviewMethod' => 'required|string',
+                'meetingLink' => 'nullable|string',
+            ]);
+
+            if($extraData['startTime'] >= $extraData['endTime']) {
+                return redirect()->back()->with('error', 'Start time must be less than end time');
+            }
+
+            
+            $interview = new Interview();
+            $interview->applicationID = $id;
+            $interview->interviewDate = $extraData['interviewDate'];
+            $interview->interviewStartTime = $extraData['startTime'];
+            $interview->interviewEndTime = $extraData['endTime'];
+            $interview->interviewMethod = $extraData['interviewMethod'];
+
+            if(isset($extraData['location'])) {
+                $interview->interviewLocation = $extraData['location'];
+            }
+
+            if(isset($extraData['meetingLink'])) {
+                $interview->interviewLink = $extraData['meetingLink'];
+            }
+
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Unfortunately, your application for {$application->internship->internshipTitle} requires an additional interview",
+            ]));
+            $interview->save();
         }
 
         $application->applicationStatus = $validatedData['applicationStatus'];
+        if($validatedData['applicationStatus'] == 'Shortlisted') {
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Your application for {$application->internship->internshipTitle} has been entered into the shortlist",
+            ]));
+        }
+
+        if($validatedData['applicationStatus'] == 'Unsuccessful') {
+            Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
+                'message' => "Your application for {$application->internship->internshipTitle} is unsuccessful",
+            ]));
+        }
 
         $application->save();
 
@@ -592,7 +731,7 @@ class InternshipApplicationController extends Controller
         // Find the application using the provided applicationID
         $application = InternshipApplication::find($id);
 
-    
+
         // Update the application status
         $application->applicationStatus = $validatedData['applicationStatus'];
     
@@ -608,6 +747,9 @@ class InternshipApplicationController extends Controller
             $acceptedOffer->applicationID = $application->id;
     
             // Save the accepted offer
+            Notification::sendNow($application->internship->company, new UpdateApplicationStatus($data = [
+                'message' => "Applicant ({$application->student->firstName} {$application->student->lastName}) has accepted the offer for {$application->internship->internshipTitle}",
+            ]));
             $acceptedOffer->save();
         }
 
@@ -617,6 +759,10 @@ class InternshipApplicationController extends Controller
                 'reasonRejected' => 'required|string',
             ]);
             $application->reasonRejected = $extraData['reasonRejected'];
+
+            Notification::sendNow($application->internship->company, new UpdateApplicationStatus($data = [
+                'message' => "Applicant ({$application->student->firstName} {$application->student->lastName}) has rejected the offer for {$application->internship->internshipTitle}",
+            ]));
             
             $application->save();
 
@@ -636,7 +782,7 @@ class InternshipApplicationController extends Controller
 
         $acceptedOffers = AcceptedOffer::whereHas('application', function ($query) use ($student) {
             $query->where('studentID', $student->id);
-           })->with(['application.internship.employer'])
+           })->with(['application.internship.company'])
                ->orderBy('created_at', 'desc')
                ->get();
 
@@ -650,19 +796,19 @@ class InternshipApplicationController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if ($user instanceof ContactPerson) {
-            if($user->employerID) {
-                $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            if($user->companyID) {
+                $company = Company::find($user->companyID);
 
-                $internship = Internship::where('employerID', $employer->id)->get();
+                $internship = Internship::where('companyID', $company->id)->get();
 
                 $applications = InternshipApplication::whereIn('internshipID', $internship->pluck('id'))
                     ->where('applicationStatus', 'Accepted')
                     ->with(['student', 'student.skills', 'student.languages', 'student.accomplishments', 'student.addresses', 'student.educations', 'student.experiences', 'student.referees'])
-                    ->with(['internship', 'acceptedOffer'])
+                    ->with(['internship', 'acceptedOffer.employer'])
                     ->get();
 
-    
+
                 return Inertia::render('Application/internshipApplication/Accepted/list', [
                     'applications' => $applications,
                 ]);
@@ -681,11 +827,11 @@ class InternshipApplicationController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if ($user instanceof ContactPerson) {
-            if($user->employerID) {
-                $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            if($user->companyID) {
+                $company = Company::find($user->companyID);
 
-                $internship = Internship::where('employerID', $employer->id)->get();
+                $internship = Internship::where('companyID', $company->id)->get();
 
                 $applications = InternshipApplication::whereIn('internshipID', $internship->pluck('id'))
                     ->where('applicationStatus', 'Rejected')
@@ -712,16 +858,16 @@ class InternshipApplicationController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if ($user instanceof ContactPerson) {
-            if($user->employerID) {
-                $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            if($user->companyID) {
+                $company = Company::find($user->companyID);
 
-                $internship = Internship::where('employerID', $employer->id)->get();
+                $internship = Internship::where('companyID', $company->id)->get();
 
                 $applications = InternshipApplication::whereIn('internshipID', $internship->pluck('id'))
                     ->whereIn('applicationStatus', ['Approved', 'Shortlisted'])
                     ->with(['student', 'student.skills', 'student.languages', 'student.accomplishments', 'student.addresses', 'student.educations', 'student.experiences', 'student.referees'])
-                    ->with(['internship'])
+                    ->with(['internship','employer'])
                     ->get();
 
     
@@ -762,6 +908,10 @@ class InternshipApplicationController extends Controller
 
             $application->reasonRejected = $validatedData['reasonRejected'];
 
+            Notification::sendNow($application->internship->company, new UpdateApplicationStatus($data = [
+                'message' => "Applicant ({$application->student->firstName} {$application->student->lastName}) has rejected the previously accepted offer for {$application->internship->internshipTitle}",
+            ]));
+
             $application->save();
 
             $acceptedOffer->delete();
@@ -786,6 +936,7 @@ class InternshipApplicationController extends Controller
 
     public function updateAcceptedOfferDetails(Request $request, $id, $applicationID)
     {
+        $employer = Auth::guard('employer')->user();
         $application = InternshipApplication::find($applicationID);
 
         $acceptedOffer = AcceptedOffer::find($id);
@@ -816,6 +967,11 @@ class InternshipApplicationController extends Controller
         $acceptedOffer->workingDays = $validatedData['workingDays'];
         $acceptedOffer->startDate = $validatedData['startDate'];
         $acceptedOffer->endDate = $validatedData['endDate'];
+        $acceptedOffer->employerID = $employer->id;
+
+        Notification::sendNow($application->student, new updateOfferDetails($data = [
+            'message' => "Your accepted offer details for {$application->internship->internshipTitle} has been added. Please review the details",
+        ]));
 
         $acceptedOffer->save();
 
@@ -823,5 +979,23 @@ class InternshipApplicationController extends Controller
     }
 
 
-    
+    public function myReport(){
+        $user=Auth::guard('employer')->user();
+
+        for ($i = 1; $i <= 12; $i++) { 
+            $applications = InternshipApplication::whereHas('internship', function ($query) use ($user, $i) {
+                $query->where('companyID', $user->companyID)
+                      ->whereMonth('startPostingDate', $i); // Use $i directly as the month
+            })->count();
+        
+            $applicationsData[] = $applications; // Push application count for each month
+        }
+
+
+        return Inertia::render('Profile/employer/myReport', [
+            'applicationsData' => $applicationsData,
+        ]);
+
+
+    }
 }

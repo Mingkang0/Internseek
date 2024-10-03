@@ -2,8 +2,8 @@ import { useForm, usePage } from "@inertiajs/react";
 import Swal from "sweetalert2";
 import { useState } from "react";
 
-export default function ChangePasswordForm({ contactPerson }) {
-  
+export default function ChangePasswordForm({ employer }) {
+
 
   const { data, setData, post, processing, setError, errors } = useForm({
     newPassword: '',
@@ -19,7 +19,7 @@ export default function ChangePasswordForm({ contactPerson }) {
       return;
     }
 
-    post(`/contact-person/change-password/${contactPerson.id}`, {
+    post(`/employer/change-password/${employer.id}`, {
       onSuccess: () => {
         setData({ newPassword: '', confirmPassword: '' });
       },
@@ -43,9 +43,15 @@ export default function ChangePasswordForm({ contactPerson }) {
       <h1 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">
         Change Password
       </h1>
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-base font-medium text-gray-900">Name: {contactPerson.firstName} {contactPerson.lastName}</p>
-        <p className="text-base font-medium text-gray-900">Email: {contactPerson.email} </p>
+      <div className="flex flex-wrap justify-between items-center mb-4">
+        <div className="flex gap-2">
+          <p className="text-base font-medium text-gray-900">Name:</p>
+        <p className="text-base text-gray-900">{employer.firstName} {employer.lastName}</p>
+        </div>
+        <div className="flex gap-2">
+          <p className="text-base font-medium text-gray-900">Email:</p>
+          <p className="text-base text-gray-900">{employer.email}</p>
+        </div>
       </div>
       <form className="space-y-4 md:space-y-6" action="#" onSubmit={handleSubmit}>
         <div>

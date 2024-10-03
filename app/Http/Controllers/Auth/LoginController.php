@@ -9,14 +9,26 @@ use Inertia\Inertia;
 use App\Models\Admin;
 use App\Models\Employer;
 use App\Models\Student;
-use App\Models\ContactPerson;
+use App\Models\Company;
+use App\Models\Message;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
+
 
 class LoginController extends Controller
 {
     public function showLogin()
     {
+        $email = Cookie::get('remember_email');
+        if($email){
+            $email = Cookie::get('remember_email');
+            return Inertia::render('Login', ['remember_email' => $email]);
+        }
+        else {
         return Inertia::render('Login');
+        }
     }
 
     public function login(Request $request)
@@ -25,9 +37,43 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
             'role' => 'required|in:admin,employer,student',
+            'remember' => 'boolean',
         ]);
-
+    
         $role = $request->role;
+    
+
+        if ($request->remember === true) {
+            Cookie::queue(Cookie::make('remember_email', $request->email, 60 * 24 * 30, '/', null, true, true, false, 'Lax'));
+            $token = Str::random(60); // generate a random token
+            $user = null; // initialize user variable
+            switch ($role) {
+                case 'admin':
+                    $user = Admin::where('email', $request->email)->first();
+                    if (!$user) {
+                        return back()->withErrors(['email' => 'Invalid admin email.']);
+                    }
+                    break;
+                case 'employer':
+                    $employer = Employer::where('email', $request->email)->first();
+                    if (!$employer) {
+                        return back()->withErrors(['email' => 'Invalid employer email.']);
+                    }
+                    $user = $employer;
+                    break;
+                case 'student':
+                    $user = Student::where('email', $request->email)->first();
+                    if (!$user) {
+                        return back()->withErrors(['email' => 'Invalid student email.']);
+                    }
+                    break;
+                default:
+                    return back()->withErrors(['email' => 'Invalid user role.']);
+            }
+            $user->remember_token = $token;
+            $user->save();
+            Cookie::queue(Cookie::make('remember_token', $token, 60 * 24 * 30, '/', null, true, true, false, 'Lax'));
+        }
     
         // Extract email and password from request
         $credentials = $request->only('email', 'password');
@@ -41,19 +87,18 @@ class LoginController extends Controller
                 break;
             case 'employer':
                 $guard = 'employer';
-                $contactPerson = ContactPerson::where('email', $credentials['email'])->first();
-                if (!$contactPerson) {
-                    return back()->withErrors(['email' => 'Invalid contact person email.']);
+                $employer = Employer::where('email', $credentials['email'])->first();
+                if (!$employer) {
+                    return back()->withErrors(['email' => 'Invalid employer email.']);
                 }
-                $user = $contactPerson;
-                $employer = Employer::find($user->employerID);
-                if ($employer) {
+                $user = $employer;
+                $company = Company::find($user->companyID);
+                if ($company) {
                     // Store the employer details in the session
-                    $request->session()->put('employer', $employer);
+                    $request->session()->put('company', $company);
                     // Optionally, attach the employer to the user object
-                    $user->employer = $employer;
+                    $user->company = $company;
                 }
-                
                 break;
             case 'student':
                 $guard = 'student';
@@ -63,20 +108,18 @@ class LoginController extends Controller
                 return back()->withErrors(['email' => 'Invalid user role.']);
         }
     
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-            Auth::guard($guard)->login($user); // Use the appropriate guard to log in the user
+        if (Auth::guard($guard)->attempt(['email' => $user->email, 'password' => $request->password], $request->remember)) {
             $request->session()->regenerate();
-        // Store the user role in session
-        $request->session()->put('userRole', $role);
-        $request->session()->put('userGuard', $guard);
-
-
-        // Share the userRole with Inertia
-        Inertia::share('auth', [
-            'user' => $user->toArray(), 
-            'role' => $role,
-        ]);
-
+            // Store the user role in session
+            $request->session()->put('userRole', $role);
+            $request->session()->put('userGuard', $guard);
+        
+            // Share the user Role with Inertia
+            Inertia::share('auth', [
+                'user' => $user->toArray(), 
+                'role' => $role,
+            ]);
+        
             switch ($role) {
                 case 'admin':
                     return redirect()->route('admin.dashboard');
@@ -86,11 +129,10 @@ class LoginController extends Controller
                     return redirect()->route('internships.index');
             }
         }
-    
+        
         return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
     }
-
-
+    
     public function logout(Request $request)
     {
         // Determine the user's guard from the session
@@ -107,5 +149,55 @@ class LoginController extends Controller
         return redirect()->route('home');
     }
 
+    public function redirectToLinkedIn()
+    {
+        return Socialite::driver('linkedin-openid')->redirect();
+    }
+
+    public function handleLinkedInCallback()
+    {
+        try {
+            // Retrieve the user from LinkedIn
+            $linkedinUser = Socialite::driver('linkedin-openid')->user();
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Unable to login with LinkedIn.');
+        }
+    
+        // Find student by LinkedIn ID or email
+        $student = Student::where('linkedin_id', $linkedinUser->id)
+                          ->orWhere('email', $linkedinUser->email)
+                          ->first();
+    
+        if ($student) {
+            $student->update([
+                'linkedin_id' => $linkedinUser->id,
+                'linkedin_token' => $linkedinUser->token,
+            ]);
+        } else {
+            // Create new student
+            $student = Student::create([
+                'firstName' => $linkedinUser->user['given_name'], // From LinkedIn data
+                'lastName' => $linkedinUser->user['family_name'], // From LinkedIn data
+                'email' => $linkedinUser->email,
+                'linkedin_id' => $linkedinUser->id,
+                'linkedin_token' => $linkedinUser->token,
+                'profilePicture' => $linkedinUser->avatar, // From LinkedIn data
+                'password' => Hash::make(Str::random(12)), // Random password since it won't be used
+            ]);
+        }
+    
+        // Log the student in
+        Auth::guard('student')->login($student);
+
+        session(['userRole' => 'student']);
+        session(['userGuard' => 'student']);
+
+        Inertia::share('auth', [
+            'user' => $student->toArray(), 
+            'role' => 'student',
+        ]);
+    
+        return redirect()->route('internships.index');
+    }
     
 }

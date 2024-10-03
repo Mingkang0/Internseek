@@ -14,20 +14,49 @@ const MessageList = ({ conversations, userRole, onSelectConversation }) => {
     return new Date(dateString).toLocaleTimeString(undefined, options);
   }
 
-  console.log(conversations);
+
   return (
-    <div className="w-1/4 bg-white border border-gray-900 rounded-lg">
+    <div className="w-full bg-white border border-gray-900 rounded-lg">
       <h3 className="p-4 text-lg font-bold text-gray-900">Inbox ({conversations.length})</h3>
       <hr className="h-px bg-gray-900" />
       {conversations.map((conversation) => {
         const latestMessage = conversation.messages[conversation.messages.length - 1];
+        const hasUnreadMessages = conversation.messages.some((message) => message.messageStatus === 'unread' && message.sender_id === conversation.partner.id && message.sender_type !== userRole);
         return (
           <div
             key={conversation.partner.id}
-            className="flex p-2 cursor-pointer hover:bg-gray-200 border-b border-gray-900"
+            className={`flex p-2 cursor-pointer hover:bg-gray-50 border-b border-gray-900 ${hasUnreadMessages ? 'bg-gray-100' : ''}`}
             onClick={() => onSelectConversation(conversation.partner.id)}
           >
-            <img src="../../assets/avatar.png" alt="Company Logo" className="w-10 h-10 my-auto rounded-full border border-gray-900" />
+            {
+              userRole === 'employer' && (
+                <>
+                  {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                    <img
+                      src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
+                      alt="Local Profile Pic"
+                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                    />
+                  ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
+                    <img
+                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                      src={receiver.profilePicture}
+                      alt="LinkedIn Profile Pic"
+                    />
+                  ) : (
+                    <img
+                      src="../../assets/avatar.png"
+                      alt="Default Avatar"
+                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                    />
+                  )}
+                </>
+              )}
+            {
+              userRole === 'student' && (
+                <img src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`} alt="Company Logo" className="w-12 h-12 rounded-full border ring-1 ring-gray-900" />
+              )
+            }
             <div className='flex flex-col w-full px-2 pt-2'>
               <div className="flex justify-between items-center">
                 <h5 className="text-sm font-semibold text-gray-900">

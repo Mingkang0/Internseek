@@ -5,6 +5,12 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Message;
+use App\Models\Student;
+use App\Models\Employer;
+use App\Models\Company;
+use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -38,6 +44,26 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $guard ? Auth::guard($guard)->user() : null,
                 'role' => $role,
+                'notifications' => $guard && Auth::guard($guard)->check() ?
+                                    DB::table('notifications')
+                                    ->where('notifiable_id', Auth::guard($guard)->user() instanceof Student ? Auth::guard($guard)->user()->id : Auth::guard($guard)->user()->companyID)
+                                    ->where('notifiable_type', Auth::guard($guard)->user() instanceof Student ? 'App\Models\Student' : 'App\Models\Company')
+                                    ->whereNull('read_at') // Fetch only unread notifications
+                                    ->get() : [],
+            'unreadMessagesCount' => $guard && Auth::guard($guard)->check() ? 
+                Message::where(function ($query) use ($guard) {
+                $user = Auth::guard($guard)->user();
+
+            // Check if the user is a student or an employer
+            if ($user instanceof Student) {
+                $query->where('receiver_id', $user->id)
+                      ->where('receiver_type', 'student'); // Use AND logic here
+            } elseif ($user instanceof Employer) {
+                $query->where('receiver_id', $user->companyID)
+                      ->where('receiver_type', 'employer'); // Use AND logic here
+            }})
+            ->where('messageStatus', 'unread')
+            ->count() : null,
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),

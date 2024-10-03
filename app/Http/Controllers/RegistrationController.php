@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Student;
-use App\Models\ContactPerson;
+use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employer;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +19,7 @@ class RegistrationController extends Controller
 
     public function createEmployer()
     {
-        return Inertia::render('Registration/Employer/contactPersonRegistration');
+        return Inertia::render('Registration/Employer/employerRegistration');
     }
 
     public function storeStudent(Request $request)
@@ -27,7 +27,7 @@ class RegistrationController extends Controller
         $validateData = $request->validate([
             'firstName' => 'required',
             'lastName' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:students,email',
             'phoneNum' => 'required',
             'password' => 'required',
             'confirmPassword' => 'required|same:password',
@@ -57,7 +57,9 @@ class RegistrationController extends Controller
             'role' => 'student',
         ]);
         
+        if($request->email)
         return redirect()->route('internships.index');
+
     }
 
     public function storeEmployer(Request $request)
@@ -66,7 +68,7 @@ class RegistrationController extends Controller
             'firstName' => 'required',
             'lastName' => 'required',
             'phoneNum' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:employers,email',
             'password' => 'required',
             'confirmPassword' => 'required|same:password',
         ]);
@@ -79,10 +81,10 @@ class RegistrationController extends Controller
         // Hash the password
         $validateData['password'] = bcrypt($validateData['password']);
 
-        $contactPerson= ContactPerson::create($validateData);
+        $employer= Employer::create($validateData);
 
 
-        Auth::guard('employer')->login($contactPerson);
+        Auth::guard('employer')->login($employer);
 
         $request->session()->regenerate();
             
@@ -92,7 +94,7 @@ class RegistrationController extends Controller
 
         // Share the userRole with Inertia
         Inertia::share('auth', [
-            'user' => $contactPerson,
+            'user' => $employer,
             'role' => 'employer',
         ]);
         
@@ -100,42 +102,44 @@ class RegistrationController extends Controller
         
     }
 
-    public function addExistingEmployer()
+    public function addExistingCompany()
     {
         return Inertia::render('Registration/Employer/searchExistingCompany');
     }
 
-    public function searchExistingEmployer(Request $request)
+    public function searchExistingCompany(Request $request)
     {
         $companyName = $request->input('companyName');
-        $employers = Employer::where('companyName', 'like', "%{$companyName}%")
+        $companies = Company::where('companyName', 'like', "%{$companyName}%")
                    ->where('registrationStatus', 'Approved')
                    ->get();
 
         return Inertia::render('Registration/Employer/searchExistingCompany', [
-        'employers' => $employers,
+            'companies' => $companies,
     ]);
     }
 
-    public function addExistingEmployerToContactPerson(Request $request) {
+    public function addExistingCompanyToEmployer(Request $request) {
         $id = $request->id;
-        $employer = Employer::find($id);
+        $company = Company::find($id);
         $guard = session('userGuard');
         $user = Auth::guard('employer')->user();
 
 
-        // Check if the authenticated user is a contact person
-        if ($user instanceof ContactPerson) {
-            if ($employer) {
-                // Associate the contact person with the employer
-                $user->employerID = $employer->id;
+        // Check if the authenticated user is a employer
+        if ($user instanceof Employer) {
+            if ($company) {
+                // Associate the employer with the company
+                $user->companyID = $company->id;
+                $user->userType = 'user';
+                $user->status = 'Inactive';
                 $user->save();
 
-                // Store the employer details in the session
-                $request->session()->put('employer', $employer);
+                // Store the company details in the session
+                $request->session()->put('company', $company);
 
-                // Attach the employer object to the user object
-                $user->employer = $employer;
+                // Attach the company object to the user object
+                $user->company = $company;
 
                  // Optionally, update the user role and guard in the session
                 $request->session()->put('userRole', 'employer');
@@ -163,10 +167,10 @@ class RegistrationController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard('employer')->user();
 
-        $contactPerson = ContactPerson::find($user->id);
+        $employer = Employer::find($user->id);
 
-        return Inertia::render('Registration/Employer/registrationForm', [
-            'contactPerson' => $contactPerson,
+        return Inertia::render('Registration/Employer/companyRegistrationForm', [
+            'employer' => $employer,
         ]);
     }
 
@@ -192,11 +196,10 @@ class RegistrationController extends Controller
             'companyInfo.businessRegNum' => 'required',
             'companyInfo.businessRegDate' => 'required',
             'logo.companyLogo' => 'required|mimes:png,svg,jpg,jpeg|max:2048',
-            'contactPersonInfo.firstName' => 'required',
-            'contactPersonInfo.lastName' => 'required',
-            'contactPersonInfo.email' => 'required|email',
-            'contactPersonInfo.position' => 'required',
-            'contactPersonInfo.department' => 'required',
+            'employerInfo.firstName' => 'required',
+            'employerInfo.lastName' => 'required',
+            'employerInfo.position' => 'required',
+            'employerInfo.department' => 'required',
         ]);
     
         // Handle file uploads
@@ -220,26 +223,29 @@ class RegistrationController extends Controller
         );
     
         // Create the Employer
-        $company = Employer::create($companyData);
+        $company = Company::create($companyData);
 
 
-        // Handle contact person information
-        $contactPersonData = [
-            'employerID' => $company->id,
-            'first_name' => $validatedData['contactPersonInfo']['firstName'],
-            'last_name' => $validatedData['contactPersonInfo']['lastName'],
-            'email' => $validatedData['contactPersonInfo']['email'],
-            'position' => $validatedData['contactPersonInfo']['position'],
-            'department' => $validatedData['contactPersonInfo']['department'],
+        $userType = 'admin';
+        // Handle employer information
+        $employerData = [
+            'companyID' => $company->id,
+            'first_name' => $validatedData['employerInfo']['firstName'],
+            'last_name' => $validatedData['employerInfo']['lastName'],
+            'email' => $request->employerInfo['email'],
+            'position' => $validatedData['employerInfo']['position'],
+            'department' => $validatedData['employerInfo']['department'],
+            'userType' => $userType,
+            'status' => 'Active',
         ];
         
-        $request->session()->put('employer', $company);
+        $request->session()->put('company', $company);
 
 
-        // Create or update contact person
-        ContactPerson::updateOrCreate(
-            ['email' => $validatedData['contactPersonInfo']['email']], // Unique identifier
-            $contactPersonData
+        // Create or update employer
+        Employer::updateOrCreate(
+            ['email' => $employerData['email']],
+            $employerData
         );
 
         // Redirect to employer dashboard
@@ -252,24 +258,24 @@ class RegistrationController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard('employer')->user();
 
-        $contactPerson = ContactPerson::find($user->id);
+        $employer = Employer::find($user->id);
 
-        $employer = Employer::find($contactPerson->employerID);
+        $company = Company::find($employer->companyID);
 
 
         return Inertia::render('Registration/Employer/editRegistrationDetails', [
-            'contactPerson' => $contactPerson,
             'employer' => $employer,
+            'company' => $company,
         ]);
     }
     
 
     public function updateRegistrationDetails(Request $request, $id)
     {
-        // Retrieve the employer and contact person
-        $employer = Employer::find($id);
+        // Retrieve the employer and company
+        $company = Company::find($id);
         $user = Auth::guard('employer')->user();
-        $contactPerson = ContactPerson::find($user->id);
+        $employer = Employer::find($user->id);
     
         // Validate the input data
         $validatedData = $request->validate([
@@ -293,7 +299,6 @@ class RegistrationController extends Controller
             'companyLogo' => 'nullable|mimes:png,svg,jpg,jpeg|max:2048',
             'firstName' => 'required',
             'lastName' => 'required',
-            'email' => 'required|email',
             'position' => 'required',
             'department' => 'required',
         ]);
@@ -312,14 +317,13 @@ class RegistrationController extends Controller
         // Add default registration status
         $validatedData['registrationStatus'] = 'Pending';
     
-        // Update the employer with validated data
-        $employer->update($validatedData);
+        // Update the company with validated data
+        $company->update($validatedData);
     
-        // Update the contact person details
-        $contactPerson->update([
+        // Update the employer details
+        $employer->update([
             'firstName' => $validatedData['firstName'],
             'lastName' => $validatedData['lastName'],
-            'email' => $validatedData['email'],
             'position' => $validatedData['position'],
             'department' => $validatedData['department'],
         ]);

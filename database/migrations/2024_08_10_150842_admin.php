@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('gender', ['Male', 'Female']);
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('remember_token')->nullable();
             $table->string('reset_password_token')->nullable();
             $table->timestamps();
         });

@@ -15,13 +15,12 @@ return new class extends Migration
             $table->id();
             $table->morphs('sender'); // Creates sender_id and sender_type columns
             $table->morphs('receiver'); // Creates receiver_id and receiver_type columns
-            $table->unsignedBigInteger('contactPersonID')->nullable();
-            $table->foreign('contactPersonID')->references('id')->on('contact_persons');
-            $table->boolean('isEmployerRead')->default(false);
-            $table->boolean('isStudentRead')->default(false);
+            $table->unsignedBigInteger('employerID')->nullable();
+            $table->foreign('employerID')->references('id')->on('employers');
             $table->text('messageDetails');
             $table->string('messageImage')->nullable();
             $table->string('messageDocument')->nullable();
+            $table->string('messageStatus')->default('unread');
             $table->timestamps();
 
         });

@@ -27,7 +27,6 @@ export default function AdminDetails({ admin }) {
   const { data, setData, post, processing, errors } = useForm({
     firstName: admin?.firstName || "",
     lastName: admin?.lastName || "",
-    email: admin?.email || "",
     phoneNum: admin?.phoneNum || "",
     ICNumber: admin?.ICNumber || "",
     gender: admin?.gender || "",
@@ -50,7 +49,6 @@ export default function AdminDetails({ admin }) {
     setData({
       firstName: admin?.firstName || "",
       lastName: admin?.lastName || "",
-      email: admin?.email || "",
       phoneNum: admin?.phoneNum || "",
       ICNumber: admin?.ICNumber || "",
       gender: admin?.gender || "",
@@ -65,7 +63,7 @@ export default function AdminDetails({ admin }) {
   return (
     <DefaultLayout>
       <Head title="Admin Profile" />
-      <div className="bg-gray-200 min-h-screen overflow-y-auto lg:py-4">
+      <div className="bg-gray-200 px-4 py-4 min-h-screen overflow-y-auto lg:py-4">
         <div className="container mx-auto bg-white border border-gray-900 rounded-lg p-6 max-w-4xl">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">
@@ -98,7 +96,7 @@ export default function AdminDetails({ admin }) {
             </div>
           </div>
           <form className="space-y-4 md:space-y-6" onSubmit={handleSaveChanges}>
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-6 lg:grid-cols-12 gap-6">
               <div className="col-span-6">
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                   First Name
@@ -142,10 +140,8 @@ export default function AdminDetails({ admin }) {
                 id="email"
                 className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="Enter Email Address"
-                value={data.email}
-                onChange={handleInputChange}
-                disabled={!isEditMode}
-                required
+                value={admin.email}
+                disabled
               />
             </div>
             <div>
@@ -164,7 +160,7 @@ export default function AdminDetails({ admin }) {
                 required
               />
             </div>
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-6 lg:grid-cols-12 gap-6">
               <div className="col-span-6">
                 <label className="block mb-2 text-sm font-medium text-gray-900">IC Number</label>
                 <input

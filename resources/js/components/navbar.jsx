@@ -10,11 +10,14 @@ export default function Navbar() {
   const [dropdownNavbar, setDropdownNavbar] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isNotificationClicked, setIsNotificationClicked] = useState(false);
 
   const { auth } = usePage().props;
   const isAuthenticated = auth?.user !== null;
   const userRole = auth?.role; // Adjusted to use `auth.role`
 
+  console.log('auth', auth);
 
   const handleDropdownNavbar = () => {
     setDropdownNavbar(!dropdownNavbar);
@@ -36,13 +39,16 @@ export default function Navbar() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  }
 
   return (
     <nav className={`sticky top-0 border-gray-300 ${userRole === 'employer' ? 'bg-yellow-300' : userRole === 'student' ? 'bg-blue-100' : userRole === 'admin' ? 'bg-white' : 'bg-blue-100'} border-b w-full`}>
       <div className="max-w-screen-xl mx-auto flex justify-between items-center p-2">
         <div className="flex items-center md:space-x-4 md:space-x-6 rtl:space-x-reverse">
           {/* Mobile menu button */}
-          <button onClick={toggleMobileMenu} className="md:hidden text-gray-900">
+          <button onClick={toggleMobileMenu} className="md:hidden lg:mr-0 text-gray-900">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -77,7 +83,7 @@ export default function Navbar() {
 
               {userRole === 'employer' && (
                 <>
-                  {auth.user.employer && auth.user.employer.registrationStatus === 'Approved' && (
+                  {auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status==='Active' && (
                     <>
                       <a href="/internship-postings" className="text-sm font-bold text-gray-900">Internship Posted</a>
                       <a href="/internship-applications/list" className="text-sm font-bold text-gray-900">Applicants</a>
@@ -103,24 +109,156 @@ export default function Navbar() {
           )}
         </div>
 
-        <div className="flex items-center space-x-4 rtl:space-x-reverse">
+        <div className="flex items-center space-x-4 rtl:space-x-reverse mr-2 lg:mr-0">
           {isAuthenticated ? (
             <>
               {userRole === 'employer' && (
                 <>
-                  {auth.user.employer && auth.user.employer.registrationStatus === 'Approved' && (
+                  {auth.user.company && auth.user.company.registrationStatus === 'Inquiry' && (
+                    <div className='relative z-10'>
+                      <FaBell size={24} className='cursor-pointer relative mr-2'
+                        onClick={() => setIsNotificationClicked(!isNotificationClicked)}
+                      />
+
+                      {auth.notifications.length > 0 && (
+                        <span className="absolute top-1 left-4 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                          {auth.notifications.length}
+                        </span>
+                      )}
+
+                      {/* Tooltip for Hover */}
+                      {isNotificationClicked && (
+                        <div className="absolute text-center top-8 z-50 right-0 bg-white text-gray-900 text-sm py-2 px-4 w-80 rounded-md shadow-lg">
+                          <div className="flex justify-between p-1 items-center">
+                            <span className="text-gray-900 font-semibold text-lg">Notifications</span>
+                            <Link method='post' href="/employer/notifications/markAsRead" className="text-blue-900">Mark all as Read</Link>
+                          </div>
+                          {auth.notifications.length > 0 ? (
+                            <div>
+                              <ul className='overflow-y-auto h-96'>
+                                {auth.notifications.map((notification, index) => (
+                                  <li key={notification.id} className="my-1 w-full p-3 bg-white text-sm text-left rounded-md border border-gray-300">
+                                    <p>{index + 1}.  {JSON.parse(notification.data).message} </p>
+                                    <p className="text-xs text-gray-500 text-right">    {new Date(notification.created_at).toLocaleString('en-US', {
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      second: '2-digit',
+                                      hour12: true,
+                                    })}
+                                    </p>
+                                  </li>
+                                ))}
+                              </ul>
+                              <hr className='h-px my-2 bg-gray-200'></hr>
+                              <a href="/employer/notifications" className="text-blue-900">View All Notifications</a>
+                            </div>
+                          ) : (
+                            <>
+                              <span>You have no unread notifications</span>
+                              <hr className='h-px my-2 bg-gray-200'></hr>
+                              <a href="/employer/notifications" className="text-blue-900">View All Notifications</a>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status==='Active' && (
                     <>
-                      <FaBell size={24} className='cursor-pointer mr-2' />
-                      <IoChatbubbleEllipses size={24} className='cursor-pointer' onClick={handleViewMessages} />
-                      <div className="w-px h-8 bg-gray-900"></div>
-                      <div className="flex items-center space-x-2">
+                      <div className='relative'>
+                        <FaBell size={24} className='cursor-pointer relative mr-2'
+                          onClick={() => setIsNotificationClicked(!isNotificationClicked)}
+                        />
+
+                        {auth.notifications.length > 0 && (
+                          <span className="absolute top-1 left-4 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                            {auth.notifications.length}
+                          </span>
+                        )}
+
+                        {/* Tooltip for Hover */}
+                        {isNotificationClicked && (
+                          <div className="absolute text-center top-8 right-0 z-50 bg-white text-gray-900 text-sm py-2 px-4 w-80 rounded-md shadow-lg">
+                            <div className="flex justify-between p-1 items-center">
+                              <span className="text-gray-900 font-semibold text-lg">Notifications</span>
+                              <Link method='post' href="/employer/notifications/markAsRead" className="text-blue-900">Mark all as Read</Link>
+                            </div>
+                            {auth.notifications.length > 0 ? (
+                              <div>
+                                <ul className='overflow-y-auto h-96'>
+                                  {auth.notifications.map((notification, index) => (
+                                    <li key={notification.id} className="my-1 w-full p-3 bg-white text-sm text-left rounded-md border border-gray-300">
+                                      <p>{index + 1}.  {JSON.parse(notification.data).message} </p>
+                                      <p className="text-xs text-gray-500 text-right">    {new Date(notification.created_at).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: true,
+                                      })}
+                                      </p>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <hr className='h-px my-2 bg-gray-200'></hr>
+                                <a href="/employer/notifications" className="text-blue-900">View All Notifications</a>
+                              </div>
+                            ) : (
+                              <>
+                                <span>You have no unread notifications</span>
+                                <hr className='h-px my-2 bg-gray-200'></hr>
+                                <a href="/employer/notifications" className="text-blue-900">View All Notifications</a>
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      {/* Icon with onClick */}
+                      <div className='relative'>
+                        <IoChatbubbleEllipses
+                          size={24}
+                          className="cursor-pointer relative"
+                          onClick={handleViewMessages}
+                          onMouseEnter={() => setIsHovered(true)}
+                          onMouseLeave={() => setIsHovered(false)}
+                        />
+
+                        {/* Red Dot for Unread Messages Count */}
+                        {auth.unreadMessagesCount > 0 && (
+                          <span className="absolute top-1 left-4 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                            {auth.unreadMessagesCount}
+                          </span>
+                        )}
+
+
+
+                        {/* Tooltip for Hover */}
+                        {isHovered && (
+                          <div className="absolute text-center top-8 left-0 bg-gray-800 text-white text-sm py-1 px-6 w-52 rounded-lg shadow-lg">
+                            {auth.unreadMessagesCount > 0 ? (
+                              <span>
+                                You have {auth.unreadMessagesCount} unread {auth.unreadMessagesCount === 1 ? 'message' : 'messages'}
+                              </span>
+                            ) : (
+                              <span>You have no unread messages</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-px h-8 bg-gray-900 hidden lg:block"></div>
+                      <div className="lg:flex items-center space-x-2 hidden">
                         <FaBuilding size={24} />
                         <p className="text-sm font-medium ml-2">
 
-                          {auth.user.employer.companyName}
+                          {auth.user.company.companyName}
                         </p>
                       </div>
-                      <div className="w-px h-8 bg-gray-900"></div>
+                      <div className="w-px h-8 bg-gray-900 hidden lg:block"></div>
                     </>
                   )}
                 </>
@@ -129,13 +267,95 @@ export default function Navbar() {
               {
                 userRole === 'student' && (
                   <>
-                    <IoChatbubbleEllipses size={24} className="cursor-pointer" onClick={handleViewMessages} />
-                    <div className="w-px h-8 bg-gray-900"></div>
+                    <div className='relative'>
+                      <FaBell size={24} className='cursor-pointer relative mr-2'
+                        onClick={() => setIsNotificationClicked(!isNotificationClicked)}
+                      />
+
+                      {auth.notifications.length > 0 && (
+                        <span className="absolute top-1 left-4 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                          {auth.notifications.length}
+                        </span>
+                      )}
+
+                      {/* Tooltip for Hover */}
+
+                      {isNotificationClicked && (
+                        <div className="absolute text-center z-50 top-8 right-0 bg-white text-gray-900 text-sm py-2 px-4 w-80 rounded-md shadow-lg">
+                          <div className="flex justify-between p-1 items-center">
+                            <span className="text-gray-900 font-semibold text-lg">Notifications</span>
+                            <Link method='post' href="/student/notifications/markAsRead" className="text-blue-900">Mark all as Read</Link>
+                          </div>
+                          {auth.notifications.length > 0 ? (
+                            <div>
+                              <ul className='overflow-y-auto h-96'>
+                                {auth.notifications.map((notification, index) => (
+                                  <li key={notification.id} className="my-1 w-full p-3 bg-white text-sm text-left rounded-md border border-gray-300">
+                                    <p>{index + 1}.  {JSON.parse(notification.data).message} </p>
+                                    <p className="text-xs text-gray-500 text-right">    {new Date(notification.created_at).toLocaleString('en-US', {
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      second: '2-digit',
+                                      hour12: true,
+                                    })}
+                                    </p>
+                                  </li>
+                                ))}
+                              </ul>
+                              <hr className='h-px my-2 bg-gray-200'></hr>
+                              <a href="/student/notifications" className="text-blue-900">View All Notifications</a>
+                            </div>
+                          ) : (
+                            <>
+                              <span>You have no unread notifications</span>
+                              <hr className='h-px my-2 bg-gray-200'></hr>
+                              <a href="/student/notifications" className="text-blue-900">View All Notifications</a>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="relative">
+
+                      {/* Icon with onClick */}
+                      <IoChatbubbleEllipses
+                        size={24}
+                        className="cursor-pointer relative"
+                        onClick={handleViewMessages}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+
+                      />
+
+                      {/* Red Dot for Unread Messages Count */}
+                      {auth.unreadMessagesCount > 0 && (
+                        <span className="absolute top-1 left-4 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                          {auth.unreadMessagesCount}
+                        </span>
+                      )}
+
+                      {/* Tooltip for Hover */}
+                      {isHovered && (
+                        <div className="absolute text-center top-8 right-0 bg-gray-800 text-white text-sm py-1 px-6 w-52 rounded-lg shadow-lg">
+                          {auth.unreadMessagesCount > 0 ? (
+                            <span>
+                              You have {auth.unreadMessagesCount} unread {auth.unreadMessagesCount === 1 ? 'message' : 'messages'}
+                            </span>
+                          ) : (
+                            <span>You have no unread messages</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="w-px h-8 bg-gray-900 hidden lg:block"></div>
                   </>
                 )
               }
 
-              <div className="flex items-center space-x-2">
+              <div className="relative flex items-center space-x-2 hidden lg:block">
                 <button onClick={handleDropdownNavbar} aria-haspopup="true" aria-controls="dropdownNavbar" aria-expanded={dropdownNavbar}
                   id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" className="flex items-center justify-center text-gray-900">
                   <FaUser size={20} />
@@ -144,7 +364,7 @@ export default function Navbar() {
                 </button>
 
                 {dropdownNavbar && (
-                  <div id="dropdownNavbar" className="absolute right-0 top-full z-40 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                  <div id="dropdownNavbar" className="absolute right-0 top-8 z-40 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
                     <ul className="py-2 text-sm text-gray-700" aria-labelledby="dropdownLargeButton">
                       {userRole === 'student' && (
                         <>
@@ -155,16 +375,23 @@ export default function Navbar() {
                         </>
                       )}
 
-                      {userRole === 'employer' && auth.user.employer && auth.user.employer.registrationStatus === 'Approved' && (
+                      {userRole === 'employer' && auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status==='Active' && (
                         <>
                           <li><a href="/employer/profileDetails" className="block px-4 py-2 hover:bg-gray-100">Company Profile</a></li>
                           <li><a href="/employer/branch-details" className="block px-4 py-2 hover:bg-gray-100">Branch & Site Info</a></li>
-                          <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
+                          <li><a href="/employer/my-report" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
                         </>
                       )}
                       {userRole === 'employer' && (
                         <>
-                          <li><a href="/contact-person-details" className="block px-4 py-2 hover:bg-gray-100">Contact Person Details</a></li>
+                          <li><a href="/employer-details" className="block px-4 py-2 hover:bg-gray-100">Employer Details</a></li>
+                        </>
+                      )}
+
+                      {userRole ==='employer' && auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.userType === 'admin'
+                      && (
+                        <>
+                          <li><a href="/employer/admin/userManagement" className="block px-4 py-2 hover:bg-gray-100">Manage User</a></li>
                         </>
                       )}
 
@@ -234,31 +461,47 @@ export default function Navbar() {
         </div>
       )}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed top-15 left-0 w-full bg-white border-b border-gray-200 drop-shadow">
+        <div className="relative md:hidden fixed z-100 top-15 left-0 w-full bg-white border-b border-gray-200 drop-shadow rounded-sm">
           <div className="flex flex-col p-2">
             {isAuthenticated ? (
               <>
+                {/* Student Navigation */}
                 {userRole === 'student' ? (
                   <>
                     <a href="/internships" className="text-sm font-semibold py-2">Search Internship</a>
-                    <a href="/companies" className="text-sm  font-semibold py-2">Search Company</a>
+                    <a href="/companies" className="text-sm font-semibold py-2">Search Company</a>
                     <a href="/student/my-internships" className="text-sm font-semibold py-2">My Internships</a>
+                    <a href="/student/profile" className="text-sm font-semibold py-2">My Profile</a>
+                    <a href="/student/my-report" className="text-sm font-semibold py-2">My Report</a>
+                    <a href="/student/my-industrial-training/acceptedOffers" className="text-sm font-semibold py-2">Industrial Training</a>
+                    <a href="/student/settings" className="text-sm font-semibold py-2">Settings</a>
+                    <hr className='h-px mt-2 mb-1 bg-gray-200'></hr>
+                    <Link method="post" href="/logout" className="text-sm text-gray-500 font-bold py-2">Sign out</Link>
                   </>
                 ) : userRole === 'employer' ? (
                   <>
-                    {auth.user.employer && auth.user.employer.registrationStatus === 'Approved' && (
+                    {auth.user.company && auth.user.company.registrationStatus === 'Approved' && (
                       <>
                         <a href="/internship-postings" className="text-sm font-semibold py-2">Internship Posted</a>
                         <a href="/internship-applications/list" className="text-sm font-semibold py-2">Applicants</a>
                         <a href="/interviews-applicants/list" className="text-sm font-semibold py-2">Interview List</a>
+                        <a href="/employer/profileDetails" className="text-sm font-semibold py-2">Company Profile</a>
+                        <a href="/employer/branch-details" className="text-sm font-semibold py-2">Branch & Site Info</a>
+                        <a href="/employer/my-report" className="text-sm font-semibold py-2">My Report</a>
                       </>
                     )}
+                    <a href="/employer-details" className="text-sm font-semibold py-2">Employer Details</a>
+                    <hr className='h-px mt-2 mb-1 bg-gray-200'></hr>
+                    <Link method="post" href="/logout" className="text-sm text-gray-500 font-bold py-2">Sign out</Link>
                   </>
                 ) : userRole === 'admin' ? (
                   <>
                     <a href="/admin/employers" className="text-sm font-semibold py-2">Employer List</a>
                     <a href="/admin/internseekers" className="text-sm font-semibold py-2">Internseeker List</a>
                     <a href="/admin/internships" className="text-sm font-semibold py-2">Internship List</a>
+                    <a href="/admin/profile" className="text-sm font-semibold py-2">My Profile</a>
+                    <hr className='h-px mt-2 mb-1 bg-gray-200'></hr>
+                    <Link method="post" href="/logout" className="text-sm text-gray-700 font-semibold py-2">Sign out</Link>
                   </>
                 ) : (
                   <>
@@ -269,56 +512,15 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <a href="/internships" className="text-sm block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Search Internship</a>
-                <a href="/companies" className="text-sm block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ">Search Company</a>
+                {/* Links for unauthenticated users */}
+                <a href="/internships" className="text-sm block px-4 py-2 hover:bg-gray-100">Search Internship</a>
+                <a href="/companies" className="text-sm block px-4 py-2 hover:bg-gray-100">Search Company</a>
               </>
-            )}
-
-            {isAuthenticated && (
-              <div className="mt-4">
-                <a href="#" onClick={handleDropdownNavbar} className="text-sm py-2 flex items-center">
-                  <FaUser size={20} className="mr-2" />
-                  {auth.user.email}
-                </a>
-                {dropdownNavbar && (
-                  <div className="mt-2 border-t border-gray-300">
-                    <ul>
-                      {userRole === 'student' && (
-                        <>
-                          <li><a href="/student/profile" className="block px-4 py-2 hover:bg-gray-100">My Profile</a></li>
-                          <li><a href="/student/my-report" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
-                          <li><a href="/student/my-industrial-training/acceptedOffers" className="block px-4 py-2 hover:bg-gray-100">Industrial Training</a></li>
-                          <li><a href="/student/settings" className="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
-                        </>
-                      )}
-                      {userRole === 'employer' && auth.user.employer && auth.user.employer.registrationStatus === 'Approved' && (
-                        <>
-                          <li><a href="/employer/profileDetails" className="block px-4 py-2 hover:bg-gray-100">Company Profile</a></li>
-                          <li><a href="/employer/branch-details" className="block px-4 py-2 hover:bg-gray-100">Branch & Site Info</a></li>
-                          <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">My Report</a></li>
-                        </>
-                      )}
-                      {userRole === 'employer' && (
-                        <>
-                          <li><a href="/contact-person-details" className="block px-4 py-2 hover:bg-gray-100">Contact Person Details</a></li>
-                        </>
-                      )}
-                      {userRole === 'admin' && (
-                        <>
-                          <li><a href="/admin/profile" className="block px-4 py-2 hover:bg-gray-100">My Profile</a></li>
-                        </>
-                      )}
-                    </ul>
-                    <div className="py-1">
-                      <Link method="post" href="/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-semibold">Sign out</Link>
-                    </div>
-                  </div>
-                )}
-              </div>
             )}
           </div>
         </div>
       )}
+
     </nav>
   );
 }

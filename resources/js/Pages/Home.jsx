@@ -1,26 +1,27 @@
 import 'flowbite/dist/flowbite.css';
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link, router, usePage, Head } from '@inertiajs/react';
 import DefaultLayout from '../layout/defaultLayout';
-import { Head } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
+import ApexCharts from 'apexcharts';
 
-export default function Home() {
+
+export default function Home({ companies }) {
     const [studyField, setStudyField] = useState('');
     const [keyword, setKeyword] = useState('');
 
     const { flash } = usePage().props;
 
     useEffect(() => {
-      if (flash.success) {
-        Swal.fire({
-          title: 'Reset Password',
-          text: flash.success,
-          icon: 'success',
-          confirmButtonText: 'Ok',
-          confirmButtonColor: '#2563EB'
-        });
-      }
+        if (flash.success) {
+            Swal.fire({
+                title: 'Reset Password',
+                text: flash.success,
+                icon: 'success',
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#2563EB'
+            });
+        }
     }, [flash]);
 
     const handleStudyFieldChange = (event) => {
@@ -39,6 +40,90 @@ export default function Home() {
         });
     };
 
+    const chartRef = useRef(null);
+    useEffect(() => {
+        if (!chartRef.current) {
+            const chartData = companies.map(company => {
+                return {
+                    name: company.companyName,
+                    value: company.applicationCount,
+                };
+            });
+    
+            console.log(chartData);
+            const chartOptions = {
+                series: chartData.map(company => company.value),
+                labels: chartData.map(company => company.name),
+                colors: ["#1C64F2", "#16BDCA", "#9061F9"],
+                chart: {
+                    height: 300,
+                    width: "100%",
+                    type: "pie",
+                },
+                stroke: {
+                    colors: ["white"],
+                    lineCap: "",
+                },
+                plotOptions: {
+                    pie: {
+                        labels: {
+                            show: true,
+                        },
+                        size: "100%",
+                        dataLabels: {
+                            offset: -25,
+                            formatter: function(val, opts) {
+                                const total = opts.w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                return (val / total * 100).toFixed(2) + '%';
+                              }
+                        }
+                    },
+                },
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontFamily: "Inter, sans-serif",
+                    },
+                },
+                legend: {
+                    position: "bottom",
+                    fontFamily: "Inter, sans-serif",
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return value + " applications"
+                        },
+                    },
+                },
+                xaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return value  + " applications"
+                        },
+                    },
+                    axisTicks: {
+                        show: false,
+                    },
+                    axisBorder: {
+                        show: false,
+                    },
+                },
+            };
+    
+            const newChart = new ApexCharts(document.getElementById('chart'), chartOptions);
+            newChart.render();
+            chartRef.current = newChart;
+        }
+    
+        // Cleanup on component unmount
+        return () => {
+            if (chartRef.current) {
+                chartRef.current.destroy();
+                chartRef.current = null;
+            }
+        };
+    }, [companies]);
     return (
         <DefaultLayout>
             <Head title="Home" />
@@ -105,12 +190,13 @@ export default function Home() {
 
                                 {/* Image Section */}
                                 <div className="w-full lg:w-1/3 flex justify-center lg:justify-end">
-                                    <img src="../../assets/avatar.png" className="w-80 h-80 object-cover" alt="Avatar" />
+                                    <img src="../../assets/avatar.png" className="lg:ml-12 w-72 h-72 object-cover" alt="Avatar" />
                                 </div>
                             </div>
 
                             {/* Popular Searches */}
-                            <div className="mt-8 lg:mt-12">
+                            <div className='flex flex-col lg:flex-row lg:items-start gap-16 lg:gap-0 mb-6'>
+                            <div className="mt-8 lg:mt-12 lg:w-7/12">
                                 <h2 className="text-lg font-bold text-gray-900">Popular Searches</h2>
                                 <div className="flex flex-wrap gap-4 mt-4">
                                     <Link
@@ -163,10 +249,19 @@ export default function Home() {
                                     </Link>
                                 </div>
                             </div>
+                            <div className="lg:mt-12">
+                                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow">
+                                    <h5 className="mb-2 text-medium font-bold tracking-tight text-gray-900">Top 3 Companies Chart</h5>
+                                    <p className="text-sm text-gray-600">Top 3 companies with the most applications</p>
+                                    <hr className="h-px my-1 bg-gray-200 border-0" />
+                                    <div id="chart"></div>
+                                </div>
+                            </div>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </DefaultLayout>
     );
 }

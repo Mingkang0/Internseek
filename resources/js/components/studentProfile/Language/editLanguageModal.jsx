@@ -45,7 +45,7 @@ export default function EditLanguageModal({ languages, onClose, studentID}) {
           <label htmlFor={`language-${language.id}`} className="block mb-2 text-sm font-medium text-gray-900">
             {language.languageName}
           </label>
-          <div className="flex flex-wrap justify-center">
+          <div className="flex flex-wrap justify-center gap-2">
             {proficiencyLevels.map(level => (
               <div key={level} className="flex items-center me-4">
                 <input

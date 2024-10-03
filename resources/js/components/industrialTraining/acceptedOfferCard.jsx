@@ -36,7 +36,7 @@ const AcceptedInternshipCard = ({ acceptedOffer }) => {
       <div className="flex flex-col md:flex-row gap-4 md:gap-8">
         <div className="flex-shrink-0">
           <img
-            src={`/storage/company/companyLogo/${acceptedOffer.application.internship.employer.companyLogo}`}
+            src={`/storage/company/companyLogo/${acceptedOffer.application.internship.company.companyLogo}`}
             alt="CompanyLogo"
             className="rounded-full mx-auto md:mx-0 w-24 h-24 md:w-28 md:h-28 border ring-1 ring-gray-900"
           />
@@ -49,10 +49,10 @@ const AcceptedInternshipCard = ({ acceptedOffer }) => {
               {acceptedOffer.application.internship.internshipTitle}
             </h5>
             <p className="mb-2 font-semibold text-normal text-gray-700">
-              {acceptedOffer.application.internship.employer.companyName}
+              {acceptedOffer.application.internship.company.companyName}
             </p>
             <p className="mb-2 font-semibold text-normal text-gray-700">
-              {acceptedOffer.application.internship.employer?.companyCity}, {acceptedOffer.application.internship.employer?.companyState}
+              {acceptedOffer.application.internship.company?.companyCity}, {acceptedOffer.application.internship.company?.companyState}
             </p>
             <p className="mb-2 font-normal text-gray-700">
               {acceptedOffer.application.internship.internshipDescription}
@@ -140,7 +140,7 @@ const AcceptedInternshipCard = ({ acceptedOffer }) => {
             Cancel
           </button>
           <Link
-            href={`/messages/${acceptedOffer.application.internship.employer.id}?receiverType=${encodeURIComponent('employer')}`}
+            href={`/messages/${acceptedOffer.application.internship.company.id}?receiverType=${encodeURIComponent('employer')}`}
             className="flex items-center justify-center px-4 py-3 mt-2 border bg-white border-gray-900 text-gray-900 rounded-lg"
           >
             <MdChatBubbleOutline size={22} className="mr-2" /> Message
@@ -151,7 +151,7 @@ const AcceptedInternshipCard = ({ acceptedOffer }) => {
       {/* Modal for reasonRejected */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
+          <div className="bg-white p-6 rounded-lg shadow-lg lg:w-1/2">
             <h3 className="text-lg font-semibold mb-4">Cancel Internship</h3>
             <form onSubmit={handleCancelSubmit}>
               <div className="mb-4">

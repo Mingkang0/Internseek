@@ -1,5 +1,5 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState } from 'react';
 
 export default function UpdateInterviewResult({ application }) {
@@ -13,6 +13,32 @@ export default function UpdateInterviewResult({ application }) {
   const [meetingMethod, setMeetingMethod] = useState('');
   const [location, setLocation] = useState('');
   const [meetingLink, setMeetingLink] = useState('');
+  const [technicalRating, setTechnicalRating] = useState(0);  
+  const [performanceRating, setPerformanceRating] = useState(0); 
+  const [softRating, setSoftRating] = useState(0); 
+  const [overallRating, setOverallRating] = useState(0); 
+  const [interviewComment, setInterviewComment] = useState('');
+  const [hoverRating, setHoverRating] = useState(null); // For hover state
+
+  const [technicalHover, setTechnicalHover] = useState(null);  // Hover state for technical rating
+  const [performanceHover, setPerformanceHover] = useState(null);  // Hover state for performance rating
+  const [softHover, setSoftHover] = useState(null);  // Hover state for soft skills rating
+  const [overallHover, setOverallHover] = useState(null);  // Hover state for overall rating
+
+
+  const handleRatingClick = (index, setRatingFunction) => {
+    setRatingFunction(index + 1); // Set rating based on index clicked
+  };
+
+  // Handle mouse over (hover effect)
+  const handleMouseOver = (index, setHoverFunction) => {
+    setHoverFunction(index + 1);
+  };
+
+  // Handle mouse leave (reset to the original rating)
+  const handleMouseLeave = (setHoverFunction) => {
+    setHoverFunction(null); // Reset hover to null after leaving
+  };
 
   const handleApplicationStatusChange = (e) => {
     setApplicationStatus(e.target.value);
@@ -39,6 +65,11 @@ export default function UpdateInterviewResult({ application }) {
   const handleSubmit = () => {
     const formData = new FormData();
     formData.append('applicationStatus', applicationStatus);
+    formData.append('technicalRating', technicalRating); 
+    formData.append('performanceRating', performanceRating);  
+    formData.append('softRating', softRating);
+    formData.append('overallRating', overallRating);
+    formData.append('interviewComment', interviewComment); 
 
     if (applicationStatus === 'Approved') {
       if (offerLetter) {
@@ -69,22 +100,30 @@ export default function UpdateInterviewResult({ application }) {
 
   return (
     <DefaultLayout>
-      <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4">
-        <div className="w-3/4 p-5 mt-2 mx-auto bg-white border border-gray-200 rounded-lg shadow">
+      <Head title="Update Interview Result" />
+      <div className="bg-gray-200 px-6 py-4 min-h-screen mx-auto overflow-y-auto lg:py-4">
+        <div className="w-full p-5 mt-2 mx-auto bg-white border border-gray-200 rounded-lg shadow lg:max-w-2xl">
           <h5 className="text-center mb-2 text-lg font-bold tracking-tight text-gray-900">
-            Update Application Status
+            Update Interview Result
           </h5>
 
-          <div className="flex justify-between mt-4">
-            <p className="flex font-semibold text-base text-gray-700 gap-2">
-              Name: <span className="font-medium">{application.student.firstName} {application.student.lastName}</span>
-            </p>
-            <p className="flex font-semibold text-base text-gray-700 gap-2">
-              Applied Internship: <span className="font-medium">{application.internship.internshipTitle}</span>
-            </p>
+          <div className="flex flex-wrap justify-between mt-4">
+            <div className="flex flex-wrap gap-2">
+              <p className="flex font-semibold text-base text-gray-700 gap-2">
+                Name:
+              </p>
+
+              <span className="">{application.student.firstName} {application.student.lastName}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <p className="flex font-semibold text-base text-gray-700 ">
+                Applied Internship:
+              </p>
+              <span className="">{application.internship.internshipTitle}</span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-12 gap-6 text-left mt-4">
+          <div className="grid grid-cols-6 lg:grid-cols-12 gap-4 lg:gap-6 text-left mt-4">
             <div className="col-span-6">
               <label className="block text-sm font-medium text-gray-700">Application Status</label>
               <select
@@ -243,6 +282,128 @@ export default function UpdateInterviewResult({ application }) {
                   onChange={(e) => setActualAllowance(e.target.value)}
                 />
               </div>
+            )}
+            {applicationStatus && (
+              <>
+                <div className="col-span-6">
+                  <label className="block text-sm font-medium text-gray-700">Technical Rating</label>
+                  <div className="flex flex-col lg:flex-row items-center mt-2">
+                  <div className="flex">
+                    {Array(5).fill(0).map((_, i) => (
+                      <svg
+                        key={i}
+                        className={`w-8 h-8 ms-1 ${i < (technicalHover !== null ? technicalHover : technicalRating) ? 'text-yellow-300' : 'text-gray-300 dark:text-gray-500'}`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                        onClick={() => handleRatingClick(i, setTechnicalRating)}
+                        onMouseOver={() => handleMouseOver(i, setTechnicalHover)}
+                        onMouseLeave={() => handleMouseLeave(setTechnicalHover)}
+                      >
+                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                      </svg>
+                    ))}
+                    </div>
+                    {technicalRating > 0 && (
+                      <span className="text-gray-500 dark:text-gray-400 text-sm font-medium ms-2">
+                        {technicalRating} out of 5
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="col-span-6">
+                  <label className="block text-sm font-medium text-gray-700">Performance Rating</label>
+                  <div className="flex flex-col lg:flex-row items-center mt-2">
+                    <div className="flex">
+                    {Array(5).fill(0).map((_, i) => (
+                      <svg
+                        key={i}
+                        className={`w-8 h-8 ms-1 ${i < (performanceHover !== null ? performanceHover : performanceRating) ? 'text-yellow-300' : 'text-gray-300 dark:text-gray-500'}`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                        onClick={() => handleRatingClick(i, setPerformanceRating)}
+                        onMouseOver={() => handleMouseOver(i, setPerformanceHover)}
+                        onMouseLeave={() => handleMouseLeave(setPerformanceHover)}
+                      >
+                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                      </svg>
+                    ))}
+                    </div>
+                    {performanceRating > 0 && (
+                      <span className="text-gray-500 dark:text-gray-400 text-sm font-medium ms-2">
+                        {performanceRating} out of 5
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-span-6">
+                  <label className="block text-sm font-medium text-gray-700">Softskills Rating</label>
+                  <div className="flex flex-col lg:flex-row items-center mt-2">
+                    <div className="flex">
+                    {Array(5).fill(0).map((_, i) => (
+                      <svg
+                        key={i}
+                        className={`w-8 h-8 ms-1 ${i < (softHover !== null ? softHover : softRating) ? 'text-yellow-300' : 'text-gray-300 dark:text-gray-500'}`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                        onClick={() => handleRatingClick(i, setSoftRating)}
+                        onMouseOver={() => handleMouseOver(i, setSoftHover)}
+                        onMouseLeave={() => handleMouseLeave(setSoftHover)}
+                      >
+                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                      </svg>
+                    ))}
+                    </div>
+                    {softRating > 0 && (
+                      <span className="text-gray-500 dark:text-gray-400 text-sm font-medium ms-2">
+                        {softRating} out of 5
+                      </span>
+                    )}
+
+                  </div>
+                </div>
+
+                <div className="col-span-6">
+                  <label className="block text-sm font-medium text-gray-700">Overall Rating</label>
+                  <div className="flex flex-col lg:flex-row items-center mt-2">
+                    <div className="flex">
+                    {Array(5).fill(0).map((_, i) => (
+                      <svg
+                        key={i}
+                        className={`w-8 h-8 ms-1 ${i < (overallHover !== null ? overallHover : overallRating) ? 'text-yellow-300' : 'text-gray-300 dark:text-gray-500'}`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                        onClick={() => handleRatingClick(i, setOverallRating)}
+                        onMouseOver={() => handleMouseOver(i, setOverallHover)}
+                        onMouseLeave={() => handleMouseLeave(setOverallHover)}
+                      >
+                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                      </svg>
+                    ))}
+                    </div>
+                    {overallRating > 0 && (
+                      <span className="text-gray-500 dark:text-gray-400 text-sm font-medium ms-2">
+                        {overallRating} out of 5
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="col-span-6">
+                  <label className="block text-sm font-medium text-gray-700">Overall Comment</label>
+                  <textarea
+                    name="interviewComment"
+                    id="interviewComment"
+                    rows={5}
+                    value={interviewComment}
+                    onChange={(e) => setInterviewComment(e.target.value)}
+                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+              </>
             )}
           </div>
 

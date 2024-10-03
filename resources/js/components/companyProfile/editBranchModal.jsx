@@ -5,7 +5,7 @@ import { MalaysianStates } from '../state';
 import Swal from 'sweetalert2';
 import { useForm, router } from '@inertiajs/react';
 
-export default function EditBranchModal({ branch, employerID, closeModal }) {
+export default function EditBranchModal({ branch, companyID, closeModal }) {
 
 
   const { data, setData, post, errors, setError } = useForm({

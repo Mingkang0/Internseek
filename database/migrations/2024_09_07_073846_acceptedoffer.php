@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('workingDays')->nullable();
             $table->string('startDate')->nullable();
             $table->string('endDate')->nullable();
+            $table->unsignedBigInteger('employerID')->nullable();
+            $table->foreign('employerID')->references('id')->on('employers');
             $table->timestamps();
         });
     }

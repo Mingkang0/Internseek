@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contact_persons', function (Blueprint $table) {
+        Schema::create('employers', function (Blueprint $table) {
             $table->id();
             $table->string('firstName');
             $table->string('lastName');
@@ -20,13 +20,16 @@ return new class extends Migration
             $table->string('password');
             $table->string('position')->nullable();
             $table->string('department')->nullable();
+            $table->string('status')->nullable();
+            $table->string('userType')->nullable();
             // First, make the column nullable
-            $table->unsignedBigInteger('employerID')->nullable();
+            $table->unsignedBigInteger('companyID')->nullable();
+            $table->string('remember_token')->nullable();
             $table->string('reset_password_token')->nullable();
 
             // Then, add the foreign key constraint
-            $table->foreign('employerID')
-                  ->references('id')->on('employers')
+            $table->foreign('companyID')
+                  ->references('id')->on('companies')
                   ->onDelete('cascade');
             $table->timestamps();
         });

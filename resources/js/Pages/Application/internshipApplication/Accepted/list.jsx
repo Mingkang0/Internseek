@@ -1,11 +1,19 @@
 import DefaultLayout from '@/layout/defaultLayout';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import AcceptedApplicantCard from '@/components/internshipApplication/acceptedCard';
 
 export default function AcceptedApplicantList({ applications }) {
   const { flash } = usePage().props;
+
+  const [name, setName] = useState('');
+  const [internship, setInternship] = useState('');
+  const [filteredApplications, setFilteredApplications] = useState(applications);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Number of items to display per page
 
   useEffect(() => {
     if (flash.success) {
@@ -21,31 +29,123 @@ export default function AcceptedApplicantList({ applications }) {
     }
   }, [flash]);
 
+  useEffect(() => {
+    const filtered = applications.filter((application) => {
+      const fullName = `${application.student.firstName} ${application.student.lastName}`.toLowerCase();
+      const matchesName = fullName.includes(name.toLowerCase());
+      const matchesInternship = internship ? application.internship.internshipTitle === internship : true;
+      return matchesName && matchesInternship;
+    });
+
+    setFilteredApplications(filtered);
+    setCurrentPage(1); // Reset to first page whenever filters change
+  }, [name, internship, applications]);
+
+  const uniqueInternships = applications.reduce((acc, application) => {
+    const title = application.internship.internshipTitle;
+    if (!acc.includes(title)) {
+      acc.push(title);
+    }
+    return acc;
+  }, []);
+
+  // Calculate current applications to display
+  const indexOfLastApplication = currentPage * itemsPerPage;
+  const indexOfFirstApplication = indexOfLastApplication - itemsPerPage;
+  const currentApplications = filteredApplications.slice(indexOfFirstApplication, indexOfLastApplication);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   return (
     <DefaultLayout>
-      <div className='bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4'>
+      <div className='bg-gray-200 px-6 py-4 min-h-screen mx-auto overflow-y-auto lg:py-4'>
+        <Head title='Accepted Applicants List' />
         <div className='container mx-auto'>
           <h3 className="text-xl font-bold text-gray-800">Applicants (Accept Offer) ({applications.length})</h3>
-          <div className='applicant-list'>
-            <div className="mt-4">
-                <>
-                  {applications.map((application) => (
-                    <AcceptedApplicantCard key={application.id} application={application} />
-                  ))}
-                  {applications.length === 0 && (
-                    <div className="w-full p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
-                      <div className="flex items-center justify-center">
-                        <p className="text-base text-gray-600">No accepted applicants.</p>
-                      </div>
-                    </div>
-                  )}
-                </>
+          <div className='flex flex-col lg:flex-row lg:justify-end mt-2 gap-4 lg:mt-0'>
+            <div>
+              <select
+                value={internship}
+                onChange={(e) => setInternship(e.target.value)}
+                className="bg-white border border-gray-300 text-gray-900 w-full lg:w-56 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 flex-grow"
+              >
+                <option value="">Select Internship</option>
+                {[...uniqueInternships].map((title) => (
+                  <option key={title} value={title}>
+                    {title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Search by name"
+                className="bg-white border border-gray-300 text-gray-900 w-full lg:w-56 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 flex-grow"
+              />
             </div>
           </div>
+          <div className='applicant-list'>
+            <div className="mt-4">
+              <>
+                {currentApplications.map((application) => (
+                  <AcceptedApplicantCard key={application.id} application={application} />
+                ))}
+                {currentApplications.length === 0 && (
+                  <div className="text-center text-gray-700">No applicants found</div>
+                )}
+              </>
+            </div>
+          </div>
+
+          {/* Pagination Controls */}
+          <nav aria-label="Page navigation example" className="mt-6">
+            <div className='flex justify-end'>
+              <ul className="inline-flex flex-wrap -space-x-px text-sm md:text-base">
+                <li>
+                  <a
+                    href="#"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    className={`flex items-center justify-center px-4 md:px-6 h-12 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? 'cursor-not-allowed' : ''}`}
+                  >
+                    Previous
+                  </a>
+                </li>
+                {Array.from({ length: totalPages }, (_, index) => index + 1).map(number => (
+                  <li key={number}>
+                    <a
+                      href="#"
+                      onClick={() => handlePageChange(number)}
+                      aria-current={currentPage === number ? "page" : undefined}
+                      className={`flex items-center justify-center px-4 md:px-6 h-12 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${currentPage === number ? 'text-blue-600 border-blue-300 bg-blue-50' : ''}`}
+                    >
+                      {number}
+                    </a>
+                  </li>
+                ))}
+                <li>
+                  <a
+                    href="#"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    className={`flex items-center justify-center px-3 md:px-6 h-12 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'cursor-not-allowed' : ''}`}
+                  >
+                    Next
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
         </div>
       </div>
     </DefaultLayout>
   );
-
 }

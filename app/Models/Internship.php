@@ -24,7 +24,7 @@ class Internship extends Model
         'postingStatus',
         'workingMethod',
         'studyScope',
-        'employerID',
+        'companyID',
         'createdBy',
         'lastEditedBy',
         'branchID',
@@ -39,10 +39,9 @@ class Internship extends Model
         return $this->hasMany(InternshipApplication::class, 'internshipID');
     }
     
-    // Define the relationship with Employer
-    public function employer()
+    public function company()
     {
-        return $this->belongsTo(Employer::class, 'employerID');
+        return $this->belongsTo(Company::class, 'companyID');
     }
 
     public function clicks()
@@ -62,12 +61,12 @@ class Internship extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo(ContactPerson::class, 'createdBy');
+        return $this->belongsTo(Employer::class, 'createdBy');
     }
 
     public function lastEditedBy()
     {
-        return $this->belongsTo(ContactPerson::class, 'lastEditedBy');
+        return $this->belongsTo(Employer::class, 'lastEditedBy');
     }
 
     public function branch()

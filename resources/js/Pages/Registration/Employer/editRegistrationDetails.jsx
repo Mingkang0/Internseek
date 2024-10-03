@@ -1,40 +1,39 @@
 import DefaultLayout from "@/layout/defaultLayout";
-import { router, useForm } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 import { useState } from 'react';
 
-export default function EditRegistrationDetails({ employer, contactPerson }) {
+export default function EditRegistrationDetails({ employer, company }) {
 
   const [logoPreview, setLogoPreview] = useState(
-    employer.companyLogo ? `/storage/company/companyLogo/${employer.companyLogo}` : null
+    company.companyLogo ? `/storage/company/companyLogo/${company.companyLogo}` : null
   );
 
   const [documentPreview, setDocumentPreview] = useState(null);
 
   const { data, setData, post, errors, progress } = useForm({
-    companyName: employer.companyName || "",
-    companyPhone: employer.companyPhone || "",
-    companyEmail: employer.companyEmail || "",
-    businessRegNum: employer.businessRegNum || "",
-    businessRegDate: employer.businessRegDate || "",
-    companySize: employer.companySize || "",
-    companyType: employer.companyType || "",
-    companyCountry: employer.companyCountry || "",
-    companySector: employer.companySector || "",
-    companyWebsite: employer.companyWebsite || "",
-    companyAddress1: employer.companyAddress1 || "",
-    companyAddress2: employer.companyAddress2 || "",
-    companyPostalCode: employer.companyPostalCode || "",
-    companyCity: employer.companyCity || "",
-    companyState: employer.companyState || "",
-    documentType: employer.documentType || "",
+    companyName: company.companyName || "",
+    companyPhone: company.companyPhone || "",
+    companyEmail: company.companyEmail || "",
+    businessRegNum: company.businessRegNum || "",
+    businessRegDate: company.businessRegDate || "",
+    companySize: company.companySize || "",
+    companyType: company.companyType || "",
+    companyCountry: company.companyCountry || "",
+    companySector: company.companySector || "",
+    companyWebsite: company.companyWebsite || "",
+    companyAddress1: company.companyAddress1 || "",
+    companyAddress2: company.companyAddress2 || "",
+    companyPostalCode: company.companyPostalCode || "",
+    companyCity: company.companyCity || "",
+    companyState: company.companyState || "",
+    documentType: company.documentType || "",
     documentName: null,
     companyLogo: null,
-    firstName: contactPerson.firstName || "",
-    lastName: contactPerson.lastName || "",
-    email: contactPerson.email || "",
-    phoneNum: contactPerson.phoneNum || "",
-    position: contactPerson.position || "",
-    department: contactPerson.department || "",
+    firstName: employer.firstName || "",
+    lastName: employer.lastName || "",
+    phoneNum: employer.phoneNum || "",
+    position: employer.position || "",
+    department: employer.department || "",
   });
 
   console.log(data);
@@ -62,7 +61,7 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
       formData.append("companyLogo", data.companyLogo);
     }
 
-    post(`/update/registration-details/${employer.id}`, {
+    post(`/update/registration-details/${company.id}`, {
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -131,24 +130,25 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
 
   return (
     <DefaultLayout>
+      <Head title="Edit Registration Details" />
       <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4">
-        <div className="container mx-auto max-w-3xl">
+        <div className="w-full mx-auto lg:max-w-4xl">
           <div className="w-full p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
 
-            <h5 className="text-xl font-bold text-gray-900">Employer Details</h5>
+            <h5 className="text-xl font-bold text-gray-900">Company Details</h5>
             {
-              employer.registrationStatus === 'Pending' ? (
+              company.registrationStatus === 'Pending' ? (
                 <div>
                   <p className="text-base font-medium text-gray-900">Status: Pending</p>
                   <p className="mt-2 text-sm font-medium text-gray-900">You can edit your registration details below.</p>
 
                 </div>
               ) : (
-                employer.registrationStatus === 'Inquiry' ? (
+                company.registrationStatus === 'Inquiry' ? (
                   // Render content for "Inquiry" status
                   <div>
                     <p>Status: Inquiry</p>
-                    <p className="mt-2">Comment from Admin: {employer.inquiryComment} </p>
+                    <p className="mt-2">Comment from Admin: {company.inquiryComment} </p>
 
                   </div>
                 ) : (
@@ -157,7 +157,7 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
                 )
               )
             }
-            {(employer.registrationStatus === 'Pending' || employer.registrationStatus === 'Inquiry') && (
+            {(company.registrationStatus === 'Pending' || company.registrationStatus === 'Inquiry') && (
               <form onSubmit={handleSubmit}>
                 <div className="companyDetails">
                   <p className="mb-2 text-lg font-bold tracking-tight text-blue-800 mt-2">Company Details</p>
@@ -195,7 +195,7 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
                     <div className="col-span-1">
                       <label className="block text-sm font-semibold text-gray-700">{data.documentType}</label>
                       <div className="flex items-center gap-4">
-                        <a id="download-link" href={`/storage/company/businessRegDocuments/${employer.documentName}`} target="_blank" style={{ display: 'none' }} />
+                        <a id="download-link" href={`/storage/company/businessRegDocuments/${company.documentName}`} target="_blank" style={{ display: 'none' }} />
                         <button onClick={(e) => { e.preventDefault(); document.getElementById('download-link').click() }} className="mt-1 px-4 py-2 border border-gray-300 rounded-md bg-red-600 text-white">Download</button>
                         <input
                           type="file"
@@ -266,6 +266,7 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
                     </div>
                   </div>
                   <div className="mt-4">
+                    <h5 className="text-lg font-bold text-blue-800">Company Address</h5>
                     <label className="block text-sm font-semibold text-gray-700">Company Address</label>
                     <input name="companyAddress1" className="mt-1 p-2 w-full border border-gray-300 bg-white rounded-md text-sm" value={data.companyAddress1} onChange={(e) => setData('companyAddress1', e.target.value)} />
                     <input name="companyAddress2" className="mt-2 p-2 w-full border border-gray-300 bg-white rounded-md text-sm" value={data.companyAddress2} onChange={(e) => setData('companyAddress2', e.target.value)} />
@@ -309,7 +310,7 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
                     </label>
                   </div>
                   <div className="contactPerson col-span-9">
-                    <p className="mb-2 text-lg font-bold tracking-tight text-blue-800">Contact Person Details</p>
+                    <p className="mb-2 text-lg font-bold tracking-tight text-blue-800">Employer Details</p>
                     <>
                       <div className="grid grid-cols-3 gap-4 mt-2">
                         <div className="col-span-1">
@@ -327,8 +328,8 @@ export default function EditRegistrationDetails({ employer, contactPerson }) {
                         <div className="col-span-1">
                           <label className="block text-sm font-semibold text-gray-700">Email</label>
                           <input name="email" className="mt-1 p-2 w-full border border-gray-300 bg-white rounded-md text-sm" type="email"
-                            value={data.email}
-                            onChange={(e) => setData("email", e.target.value)} />
+                            value={employer.email}
+                            disabled />
                         </div>
                       </div>
 

@@ -35,7 +35,7 @@ const Step2 = ({ formData, setFormData }) => {
         />
         <label 
           htmlFor="logo_input" 
-          className="w-52 text-sm flex items-center cursor-pointer border border-gray-900 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2 px-3 rounded-lg"
+          className="w-52 text-sm flex items-center justify-center cursor-pointer border border-gray-900 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2 px-3 rounded-lg"
         >
           <FaUpload size={18} className="mr-2" /> Upload Company Logo
         </label>

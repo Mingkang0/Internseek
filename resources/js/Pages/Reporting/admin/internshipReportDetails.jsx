@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import DefaultLayout from '@/layout/defaultLayout';
-import { router, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 
 export default function ReportRequest({ report }) {
 
@@ -54,14 +54,15 @@ export default function ReportRequest({ report }) {
 
   return (
     <DefaultLayout>
+      <Head title="Report Internship Details" />
       <div className='bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4'>
-        <div className="container mx-auto max-w-3xl p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
-          <h5 className="mb-2 text-xl font-bold tracking-tight text-blue-800">Update Internship Report Status</h5>
-          <div className='flex justify-between'>
-            <p className="text-sm text-gray-900 font-semibold">Company Name: {report.internship.employer.companyName}</p>
+        <div className="mx-auto p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow w-full lg:max-w-3xl">
+          <h5 className="mb-2 text-xl font-bold tracking-tight text-blue-800">Report Internship Details</h5>
+          <div className='flex flex-wrap justify-between gap-4'>
+            <p className="text-sm text-gray-900 font-semibold">Company Name: {report.internship.company.companyName}</p>
             <p className="text-sm text-blue-800 font-semibold">Report Status: {report.reportStatus}</p>
           </div>
-          <div className='grid grid-cols-2 gap-4 mt-4'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2'>
             <div className='col-span-1'>
               <label className="block text-sm font-semibold text-gray-900">Problem Description</label>
               <textarea value={report.problemDesc} rows={4} className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md bg-gray-100 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
@@ -72,7 +73,7 @@ export default function ReportRequest({ report }) {
             </div>
           </div>
           <h5 className="mb-2 text-base font-bold tracking-tight text-blue-800 mt-4">Internship Details</h5>
-          <div className='grid grid-cols-2 gap-4 mt-4'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4'>
             <div className='col-span-1'>
               <label className="block text-sm font-semibold text-gray-900">Internship Title</label>
               <input type="text" value={report.internship.internshipTitle} className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md bg-gray-100 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
@@ -94,7 +95,7 @@ export default function ReportRequest({ report }) {
             <label className="block text-sm font-semibold text-gray-900">Internship Requirements</label>
             <textarea value={report.internship.internshipRequirement.split('. ').join('\n')} rows={4} className="w-full px-3 py-2 mt-1 border border-gray-300 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
           </div>
-          <div className='grid grid-cols-2 gap-4 mt-2'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2'>
             <div className='col-span-1'>
               <label className="block text-sm font-semibold text-gray-900">Start Posting Date</label>
               <input type="text" value={report.internship.startPostingDate} className="w-full px-3 py-2 mt-1 border border-gray-300 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
@@ -104,7 +105,7 @@ export default function ReportRequest({ report }) {
               <input type="text" value={report.internship.endPostingDate} className="w-full px-3 py-2 mt-1 border border-gray-300 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
             </div>
           </div>
-          <div className='grid grid-cols-3 gap-4 mt-2'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 mt-2'>
             <div className='col-span-1'>
               <div className=''>
                 <label className="block text-sm font-semibold text-gray-900">Internship Period</label>
@@ -120,24 +121,28 @@ export default function ReportRequest({ report }) {
                 <label className="block text-sm font-semibold text-gray-900">Working Hour</label>
                 <input type="text" value={report.internship.workingHour} className="w-full px-3 py-2 mt-1 border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
               </div>
-              <div className='mt-2'>
-                <label className="block text-sm font-semibold text-gray-900">Branch</label>
-                <input type="text" className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md bg-gray-100  shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
-              </div>
+              {report.internship.branch && (
+                <div className='mt-2'>
+                  <label className="block text-sm font-semibold text-gray-900">Branch</label>
+                  <input type="text" value={report.internship.branch.branchName} className="w-full px-3 py-2 mt-1 border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
+                </div>
+              )}
             </div>
             <div className='col-span-1'>
               <div>
                 <label className="block text-sm font-semibold text-gray-900">Study Scope</label>
                 <input type="text" value={report.internship.studyScope} className="w-full px-3 py-2 mt-1 border border-gray-300 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
               </div>
+            {report.internship.site && (
               <div className='mt-2'>
                 <label className="block text-sm font-semibold text-gray-900">Site</label>
-                <input type="text" className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md bg-gray-100 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
+                <input type="text" value={report.internship.site.siteName} className="w-full px-3 py-2 mt-1 border border-gray-300 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled />
               </div>
+            )}
             </div>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className='grid grid-cols-2 gap-4 mt-4'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4'>
               <div className="updateStatus col-span-1">
                 <label className="block text-sm font-semibold text-gray-900">Update Status</label>
                 <select value={data.reportStatus} onChange={handleStatusChange} className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled={isResolved}>

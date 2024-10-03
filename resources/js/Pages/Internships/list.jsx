@@ -5,24 +5,6 @@ import DefaultLayout from '@/layout/defaultLayout';
 import { Head, usePage } from '@inertiajs/react';
 import Swal from 'sweetalert2';
 
-const locationMap = {
-  '1': 'Kuala Lumpur',
-  '2': 'Selangor',
-  '3': 'Penang',
-  '4': 'Labuan',
-  '5': 'Putrajaya',
-  '6': 'Johor',
-  '7': 'Kedah',
-  '8': 'Kelantan',
-  '9': 'Melaka',
-  '10': 'Negeri Sembilan',
-  '11': 'Pahang',
-  '12': 'Perak',
-  '13': 'Perlis',
-  '14': 'Sabah',
-  '15': 'Sarawak',
-  '16': 'Terengganu',
-};
 
 const ITEMS_PER_PAGE = 5;
 
@@ -74,21 +56,16 @@ const InternshipListing = ({ internships }) => {
     setKeyword(event.target.value);
   };
 
-  const handleLocationChange = (event) => {
-    const locationValue = event.target.value;
-    setLocation(locationMap[locationValue] || '');
-  };
-
   const handleShowInternships = () => {
     const filtered = internships.filter((internship) => {
-      const employer = internship.employer; // Assuming `employer` is directly available in `internship`
+      console.log(internship);
+      const company = internship.company; // Assuming `company` is directly available in `internship`
       return (
         (!studyField || internship.studyScope === studyField) &&
         (!keyword || internship.internshipTitle.toLowerCase().includes(keyword.toLowerCase())) &&
-        (!location || (employer?.state === location))
+        (!location || (company.companyState && company.companyState.toLowerCase().trim() === location.toLowerCase().trim()))
       );
     });
-
     setFilteredInternships(filtered);
     setCurrentPage(1); // Reset to the first page whenever the search is performed
   };
@@ -143,16 +120,27 @@ const InternshipListing = ({ internships }) => {
               <label className="block mb-2 text-sm font-semibold text-gray-900">Location</label>
               <select
                 id="location"
-                value={Object.keys(locationMap).find(key => locationMap[key] === location) || ""}
-                onChange={handleLocationChange}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
                 className="bg-white border border-gray-300 text-gray-900 w-80 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 flex-grow"
               >
                 <option value="">Select State</option>
-                {Object.entries(locationMap).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value}
-                  </option>
-                ))}
+                <option value="Johor">Johor</option>
+                <option value="Kedah">Kedah</option>
+                <option value="Kelantan">Kelantan</option>
+                <option value="Kuala Lumpur">Kuala Lumpur</option>
+                <option value="Labuan">Labuan</option>
+                <option value="Melaka">Melaka</option>
+                <option value="Negeri Sembilan">Negeri Sembilan</option>
+                <option value="Pahang">Pahang</option>
+                <option value="Perak">Perak</option>
+                <option value="Perlis">Perlis</option>
+                <option value="Pulau Pinang">Pulau Pinang</option>
+                <option value="Sabah">Sabah</option>
+                <option value="Sarawak">Sarawak</option>
+                <option value="Selangor">Selangor</option>
+                <option value="Terengganu">Terengganu</option>
+                <option value="Putrajaya">Putrajaya</option>
               </select>
             </div>
           </div>
@@ -168,7 +156,7 @@ const InternshipListing = ({ internships }) => {
           {/* Pagination Controls */}
           <nav aria-label="Page navigation example" className="mt-6">
             <div className='flex justify-end'>
-              <ul className="inline-flex -space-x-px text-sm">
+              <ul className="inline-flex flex-wrap -space-x-px text-sm">
                 <li>
                   <a
                     href="#"

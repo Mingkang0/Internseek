@@ -31,4 +31,9 @@ class AcceptedOffer extends Model
     {
         return $this->belongsTo(InternshipApplication::class, 'applicationID');
     }
+
+    public function employer()
+    {
+        return $this->belongsTo(Employer::class, 'employerID');
+    }
 }

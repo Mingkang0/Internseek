@@ -13,7 +13,7 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount, applicationC
   const [selectedReason, setSelectedReason] = useState('');
   const [otherReason, setOtherReason] = useState('');
 
-  const employer = internship.employer;
+  const company = internship.company;
 
   const { auth } = usePage().props;
   const isAuthenticated = auth?.user !== null;
@@ -79,22 +79,22 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount, applicationC
             </div>
             <div className="flex flex-wrap gap-6">
               <div className='md:mr-2 mx-auto'>
-                <img src="../../assets/avatar.png" alt="CompanyLogo" className="w-36 h-36 rounded-full mx-auto border ring-1 ring-gray-900" />
+                <img src={`/storage/company/companyLogo/${company.companyLogo}`} alt="CompanyLogo" className="rounded-full w-24 h-24 md:w-28 md:h-28 mx-auto border ring-1 ring-gray-900" />
               </div>
               <div>
                 <div className="flex gap-2">
                   <p className="mb-3 font-semibold text-normal text-gray-800">Company Name:  </p>
-                  <p className='text-normal text-gray-800'>{employer.companyName}</p>
+                  <p className='text-normal text-gray-800'>{company.companyName}</p>
                 </div>
 
                 <div className="flex gap-2">
                   <p className="mb-3 font-semibold text-normal text-gray-800"> Location:  </p>
-                  <p className='text-normal text-gray-800'>{employer.companyCity}, {employer.companyState}</p>
+                  <p className='text-normal text-gray-800'>{company.companyCity}, {company.companyState}</p>
 
                 </div>
                 {isAuthenticated && userRole === 'student' && (
                   <div className='flex flex-wrap items-center gap-4 justify-center mb-4'>
-                    <InternshipButtons id={internship.id} employerID={internship.employer.id} onReportClick={openReportModal} />
+                    <InternshipButtons id={internship.id} companyID={internship.company.id} onReportClick={openReportModal} />
                   </div>
                 )}
                 <div className="flex flex-wrap gap-2 md:gap-4">

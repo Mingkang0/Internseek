@@ -8,9 +8,10 @@ use App\Models\Internship;
 use App\Models\Employer;
 use App\Models\Bookmark;
 use App\Models\Click;
-use App\Models\ContactPerson;
+use App\Models\Company;
 use App\Models\Branch;
 use App\Models\Site;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -21,11 +22,11 @@ class PostingController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if ($user instanceof ContactPerson) {
-            if($user->employerID) {
-                $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            if($user->companyID) {
+                $company = Company::find($user->companyID);
                 // Fetch internships with their associated employers
-                $internships = Internship::where('employerID', $employer->id)
+                $internships = Internship::where('companyID', $company->id)
                 ->withCount('bookmarks', 'clicks')
                 ->with('createdBy', 'lastEditedBy')
                 ->get();
@@ -50,11 +51,11 @@ class PostingController extends Controller
     {
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
-        if ($user instanceof ContactPerson) {
-            $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            $company = Company::find($user->companyID);
 
             $branch = Branch::with('site') 
-                    -> where('employerID', $employer->id)->get();
+                    -> where('companyID', $company->id)->get();
             return Inertia::render('Posting/createPosting', [
                 'branch' => $branch,
             ]);
@@ -66,8 +67,9 @@ class PostingController extends Controller
 
     public function show($id)
     {
+
         // Fetch the internship with the associated employer
-        $internship = Internship::with(['employer', 'branch', 'site'])->find($id);
+        $internship = Internship::with(['company', 'branch', 'site'])->find($id);
 
         // Get the click count for this internship
         $clickCount = $this->getClickCount($id);
@@ -77,12 +79,16 @@ class PostingController extends Controller
 
         $internship->load('createdBy', 'lastEditedBy');
 
+        $report = Report::where('internshipID', $internship->id)
+                ->orWhere('actionTaken', 'Archived')
+                ->get();
 
         // Return the data to the Inertia view
         return Inertia::render('Posting/viewPosting', [
             'internship' => $internship,
             'clickCount' => $clickCount,
             'bookmarkCount' => $bookmarkCount,
+            'report' => $report,
         ]);
     }
 
@@ -102,12 +108,12 @@ class PostingController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if ($user instanceof ContactPerson) {
-            $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            $company = Company::find($user->companyID);
             $branch = Branch::with('site') 
-                    -> where('employerID', $employer->id)->get();
+                    -> where('companyID', $company->id)->get();
 
-            $internship = Internship::with(['employer', 'branch', 'site'])->find($id);
+            $internship = Internship::with(['company', 'branch', 'site'])->find($id);
 
 
             $internship->load('createdBy', 'lastEditedBy');
@@ -131,8 +137,8 @@ class PostingController extends Controller
         $guard = session('userGuard');
         $user = Auth::guard($guard)->user();
 
-        if ($user instanceof ContactPerson) {
-            $employer = Employer::find($user->employerID);
+        if ($user instanceof Employer) {
+            $company = Company::find($user->companyID);
 
             
             // Validate the incoming request
@@ -168,7 +174,7 @@ class PostingController extends Controller
 
 
             // Add the employer ID and posting status to the validated data
-            $validatedData['employerID'] = $employer->id;
+            $validatedData['companyID'] = $company->id;
             $validatedData['createdBy'] = $user->id;
             $validatedData['lastEditedBy'] = $user->id;
             $validatedData['postingStatus'] = $postingStatus;            

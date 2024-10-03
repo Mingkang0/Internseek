@@ -2,7 +2,7 @@
 import DefaultLayout from '@/layout/defaultLayout';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import BookmarkInternshipCard from '@/components/my-internship/bookmarkInternshipCard';
 import MatchedInternshipCard from '@/components/my-internship/matchedInternshipCard';
 import AppliedInternshipCard from '@/components/my-internship/appliedInternshipCard';
@@ -60,6 +60,7 @@ export default function MyInternships({ bookmarks, matchs, appliedInternships, i
 
   return (
     <DefaultLayout>
+      <Head title="My Internships" />
       <div className='bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4'>
         <div className='container mx-auto'>
           <h3 className="text-xl font-bold text-gray-800">My Internships</h3>
@@ -91,7 +92,7 @@ export default function MyInternships({ bookmarks, matchs, appliedInternships, i
               {filter === 'Bookmark' && (
                 <>
                   <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                    Bookmarked Internships ({bookmarks.length})
+                    Bookmarked Internships 
                   </h5>
                   {bookmarks.map((bookmark) => (
                     <BookmarkInternshipCard key={bookmark.id} bookmark={bookmark} />
@@ -106,7 +107,7 @@ export default function MyInternships({ bookmarks, matchs, appliedInternships, i
               {filter === 'Matched' && (
                 <>
                   <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                    Matched Internships ({matchs.length})
+                    Matched Internships
                   </h5>
                   {matchs.map((match) => (
                     <MatchedInternshipCard key={match.id} match={match} />
@@ -158,7 +159,7 @@ export default function MyInternships({ bookmarks, matchs, appliedInternships, i
               filteredInterviewInternships.length > 0 ? (
                 <>
                   <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                    Interview Internships ({filteredInterviewInternships.length})
+                    Interview Internships
                   </h5>
                   {filteredInterviewInternships.map((internship) => (
                     <InterviewInternshipCard key={internship.id} interview={internship} />
@@ -173,7 +174,7 @@ export default function MyInternships({ bookmarks, matchs, appliedInternships, i
               filteredApprovedInternships.length > 0 ? (
                 <>
                   <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                    Approved Internships ({filteredApprovedInternships.length})
+                    Approved Internships
                   </h5>
                   {filteredApprovedInternships.map((internship) => (
                     <ApprovedInternshipCard key={internship.id} approved={internship} />
@@ -190,7 +191,7 @@ export default function MyInternships({ bookmarks, matchs, appliedInternships, i
                 filterShortlistedInternships.length > 0 ? (
                   <>
                     <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                      Shortlisted Internships ({filterShortlistedInternships.length})
+                      Shortlisted Internships
                     </h5>
                     {filterShortlistedInternships.map((internship) => (
                       <ShortlistedInternshipCard key={internship.id} shortlisted={internship} />
@@ -206,7 +207,7 @@ export default function MyInternships({ bookmarks, matchs, appliedInternships, i
                 filteredAppliedInternships.length > 0 ? (
                   <>
                     <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                      {processFilter.charAt(0).toUpperCase() + processFilter.slice(1)} Internships ({filteredAppliedInternships.length})
+                      {processFilter.charAt(0).toUpperCase() + processFilter.slice(1)} Internships
                     </h5>
                     {filteredAppliedInternships.map((internship) => (
                       <AppliedInternshipCard key={internship.id} appliedInternship={internship} />

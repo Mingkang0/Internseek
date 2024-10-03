@@ -87,11 +87,41 @@ const Message = ({ conversation, userRole, userID }) => {
 
 
   return (
-    <div className="w-3/4 mx-auto p-4 bg-white border border-gray-900 rounded-lg">
+    <div className="w-full lg:ml-4 p-4 bg-white border border-gray-900 rounded-lg">
       {/* Header */}
       <div className="flex items-center mb-2 justify-between">
         <div className='flex gap-2 items-center'>
-          <img src="../../assets/avatar.png" alt="Avatar" className="w-12 h-12 rounded-full border border-gray-900" />
+          {
+            userRole === 'student' ? (
+              <img
+                src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`}
+                alt="CompanyLogo"
+                className="rounded-full w-16 h-16 mx-auto border ring-1 ring-gray-900"
+              />
+            ) : (
+              <>
+                {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                  <img
+                    src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
+                    alt="Local Profile Pic"
+                    className="w-16 h-16 mx-auto rounded-full border border-gray-900"
+                  />
+                ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
+                  <img
+                    className="w-16 h-16 mx-auto rounded-full border border-gray-900"
+                    src={conversation.partner.profilePicture}
+                    alt="LinkedIn Profile Pic"
+                  />
+                ) : (
+                  <img
+                    src="../../assets/avatar.png"
+                    alt="Default Avatar"
+                    className="w-16 h-16 mx-auto rounded-full border border-gray-900"
+                  />
+                )}
+              </>
+            )
+          }
           <h5 className="text-base font-bold text-gray-900">{userRole === 'student' ? conversation.partner.companyName : conversation.partner.firstName + ' ' + conversation.partner.lastName}</h5>
         </div>
       </div>
@@ -105,27 +135,88 @@ const Message = ({ conversation, userRole, userID }) => {
             className={`flex ${message.sender_id === userID && message.sender_type === userRole ? 'justify-end' : 'justify-start'} mb-4`}
           >
             <div className='flex'>
-              {message.receiver_id === conversation.partner.id && message.sender_type !== userRole && (
-                <img src="../../assets/avatar.png" alt="Avatar" className='w-12 h-12 mx-2 rounded-full border border-gray-900' />
+              {message.receiver_id === conversation.partner.id && message.sender_type !== userRole && userRole === 'student' && (
+                <img
+                  src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`}
+                  alt="Company Logo"
+                  className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2"
+                />
               )}
+              {
+                message.receiver_id === conversation.partner.id && message.sender_type !== userRole && userRole === 'employer' && (
+                  <>
+                    {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                      <img
+                        src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
+                        alt="Local Profile Pic"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                      />
+                    ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
+                      <img
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                        src={conversation.partner.profilePicture}
+                        alt="LinkedIn Profile Pic"
+                      />
+                    ) : (
+                      <img
+                        src="../../assets/avatar.png"
+                        alt="Default Avatar"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                      />
+                    )}
+                  </>
+                )}
               <div className={`p-4 border ${message.sender_id === userID ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}>
-                <div className="flex gap-4 items-center mb-2 overflow-y-auto">
+                <div className="flex flex-wrap gap-2 items-center mb-2 overflow-y-auto">
                   <h5 className="text-sm font-semibold text-gray-900">
                     {message.sender_id === userID && message.sender_type === userRole ? 'You' : message.receiver_type === 'student' ? conversation.partner.companyName : conversation.partner.firstName + ' ' + conversation.partner.lastName}
                   </h5>
                   <span className="text-sm text-gray-600">{formatDate(message.created_at)}</span>
                 </div>
                 <p className="text-sm text-gray-700">{message.messageDetails}</p>
-                {message.messageImage && <img src={`/storage/messages/images/${message.messageImage}`} alt="Message Image" className="mt-2 max-w-xs" />}
+                {message.messageImage && <img src={`/storage/messages/images/${message.messageImage}`} alt="Message Image" className="mt-2 w-64" />}
                 {message.messageDocument && <a href={`/storage/messages/files/${message.messageDocument}`} className="block mt-2 text-blue-500" download>Download File</a>}
                 <div className="flex justify-end mt-2">
                   {message.contact_person && (
                     <p className="text-sm text-gray-600">Sent By: {message.contact_person.firstName} {message.contact_person.lastName}</p>
                   )}
+
                 </div>
+                {message.sender_id === userID && message.sender_type === userRole && (
+                  <div className='flex justify-end mt-1'>
+                    <p className='text-sm text-gray-600'>{message.messageStatus}</p>
+                  </div>
+                )}
               </div>
             </div>
-            {message.sender_id === userID && message.sender_type === userRole && <img src="../../assets/avatar.png" alt="Avatar" className='w-12 h-12 mx-2 rounded-full border border-gray-900' />}
+            {message.sender_id === userID && message.receiver_type !== userRole && message.sender_type === 'student' && (
+              <>
+                {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                  <img
+                    src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
+                    alt="Local Profile Pic"
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2"
+                  />
+                ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
+                  <img
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2"
+                    src={conversation.partner.profilePicture}
+                    alt="LinkedIn Profile Pic"
+                  />
+                ) : (
+                  <img
+                    src="../../assets/avatar.png"
+                    alt="Default Avatar"
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2"
+                  />
+                )}
+              </>
+            )}
+            {
+              message.sender_id === userID && message.receiver_type !== userRole && message.sender_type === 'employer' && (
+                <img src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`} alt="Company Logo" className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2" />
+              )
+            }
           </div>
         ))}
       </div>

@@ -25,6 +25,10 @@ class Student extends Authenticatable
     'nationality',
     'dateOfBirth',
     'profilePicture',
+    'passportNo',
+    'linkedin_id',
+    'linkedin_token',
+    'linkedin_public_url',
     ];
     
     protected $hidden = ['password', 'remember_token', 'reset_password_token'];

@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Internship;
 use App\Models\Employer;
-use App\Models\ContactPerson;
+use App\Models\Company;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,8 +19,18 @@ class DatabaseSeeder extends Seeder
     {
 
 
+        $companies = Company::factory()->count(250)->create();
+        
+        // Create employers and associate them with companies
+        $companies->each(function ($company) {
+            Employer::factory()->count(rand(1, 3)) // Random number of employers per company
+                ->create(['companyID' => $company->id]); // Assuming 'company_id' is the foreign key
+        });
 
-
+        // Create 100 internships and associate them with employers
+        $employers = Employer::all(); // Retrieve all employers
+        Internship::factory()->count(100)->create(); // Create 100 internships  
+        
         DB::table('admins')->insert([
             'firstName' => 'admin',
             'lastName' => 'admin',
@@ -42,7 +52,7 @@ class DatabaseSeeder extends Seeder
             'reset_password_token' => null,
         ]);
 
-        DB::table('employers')->insert([
+        DB::table('companies')->insert([
             'companyName' => 'Tech Innovators Inc.',
             'companyEmail' => 'employer@example.com',
             'companyPhone' => '+1-800-555-0101',
@@ -70,7 +80,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         
-        DB::table('contact_persons')->insert([
+        DB::table('employers')->insert([
             'firstName' => 'John',
             'lastName' => 'Doe',
             'phoneNum' => '012-3456789',
@@ -78,7 +88,9 @@ class DatabaseSeeder extends Seeder
             'position' => 'HR Manager',
             'department' => 'Human Resources',
             'password' => bcrypt('1234'),
-            'employerID' => 1,
+            'userType' => 'admin',
+            'status' => 'Active',
+            'companyID' => 1,
         ]);
 
         DB::table('internships')->insert([
@@ -88,13 +100,13 @@ class DatabaseSeeder extends Seeder
             'internshipResponsibility' => 'Develop software applications.',
             'internshipDuration' => 6,
             'internshipAllowance' => 1000,
-            'startPostingDate' => '2021-08-01',
-            'endPostingDate' => '2021-08-31',
+            'startPostingDate' => '2024-08-01',
+            'endPostingDate' => '2025-08-01',
             'workingHour' => 8,
             'postingStatus' => 'Published',
             'workingMethod' => 'Remote',
             'studyScope' => 'Software Engineering',
-            'employerID' => 1,
+            'companyID' => 1,
             'createdBy' => 1,
             'lastEditedBy' => 1,
         ]);
@@ -107,7 +119,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('1234'),
             'ICNumber' => '01122506060041',
             'dateOfBirth' => '2000-01-01',
-            'nationality' => 'Malaysian',
+            'nationality' => 'Malaysian Citizen',
             'gender' => 'Male',
             'profilePicture' => 'https://www.example.com/profile.jpg',
         ]);
@@ -118,9 +130,9 @@ class DatabaseSeeder extends Seeder
             'phoneNum' => '012-3456789',
             'email' => 'student1@example.com',
             'password' => bcrypt('1234'),
-            'ICNumber' => '01122506060041',
+            'passportNo' => 'A12345678',
             'dateOfBirth' => '2000-01-01',
-            'nationality' => 'Malaysian',
+            'nationality' => 'International',
             'gender' => 'Male',
             'profilePicture' => 'https://www.example.com/profile.jpg',
         ]);

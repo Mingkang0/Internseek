@@ -2,17 +2,16 @@
 import DefaultLayout from '@/layout/defaultLayout';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { usePage } from '@inertiajs/react';
+import { usePage, Head } from '@inertiajs/react';
 import AppliedInternshipCard from '@/components/my-internship/appliedInternshipCard';
 import InterviewInternshipCard from '@/components/my-internship/interviewInternshipCard';
 import ApprovedInternshipCard from '@/components/my-internship/approvedInternshipCard';
 import ShortlistedInternshipCard from '@/components/my-internship/shortlistedInternshipCard';
 
-
 export default function MyInternships({ appliedInternships, interviews, approvedInternships, shortlistedInternships }) {
-
   const [processFilter, setProcessFilter] = useState('applied'); // State for process filter
-
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [itemsPerPage] = useState(5); // Set your preferred number of items per page
   const { flash } = usePage().props;
 
   useEffect(() => {
@@ -31,32 +30,46 @@ export default function MyInternships({ appliedInternships, interviews, approved
 
   const handleProcessInternshipFilterChange = (newFilter) => {
     setProcessFilter(newFilter); // Handle process filter change
+    setCurrentPage(1); // Reset to the first page when the filter changes
   };
 
-  // Filter applied internships based on the processFilter
-  const filteredAppliedInternships = appliedInternships.filter((internship) => {
-    return internship.applicationStatus === 'Reviewing' || internship.applicationStatus === 'Unsuccessful';
-  });
+  // Filter internships based on the selected filter
+  const getFilteredInternships = () => {
+    switch (processFilter) {
+      case 'interview':
+        return interviews.filter(internship => internship.application.applicationStatus === 'Interview');
+      case 'approved':
+        return approvedInternships.filter(internship => internship.applicationStatus === 'Approved');
+      case 'shortlisted':
+        return shortlistedInternships.filter(internship => internship.applicationStatus === 'Shortlisted');
+      case 'applied':
+      default:
+        return appliedInternships.filter(internship => 
+          internship.applicationStatus === 'Reviewing' || internship.applicationStatus === 'Unsuccessful');
+    }
+  };
 
-  const filterShortlistedInternships = shortlistedInternships.filter((internship) => {
-    return internship.applicationStatus === 'Shortlisted';
-  });
+  const filteredInternships = getFilteredInternships();
 
-  const filteredApprovedInternships = approvedInternships.filter((internship) => {
-    return internship.applicationStatus === 'Approved';
-  });
+  // Calculate pagination
+  const totalItems = filteredInternships.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Get the current internships to display
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentInternships = filteredInternships.slice(startIndex, startIndex + itemsPerPage);
 
-  // Render interview internships when processFilter is 'interview'
-  const filteredInterviewInternships = interviews.filter((internship) => {
-    return internship.application.applicationStatus === 'Interview';
-  });
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <DefaultLayout>
+      <Head title="Process Internships" />
       <div className='bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4'>
         <div className='container mx-auto'>
-
-
           {/* Process-Internships */}
           <div className='process-internship mt-6'>
             <h3 className="text-lg font-bold text-grey-800 underline">Process-Internships</h3>
@@ -92,71 +105,68 @@ export default function MyInternships({ appliedInternships, interviews, approved
             </div>
 
             {/* Display filtered internships */}
-            {processFilter === 'interview' ? (
-              filteredInterviewInternships.length > 0 ? (
-                <>
-                  <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                    Interview Internships ({filteredInterviewInternships.length})
-                  </h5>
-                  {filteredInterviewInternships.map((internship) => (
-                    <InterviewInternshipCard key={internship.id} interview={internship} />
+            {currentInternships.length > 0 ? (
+              <>
+                <h5 className="text-lg font-semibold text-grey-800 mt-2">
+                  {processFilter.charAt(0).toUpperCase() + processFilter.slice(1)} Internships ({currentInternships.length})
+                </h5>
+                {currentInternships.map(internship => {
+                  switch (processFilter) {
+                    case 'interview':
+                      return <InterviewInternshipCard key={internship.id} interview={internship} />;
+                    case 'approved':
+                      return <ApprovedInternshipCard key={internship.id} approved={internship} />;
+                    case 'shortlisted':
+                      return <ShortlistedInternshipCard key={internship.id} shortlisted={internship} />;
+                    case 'applied':
+                    default:
+                      return <AppliedInternshipCard key={internship.id} appliedInternship={internship} />;
+                  }
+                })}
+              </>
+            ) : (
+              <div className="text-center mt-4">
+                <p className="text-lg font-semibold text-grey-800">No {processFilter.charAt(0).toUpperCase() + processFilter.slice(1)} Internships</p>
+              </div>
+            )}
+
+            {/* Pagination Navigation */}
+            <nav aria-label="Page navigation example" className="mt-6">
+              <div className='flex justify-end'>
+                <ul className="inline-flex flex-wrap -space-x-px text-sm md:text-base">
+                  <li>
+                    <a
+                      href="#"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      className={`flex items-center justify-center px-4 md:px-6 h-12 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? 'cursor-not-allowed' : ''}`}
+                    >
+                      Previous
+                    </a>
+                  </li>
+                  {Array.from({ length: totalPages }, (_, index) => index + 1).map(number => (
+                    <li key={number}>
+                      <a
+                        href="#"
+                        onClick={() => handlePageChange(number)}
+                        aria-current={currentPage === number ? "page" : undefined}
+                        className={`flex items-center justify-center px-4 md:px-6 h-12 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${currentPage === number ? 'text-blue-600 border-blue-300 bg-blue-50' : ''}`}
+                      >
+                        {number}
+                      </a>
+                    </li>
                   ))}
-                </>
-              ) : (
-                <div className="text-center mt-4">
-                  <p className="text-lg font-semibold text-grey-800">No Interview Internships</p>
-                </div>
-              )
-            ) : processFilter === 'approved' ? (
-              filteredApprovedInternships.length > 0 ? (
-                <>
-                  <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                    Approved Internships ({filteredApprovedInternships.length})
-                  </h5>
-                  {filteredApprovedInternships.map((internship) => (
-                    <ApprovedInternshipCard key={internship.id} approved={internship} />
-                  ))}
-                </>
-              ) : (
-                <div className="text-center mt-4">
-                  <p className="text-lg font-semibold text-grey-800">No Approved Internships</p>
-                </div>
-              )
-            ) :
-
-              processFilter === 'shortlisted' ? (
-                filterShortlistedInternships.length > 0 ? (
-                  <>
-                    <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                      Shortlisted Internships ({filterShortlistedInternships.length})
-                    </h5>
-                    {filterShortlistedInternships.map((internship) => (
-                      <ShortlistedInternshipCard key={internship.id} shortlisted={internship} />
-                    ))}
-                  </>
-                ) : (
-                  <div className="text-center mt-4">
-                    <p className="text-lg font-semibold text-grey-800">No Shortlisted Internships</p>
-                  </div>
-
-                )
-              ) : (
-                filteredAppliedInternships.length > 0 ? (
-                  <>
-                    <h5 className="text-lg font-semibold text-grey-800 mt-2">
-                      {processFilter.charAt(0).toUpperCase() + processFilter.slice(1)} Internships ({filteredAppliedInternships.length})
-                    </h5>
-                    {filteredAppliedInternships.map((internship) => (
-                      <AppliedInternshipCard key={internship.id} appliedInternship={internship} />
-                    ))}
-                  </>
-                ) : (
-                  <div className="text-center mt-4">
-                    <p className="text-lg font-semibold text-grey-800">No {processFilter.charAt(0).toUpperCase() + processFilter.slice(1)} Internships</p>
-                  </div>
-                )
-              )}
-
+                  <li>
+                    <a
+                      href="#"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className={`flex items-center justify-center px-3 md:px-6 h-12 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'cursor-not-allowed' : ''}`}
+                    >
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
           </div>
         </div>
       </div>

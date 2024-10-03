@@ -10,12 +10,12 @@ const InternshipCard = ({ internship }) => {
   const userRole = auth?.role; // Adjusted to use `auth.role`
 
 
-  const employer = internship.employer;
+  const company = internship.company;
   return (
     <div className="w-full p-6 mt-4 mx-auto bg-white border border-gray-200 rounded-lg shadow lg:max-w-5xl lg:w-full">
-      <div className="flex flex-wrap gap-3">
-        <div className="md:mr-1 mx-auto">
-          <img src="../../assets/avatar.png" alt="CompanyLogo" className="rounded-full w-28 h-28 mx-auto border ring-1 ring-gray-900" />
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="md:mr-1 flex justify-center">
+          <img src={`/storage/company/companyLogo/${company.companyLogo}`} alt="CompanyLogo" className="rounded-full w-24 h-24 md:w-28 md:h-28 mx-auto border ring-1 ring-gray-900" />
         </div>
 
           <div className='flex flex-col'>
@@ -25,10 +25,10 @@ const InternshipCard = ({ internship }) => {
               </h5>
             </Link>
             <p className="mb-3 font-semibold text-normal text-gray-700">
-              {employer.companyName}
+              {company.companyName}
             </p>
             <p className="mb-3 font-semibold text-normal text-gray-700">
-              {employer?.companyCity}, {employer?.companyState}
+              {company?.companyCity}, {company?.companyState}
             </p>
             <p className="mb-3 font-normal text-gray-700">
               {internship.internshipDescription}
@@ -46,7 +46,7 @@ const InternshipCard = ({ internship }) => {
               <div className="flex items-center text-sm font-semibold text-gray-600">
                 <span className="inline-block text-sm font-normal text-gray-900"><strong>Last Apply:</strong> {internship.endPostingDate}</span>
               </div>
-              <div className="flex gap-4 justify-content: space-between">
+              <div className="flex flex-wrap gap-4 lg:justify-between justify-center">
                 <span className="flex items-center text-sm font-semibold text-gray-800">
                   <FaEye className="mr-2" size={20} /> {internship.clicks_count} views
                 </span>

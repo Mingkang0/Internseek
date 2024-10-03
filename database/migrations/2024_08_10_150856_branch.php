@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('branchCountry');
             $table->string('branchPhoneNum');
             $table->string('branchEmail');
-            $table->foreignId('employerID')->constrained('employers')->onDelete('cascade'); // FK
+            $table->foreignId('companyID')->constrained('companies')->onDelete('cascade'); // FK
             $table->timestamps();
         });
     }

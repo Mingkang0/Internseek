@@ -2,235 +2,72 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
-use App\Models\Employer;
 use Inertia\Inertia;
-use App\Models\Branch;
-use App\Models\Site;
-use App\Models\ContactPerson;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Employer;
+use Illuminate\Support\Facades\Hash;
 
 class EmployerController extends Controller
 {
-    public function branchDetails()
-    {
-        $branches = Branch::with('site')->get();
-        $guard = Auth::guard('employer');
-        $user = $guard->user();
-        $employerID = $user->employerID;
+    public function show(){
+        $user = Auth::guard('employer')->user();
 
-        return Inertia::render('Profile/employer/branchDetails', [
-            'branches' => $branches,
-            'employerID' => $employerID
-        ]);
-    }
+        $employer = Employer::findOrFail($user->id);
 
-    public function storeBranch(Request $request, $id)
-    {
-            $validatedData = $request->validate([
-                'branchName' => 'required|string|max:255',
-                'branchAddress1' => 'required|string|max:255',
-                'branchAddress2' => 'required|string|max:255',
-                'branchCity' => 'required|string|max:255',
-                'branchPostcode' => 'required|string|max:255',
-                'branchState' => 'required|string|max:255',
-                'branchCountry' => 'required|string|max:255',
-                'branchPhoneNum' => 'required|string|max:15',
-                'branchEmail' => 'required|email|max:255',
-            ]);
-    
-            // Create a new branch using the validated data
-            $branch = Branch::create([
-                'branchName' => $validatedData['branchName'],
-                'branchAddress1' => $validatedData['branchAddress1'],
-                'branchAddress2' => $validatedData['branchAddress2'],
-                'branchCity' => $validatedData['branchCity'],
-                'branchState' => $validatedData['branchState'],
-                'branchCountry' => $validatedData['branchCountry'],
-                'branchPhoneNum' => $validatedData['branchPhoneNum'],
-                'branchPostcode' => $validatedData['branchPostcode'],
-                'branchEmail' => $validatedData['branchEmail'],
-                'employerID' => $id,
-            ]);
-    
-        return redirect()->back()->with('success', 'Branch added successfully.');
-    }
-
-    public function storeSite(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'siteName' => 'required|string|max:255',
-            'siteAddress1' => 'required|string|max:255',
-            'siteAddress2' => 'required|string|max:255',
-            'siteCity' => 'required|string|max:255',
-            'sitePostcode' => 'required|string|max:255',
-            'siteState' => 'required|string|max:255',
-            'siteCountry' => 'required|string|max:255',
-            'sitePhone' => 'required|string|max:15',
-            'siteEmail' => 'required|email|max:255',
-        ]);
-
-        // Create a new site using the validated data
-        $site = Site::create([
-            'siteName' => $validatedData['siteName'],
-            'siteAddress1' => $validatedData['siteAddress1'],
-            'siteAddress2' => $validatedData['siteAddress2'],
-            'siteCity' => $validatedData['siteCity'],
-            'siteState' => $validatedData['siteState'],
-            'siteCountry' => $validatedData['siteCountry'],
-            'sitePhone' => $validatedData['sitePhone'],
-            'sitePostcode' => $validatedData['sitePostcode'],
-            'siteEmail' => $validatedData['siteEmail'],
-            'branchID' => $id,
-        ]);
-
-        return redirect()->back()->with('success', 'Site added successfully.');
-    }
-    
-
-    public function updateBranch(Request $request, $id){
-        $validatedData = $request->validate([
-            'branchName' => 'required|string|max:255',
-            'branchAddress1' => 'required|string|max:255',
-            'branchAddress2' => 'required|string|max:255',
-            'branchCity' => 'required|string|max:255',
-            'branchPostcode' => 'required|string|max:255',
-            'branchState' => 'required|string|max:255',
-            'branchCountry' => 'required|string|max:255',
-            'branchPhoneNum' => 'required|string|max:15',
-            'branchEmail' => 'required|email|max:255',
-        ]);
-
-        $branch = Branch::findOrFail($id);
-
-        $branch->update([
-            'branchName' => $validatedData['branchName'],
-            'branchAddress1' => $validatedData['branchAddress1'],
-            'branchAddress2' => $validatedData['branchAddress2'],
-            'branchCity' => $validatedData['branchCity'],
-            'branchState' => $validatedData['branchState'],
-            'branchCountry' => $validatedData['branchCountry'],
-            'branchPhoneNum' => $validatedData['branchPhoneNum'],
-            'branchPostcode' => $validatedData['branchPostcode'],
-            'branchEmail' => $validatedData['branchEmail'],
-        ]);
-
-        return redirect()->back()->with('success', 'Branch updated successfully.');
-    }
-
-    public function updateSite(Request $request, $id){
-        $validatedData = $request->validate([
-            'siteName' => 'required|string|max:255',
-            'siteAddress1' => 'required|string|max:255',
-            'siteAddress2' => 'required|string|max:255',
-            'siteCity' => 'required|string|max:255',
-            'sitePostcode' => 'required|string|max:255',
-            'siteState' => 'required|string|max:255',
-            'siteCountry' => 'required|string|max:255',
-            'sitePhone' => 'required|string|max:15',
-            'siteEmail' => 'required|email|max:255',
-        ]);
-
-        $site = Site::findOrFail($id);
-
-        $site->update([
-            'siteName' => $validatedData['siteName'],
-            'siteAddress1' => $validatedData['siteAddress1'],
-            'siteAddress2' => $validatedData['siteAddress2'],
-            'siteCity' => $validatedData['siteCity'],
-            'siteState' => $validatedData['siteState'],
-            'siteCountry' => $validatedData['siteCountry'],
-            'sitePhone' => $validatedData['sitePhone'],
-            'sitePostcode' => $validatedData['sitePostcode'],
-            'siteEmail' => $validatedData['siteEmail'],
-        ]);
-
-        return redirect()->back()->with('success', 'Site updated successfully.');
-    }
-
-    public function deleteSite($id){
-        $site = Site::findOrFail($id);
-        $site->delete();
-
-        return redirect()->back()->with('success', 'Site deleted successfully.');
-    }
-
-    public function deleteBranch($id){
-        $branch = Branch::findOrFail($id);
-        $branch->delete();
-
-        $site = Site::where('branchID', $id);
-        $site->delete();
-
-        return redirect()->back()->with('success', 'Branch deleted successfully.');
-    }
-
-    public function companyDetails()
-    {
-        $branches = Branch::with('site')->get();
-        $guard = Auth::guard('employer');
-        $user = $guard->user();
-        $employerID = $user->employerID;
-        $employer = Employer::find($employerID);
-
-        return Inertia::render('Profile/employer/profileDetails', [
+        return Inertia::render('Profile/employer/employerDetails', [
             'employer' => $employer,
         ]);
     }
 
-    public function updateCompanyDetails(Request $request, $id)
-    {
-        try {
-        // Validate the request data
-        $validatedData = $request->validate([
-            'companyName' => 'required|string|max:255',
-            'companyAddress1' => 'required|string|max:255',
-            'companyAddress2' => 'required|string|max:255',
-            'companyCity' => 'required|string|max:255',
-            'companyPostalCode' => 'required|string|max:255',
-            'companyState' => 'required|string|max:255',
-            'companyCountry' => 'required|string|max:255',
-            'companyEmail' => 'required|email|max:255',
-            'companyWebsite' => 'required|string|max:255',
-            'companyPhone' => 'required|string|max:15',
-            'companySector' => 'required|string|max:255',
-            'companySize' => 'required|string|max:255',
-            'companyType' => 'required|string|max:255',
-            'mission' => 'required|string|max:255',
-            'vision' => 'required|string|max:255',
-            'companyDescription' => 'required|string|max:255',
-            'businessRegNum' => 'required|string|max:255',
-            'businessRegDate' => 'required|date',
-            'documentName' => 'nullable|mimes:pdf,doc,docx',
-            'companyLogo' => 'nullable|mimes:png,svg,jpg,jpeg|max:2048',
-            'documentType' => 'nullable|string|max:255',
+    public function update(Request $request, $id){
+
+        $request->validate([
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'phoneNum' => 'required|string|max:15',
+            'position' => 'required|string|max:255',
+            'department' => 'required|string|max:255',
+        ]);
+
+        $employer = Employer::findOrFail($id);
+
+        // Update the contact person's details
+        $employer->update([
+            'firstName' => $request->input('firstName'),
+            'lastName' => $request->input('lastName'),
+            'phoneNum' => $request->input('phoneNum'),
         ]);
     
-     
-            $employer = Employer::findOrFail($id);
-    
-            // Handle file uploads
-            if ($request->hasFile('documentName')) {
-                $documentPath = $request->file('documentName')->store('public/company/businessRegDocuments');
-                $validatedData['documentName'] = basename($documentPath);
-            }
-    
-            if ($request->hasFile('companyLogo')) {
-                $logoPath = $request->file('companyLogo')->store('public/company/companyLogo');
-                $validatedData['companyLogo'] = basename($logoPath);
-            }
-    
-            // Update or create the employer record
-            $employer = Employer::updateOrCreate(
-            ['id' => $id], // Attributes to find the record
-            $validatedData // Attributes to update or create
-            );
-    
-            return redirect()->back()->with('success', 'Company details updated successfully.');
-        } catch (\Exception $e) {
-            dd($e);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the company details.']);
-        }
+        // Update fields not in $fillable manually
+        $employer->position = $request->input('position');
+        $employer->department = $request->input('department');
+        $employer->save();
+        
+
+        return back()->with('success', 'Employer details updated successfully.')->with('message', 'Your details updated successfully.');
     }
-    
+
+    public function changePassword(Request $request, $id){
+
+        $user = Auth::guard('employer')->user();
+
+        $request->validate([
+            'newPassword' => 'required',
+            'confirmPassword' => 'required|same:newPassword',
+        ]);
+
+        $employer = Employer::findOrFail($id);
+
+        // Ensure the new password is different from the current one
+        if (Hash::check($request->input('newPassword'), $employer->password)) {
+            return back()->withErrors(['error' => 'New password must be different from the current password.']);
+        }
+
+        $employer->password = bcrypt($request->input('newPassword'));
+        $employer->save();
+
+        return redirect()->route('employer.employerdetails')->with('success', 'Password changed successfully.')->with('message', 'Your password has been changed successfully.');
+    }
 }

@@ -17,6 +17,7 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
   const [trainingAddress, setTrainingAddress] = useState(studentAddresses.find(address => address.type === 'training') ?? { address1: '', address2: '', postcode: '', city: '', state: '' });
   const [copyToTraining, setCopyToTraining] = useState(false);
   const [errors, setErrors] = useState({});
+  const [passportNo, setPassportNo] = useState(student?.passportNo ?? '');
 
   const dateOfBirthRef = useRef(null);
 
@@ -75,9 +76,9 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
     const updatedStudent = {
       firstName,
       lastName,
-      email: studentEmail,
       phoneNum: studentPhoneNum,
-      ICNumber: studentIC,
+      ICNumber: studentIC || null,
+      passportNo: passportNo || null,
       dateOfBirth: birthDate,
       gender: studentGender,
       nationality
@@ -115,7 +116,7 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
   return (
     <div>
       <form className="space-y-4" onSubmit={handleEdit}>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           <div className='col-span-1'>
             <label htmlFor="firstName" className="block mb-2 text-sm font-medium text-gray-900">First Name</label>
             <input
@@ -146,21 +147,19 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
           </div>
         </div>
 
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           <div className='col-span-1'>
-            <label htmlFor="ICNumber" className="block mb-2 text-sm font-medium text-gray-900">Identification Card Number</label>
+            <label htmlFor="studentEmail" className="block mb-2 text-sm font-medium text-gray-900">Email Address</label>
             <input
-              type="text"
-              name="ICNumber"
-              id="ICNumber"
+              type="email"
+              id="studentEmail"
+              name="studentEmail"
+              placeholder='Enter Your Email Address'
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              value={studentIC}
-              onChange={(e) => setStudentIC(e.target.value)}
-              placeholder="eg. 010228060088"
-              maxLength={12}
-              required
+              value={studentEmail}
+              disabled
             />
-            {errors.ICNumber && <p className="text-red-500 text-xs mt-1">{errors.ICNumber}</p>}
+            {errors.studentEmail && <p className="text-red-500 text-xs mt-1">{errors.studentEmail}</p>}
           </div>
           <div className='col-span-1'>
             <label className="block mb-2 text-sm font-medium text-gray-900">Gender</label>
@@ -178,7 +177,7 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
           </div>
         </div>
 
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           <div className='col-span-1'>
             <label htmlFor="birthDate" className="block mb-2 text-sm font-medium text-gray-900">Birth Date</label>
             <input
@@ -212,21 +211,8 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
           </div>
         </div>
 
-        <div className='grid grid-cols-2 gap-4'>
-          <div className='col-span-1'>
-            <label htmlFor="studentEmail" className="block mb-2 text-sm font-medium text-gray-900">Email Address</label>
-            <input
-              type="email"
-              id="studentEmail"
-              name="studentEmail"
-              placeholder='Enter Your Email Address'
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              value={studentEmail}
-              onChange={(e) => setStudentEmail(e.target.value)}
-              required
-            />
-            {errors.studentEmail && <p className="text-red-500 text-xs mt-1">{errors.studentEmail}</p>}
-          </div>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+
           <div className='col-span-1'>
             <label className="block mb-2 text-sm font-medium text-gray-900">Nationality/Citizenship</label>
             <select
@@ -240,10 +226,44 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
               <option value="Malaysian Citizen">Malaysian Citizen</option>
               <option value="Permanent Resident">Permanent Resident</option>
               <option value="International">International Student</option>
-              <option value="Refugee">Refugee</option>
             </select>
             {errors.nationality && <p className="text-red-500 text-xs mt-1">{errors.nationality}</p>}
           </div>
+          <div className='col-span-1'>
+            {nationality === 'Malaysian Citizen' || nationality === 'Permanent Resident' ? (
+              <>
+                <label htmlFor="ICNumber" className="block mb-2 text-sm font-medium text-gray-900">Identification Card Number</label>
+                <input
+                  type="text"
+                  name="ICNumber"
+                  id="ICNumber"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  value={studentIC}
+                  onChange={(e) => setStudentIC(e.target.value)}
+                  placeholder="eg. 010228060088"
+                  maxLength={12}
+                  required
+                />
+                {errors.ICNumber && <p className="text-red-500 text-xs mt-1">{errors.ICNumber}</p>}
+              </>
+            ) : (nationality === 'International' ? (
+              <>
+                <label htmlFor="passportNo" className="block mb-2 text-sm font-medium text-gray-900">Passport Number</label>
+                <input
+                  type="text"
+                  name="passportNo"
+                  id="passportNo"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  value={passportNo}
+                  onChange={(e) => setPassportNo(e.target.value)}
+                  placeholder="eg. A1234567"
+                  required
+                />
+                {errors.passportNo && <p className="text-red-500 text-xs mt-1">{errors.passportNo}</p>}
+              </>
+            ) : null)}
+          </div>
+
         </div>
 
         <div className='home-address mb-2'>
@@ -270,7 +290,7 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
             {addressErrors.home?.address2 && <p className="text-red-500 text-xs mt-1">{addressErrors.home.address2}</p>}
           </div>
 
-          <div className='grid grid-cols-3 gap-4'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-4'>
             <div className='col-span-1'>
               <label htmlFor="homePostalCode" className="block mb-2 text-sm font-medium text-gray-900">Postal Code</label>
               <input
@@ -346,7 +366,7 @@ const EditBasicInfoModal = ({ student, addresses, studentID, onClose }) => {
             />
             {addressErrors.training?.address2 && <p className="text-red-500 text-xs mt-1">{addressErrors.training.address2}</p>}
           </div>
-          <div className='grid grid-cols-3 gap-4'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-4'>
             <div className='col-span-1'>
               <label htmlFor="trainingPostalCode" className="block mb-2 text-sm font-medium text-gray-900">Postal Code</label>
               <input

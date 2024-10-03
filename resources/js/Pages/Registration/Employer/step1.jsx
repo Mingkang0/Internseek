@@ -87,7 +87,7 @@ const Step1 = ({ formData, setFormData }) => {
       </div>
       {selectedCompanyType && (
         <div>
-          <div className="grid grid-cols-12 gap-4 mt-4">
+          <div className="grid grid-cols-6 lg:grid-cols-12 gap-4 mt-4">
             <div className="col-span-6">
               <div className="companyName">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Company Name</label>
@@ -100,7 +100,7 @@ const Step1 = ({ formData, setFormData }) => {
               <input type="date" name="businessRegDate" value={formData.businessRegDate} id="companyRegistrationDate" className="p-2.5 block w-full text-sm text-gray-900 border border-gray-500 rounded-lg focus:outline-none" onChange={handleChange} required />
             </div>
           </div>
-          <div className="grid grid-cols-12 gap-4 mt-4">
+          <div className="grid grid-cols-6 lg:grid-cols-12 gap-4 mt-4">
             <div className="col-span-6">
               <label className="block mb-2 text-sm font-medium text-gray-900">Business Registration No.</label>
               <input type="text" name="businessRegNum" id="businessRegistrationNum" value={formData.businessRegNum} className="p-2.5 block w-full text-sm text-gray-900 border border-gray-500 rounded-lg focus:outline-none" onChange={handleChange} required
@@ -146,7 +146,7 @@ const Step1 = ({ formData, setFormData }) => {
             <input type="text" name="companyAddress2" id="companyAddress2" value={formData.companyAddress2} className="p-2.5 block w-full mt-2 text-sm text-gray-900 border border-gray-500 rounded-lg focus:outline-none" onChange={handleChange}
               placeholder="Enter company address line 2" required />
           </div>
-          <div className="grid grid-cols-12 gap-4 mt-4">
+          <div className="grid grid-cols-4 lg:grid-cols-12 gap-4 mt-4">
             <div className="col-span-4">
               <label className="block mb-2 text-sm font-medium text-gray-900">Postal Code</label>
               <input type="text" name="companyPostalCode" id="postalCode" className="p-2.5 block w-full text-sm text-gray-900 border border-gray-500 rounded-lg focus:outline-none" value={formData.companyPostalCode} onChange={handleChange} required
@@ -174,7 +174,7 @@ const Step1 = ({ formData, setFormData }) => {
             </div>
 
           </div>
-          <div className="grid grid-cols-12 gap-4 mt-4">
+          <div className="grid grid-cols-6 lg:grid-cols-12 gap-4 mt-4">
             <div className="col-span-6">
               <label className="block mb-2 text-sm font-medium text-gray-900">Company Size</label>
               <select name="companySize" id="companySize" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full" value={formData.companySize} onChange={handleChange} required>

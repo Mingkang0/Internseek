@@ -47,7 +47,7 @@ export default function AddSkillModal({ studentID, onClose }) {
       </div>
       <div>
         <label htmlFor="proficiencyLevel" className="block mb-2 text-sm font-medium text-gray-900">Proficiency Level</label>
-        <div className="flex flex-wrap justify-center">
+        <div className="flex flex-wrap justify-center gap-2">
           {proficiencyLevels.map(level => (
             <div key={level} className="flex items-center me-4">
               <input

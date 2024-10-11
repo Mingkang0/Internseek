@@ -23,7 +23,7 @@ class StudentController extends Controller
 {
   public function showProfile()
   {
-      $guard = session('guard');
+      $guard = session('userGuard');
       $student = Auth::guard($guard)->user(); 
   
       // Retrieve all related information using the student ID
@@ -52,7 +52,7 @@ class StudentController extends Controller
 
 
   public function settings(){
-    $guard = session('guard');
+    $guard = session('userGuard');
     $student = Auth::guard($guard)->user();
 
     return Inertia::render('Profile/student/settings', [
@@ -61,7 +61,7 @@ class StudentController extends Controller
   }
 
   public function changePassword(Request $request){
-    $guard = session('guard');
+    $guard = session('userGuard');
     $student = Auth::guard($guard)->user();
 
     $request->validate([

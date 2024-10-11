@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\InternshipApplicationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\HomeController;
+use App\Http\Middleware\Authenticate;
 
 use Inertia\Inertia;
 
@@ -29,9 +30,18 @@ Route::get('/register/employer', [RegistrationController::class, 'createEmployer
 
 Route::post('/create/employer', [RegistrationController::class, 'storeEmployer'])->name('register.employer.post');
 
-Route:: get('/login', [LoginController::class, 'showLogin'])->name('login');
 
-Route::post('/login/{userRole}', [LoginController::class, 'login'])->name('login.post');
+Route::get('/login/student', [LoginController::class, 'studentLogin'])->name('login.student');
+
+Route::get('/login/employer', [LoginController::class, 'employerLogin'])->name('login.employer');
+
+Route::get('/login/admin', [LoginController::class, 'adminLogin'])->name('login.admin');
+
+Route::post('/login/student/post', [LoginController::class, 'login'])->name('login.student.post');
+
+Route::post('/login/employer/post', [LoginController::class, 'login'])->name('login.employer.post');
+
+Route::post('/login/admin/post', [LoginController::class, 'login'])->name('login.admin.post');
 
 Route::get('/auth/linkedin', [LoginController::class, 'redirectToLinkedIn'])->name('linkedin.login');
 
@@ -55,7 +65,7 @@ Route::get('/companies', [CompanyController::class, 'index'])->name('companies.i
 
 Route::get('/companies/{id}', [CompanyController::class, 'show'])->name('companies.show');
 
-Route::group(['middleware' => 'auth:student'], function () {
+Route::middleware('isStudent')->group(function () {
     Route::post('/internships/{id}/bookmark', [InternshipController::class, 'bookmark'])->name('internships.bookmark');
 
     Route::post('report-internship/{id}', [InternshipController::class, 'ReportInternship'])->name('internships.report');
@@ -139,10 +149,22 @@ Route::group(['middleware' => 'auth:student'], function () {
     Route::post('/student/delete-all-notifications', [NotificationController::class, 'deleteAllNotifications'])->name('student.notifications.deleteall');
 
     Route::post('/student/linkedin/store/{id}', [StudentController::class, 'storeLinkedIn'])->name('student.linkedin.store');
+
+    Route::get('/student/messages/{id}', [MessageController::class, 'showChatBox'])
+    ->name('messages.show');
+
+    Route::post('/student/messages/markAsRead/{id}', [MessageController::class, 'markAsRead'])
+    ->name('messages.markAsRead');
+
+    Route::post('/student/messages/send', [MessageController::class, 'sendMessage'])
+    ->name('messages.send');
+
+    Route::get('/student/receivedMessages/list', [MessageController::class, 'getMessages'])
+    ->name('receivedMessages.list');
 });
 
 
-Route::group(['middleware' => 'auth:admin'], function () {
+Route::middleware('isAdmin')->group(function () {
 
     Route::get('/admin/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
 
@@ -179,8 +201,7 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::post('/admin/update-companyRating/{id}', [AdminController::class, 'updateCompanyRating'])->name('admin.updatecompanyrating');
 });
 
-Route::group(['middleware' => ['auth:employer']], function () {
-    
+Route::middleware('isEmployer')->group(function () {
     Route::get('/employer/dashboard', [DashboardController::class, 'indexEmployer'])->name('employer.dashboard');
 
     Route::get('/register/existing-company', [RegistrationController::class, 'addExistingCompany'])->name('register.existingcompany');
@@ -274,22 +295,21 @@ Route::group(['middleware' => ['auth:employer']], function () {
     Route::get('/employer/admin/userManagement', [CompanyController::class, 'userManagement'])->name('employer.usermanagement');
 
     Route::post('/employer/admin/update-status/{id}', [CompanyController::class, 'updateUserStatus'])->name('employer.updateuserstatus');
-});
 
 
-
-
-Route::group(['middleware' => ['auth:student,employer']], function () {
-    Route::get('/messages/{id}', [MessageController::class, 'showChatBox'])
+    Route::get('/employer/messages/{id}', [MessageController::class, 'showChatBox'])
     ->name('messages.show');
 
-    Route::post('/messages/markAsRead/{id}', [MessageController::class, 'markAsRead'])
+    Route::post('/employer/messages/markAsRead/{id}', [MessageController::class, 'markAsRead'])
     ->name('messages.markAsRead');
 
-    Route::post('/messages/send', [MessageController::class, 'sendMessage'])
+    Route::post('/employer/messages/send', [MessageController::class, 'sendMessage'])
     ->name('messages.send');
 
-    Route::get('/receivedMessages/list', [MessageController::class, 'getMessages'])
+    Route::get('/employer/receivedMessages/list', [MessageController::class, 'getMessages'])
     ->name('receivedMessages.list');
-
 });
+
+
+
+

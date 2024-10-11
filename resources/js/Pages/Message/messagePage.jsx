@@ -11,14 +11,16 @@ const MessagePage = ({ conversations, userRole, userID }) => {
   const [isCoversationSelected, setIsConversationSelected] = useState(false);
 
 
-
-
   const handleSelectConversation = (partnerId) => {
     const conversation = conversations.find((conversation) => conversation.partner.id === partnerId);
     // Mark the conversation as read
     conversation.messages.forEach((message) => {
       if (message.receiver_id == userID && message.receiver_type == userRole && message.messageStatus === 'unread') {
-        router.post(`/messages/markAsRead/${message.id}`);
+        if (userRole === 'student') {
+          router.post(`/student/messages/markAsRead/${message.id}`);
+        } else if (userRole === 'employer') {
+          router.post(`/employer/messages/markAsRead/${message.id}`);
+        }
       }
     });
     setSelectedConversation(conversation);
@@ -37,7 +39,7 @@ const MessagePage = ({ conversations, userRole, userID }) => {
   return (
     <DefaultLayout>
       <Head title="Messages Page" />
-      <div className="min-h-screen px-3 lg:px-6 py-6 bg-gray-200">
+      <div className="min-h-screen px-3 lg:px-6 py-4 bg-gray-200">
         {isCoversationSelected && (
           <div className="block lg:hidden mb-4">
             <button

@@ -54,21 +54,40 @@ const Message = ({ conversation, userRole, userID }) => {
       formData.append('file', selectedFile);
     }
 
-    router.post('/messages/send', formData, {
-      onSuccess: (response) => {
-        console.log(response);
-        setMessageText('');
-        setSelectedImage(null);
-        setSelectedFile(null);
-        // Update the messages state
-        setMessages(response.props.conversations[0].messages); // Assuming conversations is an array with one conversation
-        setErrors({});
-      },
-      onError: (errors) => {
-        console.error(errors);
-        setErrors(errors);
-      },
-    });
+
+    if (userRole === 'student') {
+      router.post('/student/messages/send', formData, {
+        onSuccess: (response) => {
+          console.log(response);
+          setMessageText('');
+          setSelectedImage(null);
+          setSelectedFile(null);
+          // Update the messages state
+          setMessages(response.props.conversations[0].messages); // Assuming conversations is an array with one conversation
+          setErrors({});
+        },
+        onError: (errors) => {
+          console.error(errors);
+          setErrors(errors);
+        },
+      });
+    } else {
+      router.post('/employer/messages/send', formData, {
+        onSuccess: (response) => {
+          console.log(response);
+          setMessageText('');
+          setSelectedImage(null);
+          setSelectedFile(null);
+          // Update the messages state
+          setMessages(response.props.conversations[0].messages); // Assuming conversations is an array with one conversation
+          setErrors({});
+        },
+        onError: (errors) => {
+          console.error(errors);
+          setErrors(errors);
+        },
+      });
+    }
   };
 
   const scrollToBottom = () => {
@@ -87,7 +106,7 @@ const Message = ({ conversation, userRole, userID }) => {
 
 
   return (
-    <div className="w-full lg:ml-4 p-4 bg-white border border-gray-900 rounded-lg">
+    <div className="w-full lg:ml-4 pb-4 pt-2 px-4 bg-white border border-gray-900 rounded-lg">
       {/* Header */}
       <div className="flex items-center mb-2 justify-between">
         <div className='flex gap-2 items-center'>
@@ -139,7 +158,7 @@ const Message = ({ conversation, userRole, userID }) => {
                 <img
                   src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`}
                   alt="Company Logo"
-                  className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2"
+                  className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2 mr-2"
                 />
               )}
               {
@@ -149,11 +168,11 @@ const Message = ({ conversation, userRole, userID }) => {
                       <img
                         src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
                         alt="Local Profile Pic"
-                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
                       />
                     ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
                       <img
-                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
                         src={conversation.partner.profilePicture}
                         alt="LinkedIn Profile Pic"
                       />
@@ -161,7 +180,7 @@ const Message = ({ conversation, userRole, userID }) => {
                       <img
                         src="../../assets/avatar.png"
                         alt="Default Avatar"
-                        className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
                       />
                     )}
                   </>
@@ -195,11 +214,11 @@ const Message = ({ conversation, userRole, userID }) => {
                   <img
                     src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
                     alt="Local Profile Pic"
-                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2"
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
                   />
                 ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
                   <img
-                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2"
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
                     src={conversation.partner.profilePicture}
                     alt="LinkedIn Profile Pic"
                   />
@@ -207,14 +226,14 @@ const Message = ({ conversation, userRole, userID }) => {
                   <img
                     src="../../assets/avatar.png"
                     alt="Default Avatar"
-                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2"
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
                   />
                 )}
               </>
             )}
             {
               message.sender_id === userID && message.receiver_type !== userRole && message.sender_type === 'employer' && (
-                <img src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`} alt="Company Logo" className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2" />
+                <img src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`} alt="Company Logo" className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2 mr-2" />
               )
             }
           </div>
@@ -261,7 +280,7 @@ const Message = ({ conversation, userRole, userID }) => {
             required
           ></textarea>
         </div>
-        <div className="flex items-center justify-between px-3 py-2 border-t border-gray-900">
+        <div className="flex items-center justify-between px-3 pt-2 border-t border-gray-900">
           <button
             type="submit"
             className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800"

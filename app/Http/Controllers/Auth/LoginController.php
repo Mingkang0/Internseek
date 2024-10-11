@@ -19,18 +19,43 @@ use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
 {
-    public function showLogin()
+
+    public function studentLogin()
     {
         $email = Cookie::get('remember_email');
         if($email){
             $email = Cookie::get('remember_email');
-            return Inertia::render('Login', ['remember_email' => $email]);
+            return Inertia::render('Login/Student', ['remember_email' => $email]);
         }
         else {
-        return Inertia::render('Login');
+        return Inertia::render('Login/Student');
         }
     }
 
+    public function employerLogin()
+    {
+        $email = Cookie::get('remember_email');
+        if($email){
+            $email = Cookie::get('remember_email');
+            return Inertia::render('Login/Employer', ['remember_email' => $email]);
+        }
+        else {
+        return Inertia::render('Login/Employer');
+        }
+    }
+
+    public function adminLogin()
+    {
+        $email = Cookie::get('remember_email');
+        if($email){
+            $email = Cookie::get('remember_email');
+            return Inertia::render('Login/Admin', ['remember_email' => $email]);
+        }
+        else {
+        return Inertia::render('Login/Admin');
+        }
+    }
+    
     public function login(Request $request)
     {
         $request->validate([
@@ -160,7 +185,7 @@ class LoginController extends Controller
             // Retrieve the user from LinkedIn
             $linkedinUser = Socialite::driver('linkedin-openid')->user();
         } catch (\Exception $e) {
-            return redirect('/login')->with('error', 'Unable to login with LinkedIn.');
+            return redirect('/login/student')->with('error', 'Unable to login with LinkedIn.');
         }
     
         // Find student by LinkedIn ID or email

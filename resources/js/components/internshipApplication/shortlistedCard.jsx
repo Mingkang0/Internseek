@@ -20,7 +20,7 @@ const ShortlistedOrApprovedApplicantCard = ({ application }) => {
   };
 
   const handleMessage = () => {
-    router.get(`/messages/${application.student.id}?receiverType=${encodeURIComponent('student')}`)
+    router.get(`/employer/messages/${application.student.id}?receiverType=${encodeURIComponent('student')}`)
   };
 
   const handleUpdate = () => {

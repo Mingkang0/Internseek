@@ -139,12 +139,6 @@ class MessageController extends Controller
     public function getMessages(Request $request)
 {
     $userRole = session('userRole');
-
-    if ($userRole === 'admin') {
-        // Admins cannot use this feature, redirect them to a different page
-        return redirect()->route('admin.dashboard');
-    }
-
     // Determine the sender based on the user role
     $guard = session('userGuard');
     $sender = Auth::guard($guard)->user();
@@ -154,23 +148,24 @@ class MessageController extends Controller
         $employerID = $sender->id;
         $sender = Company::find($sender->companyID); // Set sender as Company
         $userID = $sender->id;
-    } else {
-        $userID = $sender->id;
-    }
 
-    // Retrieve all unique conversation partners
-    $conversationPartners = Message::where(function ($query) use ($sender) {
-            $query->where('sender_id', $sender->id)
-                  ->orWhere('receiver_id', $sender->id);
+        $conversationPartners = Message::where(function ($query) use ($sender, $employerID) {
+            // Ensure we check both sender_id and receiver_id but also differentiate by sender type
+            $query->where(function ($q) use ($sender, $employerID) {
+                $q->where('sender_id', $sender->id)
+                  ->where('sender_type', 'employer'); // Ensure it's the company sending
+            })->orWhere(function ($q) use ($sender, $employerID) {
+                $q->where('receiver_id', $sender->id)
+                  ->where('receiver_type', 'employer'); // Ensure it's the company receiving
+            });
         })
         ->distinct()
         ->get(['sender_id', 'receiver_id']);
 
-
     $conversations = [];
 
     foreach ($conversationPartners as $partner) {
-        $partnerId = ($partner->sender_id == $sender->id) ? $partner->receiver_id : $partner->sender_id;
+        $partnerId = ($partner->sender_id == $userID) ? $partner->receiver_id : $partner->sender_id;
 
         // Ensure each conversation is only retrieved once
         $messages = Message::where(function ($query) use ($sender, $partnerId) {
@@ -187,9 +182,8 @@ class MessageController extends Controller
         ->with('employer') // Eager-load employer relation if applicable
         ->get();
 
-        // Fetch the partner details based on role
-        $partner = ($userRole === 'student') ? Company::find($partnerId) : Student::find($partnerId);
-        
+
+        $partner = Student::find($partnerId);
         // Add each conversation to the array
         $conversations[] = [
             'messages' => $messages,
@@ -202,13 +196,74 @@ class MessageController extends Controller
         'userRole' => $userRole,
         'userID' => $userID,
     ]);
+    } 
+     else {
+        $userID = $sender->id;
+
+        $conversationPartners = Message::where(function ($query) use ($sender) {
+            // Ensure we check both sender_id and receiver_id but also differentiate by sender type
+            $query->where(function ($q) use ($sender) {
+                $q->where('sender_id', $sender->id)
+                  ->where('sender_type', 'student'); // Ensure it's the student sending
+            })->orWhere(function ($q) use ($sender) {
+                $q->where('receiver_id', $sender->id)
+                  ->where('receiver_type', 'student'); // Ensure it's the student receiving
+            });
+        })
+        ->distinct()
+        ->get(['sender_id', 'receiver_id']);
+
+        $conversations = [];
+
+        foreach ($conversationPartners as $partner) {
+            $partnerId = ($partner->sender_id == $userID) ? $partner->receiver_id : $partner->sender_id;
+
+            // Ensure each conversation is only retrieved once
+            $messages = Message::where(function ($query) use ($sender, $partnerId) {
+                $query->where(function ($q) use ($sender, $partnerId) {
+                    $q->where('sender_id', $sender->id)
+                      ->where('receiver_id', $partnerId);
+                })
+                ->orWhere(function ($q) use ($sender, $partnerId) {
+                    $q->where('sender_id', $partnerId)
+                      ->where('receiver_id', $sender->id);
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->with('employer') // Eager-load employer relation if applicable
+            ->get();
+
+            $partner = Company::find($partnerId);
+            
+            // Add each conversation to the array
+            $conversations[] = [
+                'messages' => $messages,
+                'partner' => $partner,
+            ];
+        }
+
+        return Inertia::render('Message/messagePage', [
+            'conversations' => $conversations,
+            'userRole' => $userRole,
+            'userID' => $userID,
+        ]);
+    }
 }
 
 public function markAsRead(Request $request, $id)
 {
     // Retrieve the message and update the read status
     $message = Message::find($id);
-    if ($message->receiver_id == $request->user()->id) {
+
+    $userGuard = session('userGuard');
+    $user = Auth::guard($userGuard)->user();
+
+    if($user instanceof Employer) {
+        $userID = $user->companyID;
+    } else {
+        $userID = $user->id;
+    }
+    if ($message->receiver_id == $userID && $message->receiver_type == $userGuard) {
         $message->messageStatus = 'read';
         $message->save();
     }

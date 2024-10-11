@@ -11,17 +11,27 @@ const CompanyDetails = ({ company }) => {
       <div className='bg-gray-200 px-4 min-h-screen overflow-y-auto lg:py-6'>
         <div className="container flex justify-center items-center">
           <div className="px-6 py-6 mt-4 bg-white border border-gray-200 rounded-lg shadow lg:max-w-6xl">
-            <div className="flex flex-wrap gap-4">
-              <div className='mx-auto'>
+            <div className='content-end lg:hidden'>
+              <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-800 flex justify-between items-center">
+                {company.companyName}
+                <Link href='/companies'>
+                  <FaTimesCircle size={20} className="mr-2 text-gray-600 cursor-pointer" />
+                </Link>
+              </h5>
+            </div>
+            <div className="flex flex-col lg:flex-row  gap-4">
+              <div className='md:mr-2 mx-auto'>
                 <img src={`/storage/company/companyLogo/${company.companyLogo}`} alt="CompanyLogo" className="rounded-full w-24 h-24 md:w-28 md:h-28 mx-auto border ring-1 ring-gray-900" />
               </div>
               <div>
-                <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-800 flex justify-between items-center">
-                  {company.companyName}
-                  <Link href='/companies'>
-                    <FaTimesCircle size={20} className="mr-2 text-gray-600 cursor-pointer" />
-                  </Link>
-                </h5>
+                <div className='hidden lg:block'>
+                  <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-800 flex justify-between items-center">
+                    {company.companyName}
+                    <Link href='/companies'>
+                      <FaTimesCircle size={20} className="mr-2 text-gray-600 cursor-pointer" />
+                    </Link>
+                  </h5>
+                </div>
                 <p className="mb-4 flex font-semibold text-normal text-gray-700">
                   <FaBuilding className='mr-2' size={24} /> {company.companySector}
                 </p>

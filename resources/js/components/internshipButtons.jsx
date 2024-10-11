@@ -61,7 +61,7 @@ const InternshipButtons = ({ id, companyID, onReportClick }) => {
       textColor: 'text-gray-900',
       icon: <MdOutlineChatBubble className="text-gray-900" size={22} />,
       onClick: () => { 
-        router.get(`/messages/${companyID}?receiverType=${encodeURIComponent('employer')}`) } // Redirect to the messages page
+        router.get(`/student/messages/${companyID}?receiverType=${encodeURIComponent('employer')}`) } // Redirect to the messages page
     },
     {
       label: 'Report',

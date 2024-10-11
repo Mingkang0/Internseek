@@ -1,38 +1,27 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Head, useForm, router } from '@inertiajs/react';
-import Cookies from 'js-cookie';
 import { FaLinkedin } from 'react-icons/fa';
 
-const LoginPage = ({ remember_email }) => {
-  const [userRole, setUserRole] = useState('');
+const EmployerLoginPage = ({ remember_email }) => {
 
-
-  const handleUserRole = (e) => {
-    setUserRole(e.target.value);
-  }
   const { data, setData, post, processing, errors } = useForm({
     email: remember_email || '',
     password: '',
-    role: '',
+    role: 'employer',
     remember: false,
   });
 
 
-  const handleRoleChange = (e) => {
-    setUserRole(e.target.value);
-    setData('role', e.target.value); // Update the form data with the selected role
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    post(`/login/${userRole}`);
+    post(`/login/employer/post`);
   };
 
 
   return (
     <>
-      <Head title="Login Page" />
+      <Head title="Employer Login Page" />
       <div className="bg-gray-200 px-6 py-12 min-h-screen overflow-y-auto lg:py-24">
         <div className="bg-white shadow-md rounded-lg p-8 max-w-lg mx-auto w-full h-full">
           <div className="flex flex-col items-center mb-6">
@@ -41,7 +30,7 @@ const LoginPage = ({ remember_email }) => {
             </a>
           </div>
           <h5 className="text-lg font-bold leading-tight tracking-tight text-blue-900 md:text-xl mb-2">
-            Sign In for {userRole === 'admin' ? 'Administrator' : userRole === 'employer' ? 'Employer' : userRole === 'student' ? 'Internseeker' : 'User'}
+            Sign In for Employer
           </h5>
           <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
             <div>
@@ -70,21 +59,6 @@ const LoginPage = ({ remember_email }) => {
               />
               {errors.password && <div className="text-red-500 text-sm">{errors.password}</div>}
             </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900">Role</label>
-              <select
-                name="role"
-                className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                value={userRole}
-                onChange={handleRoleChange}
-                required
-              >
-                <option value="" selected disabled>Select Role</option>
-                <option value="admin">Administrator</option>
-                <option value="employer">Employer</option>
-                <option value="student">Internseeker (Student)</option>
-              </select>
-            </div>
             <div className="flex items-center justify-between">
               <div className="flex items-start">
                 <div className="flex items-center h-5">
@@ -109,22 +83,10 @@ const LoginPage = ({ remember_email }) => {
             >
               {processing ? 'Signing In...' : 'Sign In'}
             </button>
-            {
-              userRole == 'student' && (
-                <a
-                  type="button"
-                  href='/auth/linkedin'
-                  className='w-full flex text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 justify-center items-center'
-                >
-                  <FaLinkedin size={24} className='me-2' /> Sign in with LinkedIn
-                </a>
-              )
-            }
-            {userRole && userRole !== 'admin' && (
-              <p className="text-sm font-light text-gray-500">
-                Don’t have an account yet? <a href={userRole === 'student' ? '/register/student' : userRole === 'employer' ? '/register/employer' : '#'} className="font-medium text-primary-600 hover:underline">Sign Up</a>
-              </p>
-            )}
+
+            <p className="text-sm font-light text-gray-500">
+              Don’t have an account yet? <a href='/register/employer' className="font-medium text-primary-600 hover:underline">Sign Up</a>
+            </p>
           </form>
         </div>
       </div>
@@ -132,5 +94,5 @@ const LoginPage = ({ remember_email }) => {
   );
 };
 
-export default LoginPage;
+export default EmployerLoginPage;
 

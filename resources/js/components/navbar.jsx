@@ -3,15 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import { FaUser, FaCaretDown, FaBuilding, FaBell } from 'react-icons/fa';
 import { IoChatbubbleEllipses } from 'react-icons/io5';
+import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 
 
 
 export default function Navbar() {
   const [dropdownNavbar, setDropdownNavbar] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isNotificationClicked, setIsNotificationClicked] = useState(false);
+
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   const { auth } = usePage().props;
   const isAuthenticated = auth?.user !== null;
@@ -23,16 +26,28 @@ export default function Navbar() {
     setDropdownNavbar(!dropdownNavbar);
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const openRegistration = () => {
+    setIsRegistrationOpen(true);
   };
 
-  const handleViewMessages = () => {
-    router.get('/receivedMessages/list');
+  const closeRegistration = () => {
+    setIsRegistrationOpen(false);
+  };
+
+  const openLogin = () => {
+    setIsLoginOpen(true);
+  };
+
+  const closeLogin = () => {
+    setIsLoginOpen(false);
+  };
+
+  const handleStudentViewMessages = () => {
+    router.get('/student/receivedMessages/list');
+  }
+
+  const handleEmployerViewMessages = () => {
+    router.get('/employer/receivedMessages/list');
   }
 
   const toggleMobileMenu = () => {
@@ -42,6 +57,52 @@ export default function Navbar() {
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
   }
+
+
+  const handleClickOutside = (event) => {
+    const employerModal = document.getElementById('employer-registration-modal');
+    const studentModal = document.getElementById('student-registration-modal');
+
+    if (employerModal && !employerModal.contains(event.target) && studentModal && !studentModal.contains(event.target)) {
+      closeRegistration();
+    }
+  };
+
+  const handleClickOutsideLogin = (event) => {
+    const employerLoginModal = document.getElementById('employer-login-modal');
+    const studentLoginModal = document.getElementById('student-login-modal');
+    const adminLoginModal = document.getElementById('admin-login-modal');
+
+    if (employerLoginModal && !employerLoginModal.contains(event.target) && studentLoginModal && !studentLoginModal.contains(event.target) && adminLoginModal && !adminLoginModal.contains(event.target)) {
+      closeLogin();
+    }
+  };
+
+  useEffect(() => {
+    if (isRegistrationOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isRegistrationOpen]);
+
+  useEffect(() => {
+    if (isLoginOpen) {
+      document.addEventListener('mousedown', handleClickOutsideLogin);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutsideLogin);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideLogin);
+    };
+  }
+    , [isLoginOpen]);
+
 
   return (
     <nav className={`sticky top-0 border-gray-300 ${userRole === 'employer' ? 'bg-yellow-300' : userRole === 'student' ? 'bg-blue-100' : userRole === 'admin' ? 'bg-white' : 'bg-blue-100'} border-b w-full`}>
@@ -83,7 +144,7 @@ export default function Navbar() {
 
               {userRole === 'employer' && (
                 <>
-                  {auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status==='Active' && (
+                  {auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status === 'Active' && (
                     <>
                       <a href="/internship-postings" className="text-sm font-bold text-gray-900">Internship Posted</a>
                       <a href="/internship-applications/list" className="text-sm font-bold text-gray-900">Applicants</a>
@@ -166,7 +227,7 @@ export default function Navbar() {
                       )}
                     </div>
                   )}
-                  {auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status==='Active' && (
+                  {auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status === 'Active' && (
                     <>
                       <div className='relative'>
                         <FaBell size={24} className='cursor-pointer relative mr-2'
@@ -223,7 +284,7 @@ export default function Navbar() {
                         <IoChatbubbleEllipses
                           size={24}
                           className="cursor-pointer relative"
-                          onClick={handleViewMessages}
+                          onClick={handleEmployerViewMessages}
                           onMouseEnter={() => setIsHovered(true)}
                           onMouseLeave={() => setIsHovered(false)}
                         />
@@ -324,7 +385,7 @@ export default function Navbar() {
                       <IoChatbubbleEllipses
                         size={24}
                         className="cursor-pointer relative"
-                        onClick={handleViewMessages}
+                        onClick={handleStudentViewMessages}
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
 
@@ -375,7 +436,7 @@ export default function Navbar() {
                         </>
                       )}
 
-                      {userRole === 'employer' && auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status==='Active' && (
+                      {userRole === 'employer' && auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.status === 'Active' && (
                         <>
                           <li><a href="/employer/profileDetails" className="block px-4 py-2 hover:bg-gray-100">Company Profile</a></li>
                           <li><a href="/employer/branch-details" className="block px-4 py-2 hover:bg-gray-100">Branch & Site Info</a></li>
@@ -388,12 +449,12 @@ export default function Navbar() {
                         </>
                       )}
 
-                      {userRole ==='employer' && auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.userType === 'admin'
-                      && (
-                        <>
-                          <li><a href="/employer/admin/userManagement" className="block px-4 py-2 hover:bg-gray-100">Manage User</a></li>
-                        </>
-                      )}
+                      {userRole === 'employer' && auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.userType === 'admin'
+                        && (
+                          <>
+                            <li><a href="/employer/admin/userManagement" className="block px-4 py-2 hover:bg-gray-100">Manage User</a></li>
+                          </>
+                        )}
 
                       {userRole === 'admin' && (
                         <>
@@ -410,56 +471,74 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <button onClick={() => { openModal() }} className="text-gray-900 bg-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2">
-                Register
+              <button onClick={() => { openRegistration() }} className="text-gray-900 bg-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 lg:px-4 py-2">
+                Sign Up
               </button>
-              <Link method="get" href='/login' className="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 text-center">
-                Login
-              </Link>
+              <button onClick={() => { openLogin() }} className="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-6 py-2 text-center">
+                Sign In
+              </button>
             </>
           )}
         </div>
       </div>
       {/* Student Registration Modal */}
-      {isModalOpen && (
+      {isRegistrationOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative p-4 w-full max-w-md max-h-full">
-            <div className="relative bg-white rounded-lg shadow">
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Account Registration
-                </h3>
-                <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center" data-modal-toggle="select-modal" onClick={closeModal}>
-                  <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
-              <div className="p-4 md:p-5">
-                <ul className="space-y-4 mb-2">
-                  <li>
-                    <Link method="get" href="/register/student" className="block">
-                      <label HTMLFor="student-registration" className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100">
-                        <div className="w-full text-lg font-semibold">Student Registration</div>
-                        <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" /></svg>
-                      </label>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link method="get" href="/register/employer" className="block">
-                      <label for="employer-registration" className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100">
-                        <div className="w-full text-lg font-semibold">Employer Registration</div>
-                        <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" /></svg>
-                      </label>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+          <div className="flex flex-col lg:flex-row p-4 md:p-5 gap-8 justify-center items-center">
+            <div id="student-registration-modal" className="bg-white rounded-2xl shadow w-full lg:w-96 mx-auto h-48 flex flex-col justify-center items-center p-4">
+              <label htmlFor="student-registration" className="gap-4 text-center">
+                <div className="w-full font-bold text-xl text-gray-900">Student Registration</div>
+                <Link method="get" href="/register/student" className="inline-flex mt-8 justify-center text-white bg-gradient-to-r text-lg from-blue-800 via-blue-900 to-blue-900 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-8 py-3 text-center me-2 mb-2">
+                  SIGN UP <FaArrowUpRightFromSquare size={18} className="inline-block ml-4" />
+                </Link>
+              </label>
+            </div>
+            <div id="employer-registration-modal" className="bg-white rounded-2xl shadow w-full lg:w-96 mx-auto h-48 flex flex-col justify-center items-center p-4">
+              <label htmlFor="employer-registration" className="gap-4 text-center">
+                <div className="w-full font-bold text-xl text-gray-900 text-center">Employer Registration</div>
+                <Link method="get" href="/register/employer" className="inline-flex mt-8 justify-center text-white bg-gradient-to-r text-lg from-blue-800 via-blue-900 to-blue-900 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-8 py-3 text-center me-2 mb-2">
+                  SIGN UP <FaArrowUpRightFromSquare size={18} className="inline-block ml-4" />
+                </Link>
+              </label>
             </div>
           </div>
         </div>
       )}
+
+
+      {isLoginOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="flex flex-col lg:flex-row p-4 md:p-5 gap-8 lg:gap-4 justify-center items-center w-full">
+            <div id="student-login-modal" className="bg-white rounded-2xl shadow p-4 w-full max-w-lg md:max-w-xl lg:max-w-2xl h-48 flex flex-col justify-center items-center">
+              <label htmlFor="student-login" className="gap-4 text-center">
+                <div className="w-full font-bold text-xl text-gray-900">Student</div>
+                <Link method="get" href="/login/student" className="inline-flex mt-8 justify-center text-white bg-gradient-to-r text-lg from-blue-800 via-blue-900 to-blue-900 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-8 py-3 text-center me-2 mb-2">
+                  SIGN IN <FaArrowUpRightFromSquare size={18} className="inline-block ml-4" />
+                </Link>
+              </label>
+            </div>
+
+            <div id="employer-login-modal" className="bg-white rounded-2xl shadow p-4 w-full max-w-lg md:max-w-xl lg:max-w-2xl h-48 flex flex-col justify-center items-center">
+              <label htmlFor="employer-login" className="gap-4 text-center">
+                <div className="w-full font-bold text-xl text-gray-900 text-center">Employer</div>
+                <Link method="get" href="/login/employer" className="inline-flex mt-8 justify-center text-white bg-gradient-to-r text-lg from-blue-800 via-blue-900 to-blue-900 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-8 py-3 text-center me-2 mb-2">
+                  SIGN IN <FaArrowUpRightFromSquare size={18} className="inline-block ml-4" />
+                </Link>
+              </label>
+            </div>
+
+            <div id="admin-login-modal" className="bg-white rounded-2xl shadow mx-auto p-4 w-full max-w-lg md:max-w-xl lg:max-w-80 h-48 flex flex-col justify-center items-center">
+              <label htmlFor="admin-login" className="gap-4 text-center">
+                <div className="w-full font-bold text-xl text-gray-900 text-center">System Administrator</div>
+                <Link method="get" href="/login/admin" className="inline-flex mt-8 justify-center text-white bg-gradient-to-r text-lg from-blue-800 via-blue-900 to-blue-900 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-8 py-3 text-center me-2 mb-2">
+                  SIGN IN <FaArrowUpRightFromSquare size={18} className="inline-block ml-4" />
+                </Link>
+              </label>
+            </div>
+          </div>
+        </div>
+      )}
+
       {mobileMenuOpen && (
         <div className="relative md:hidden fixed z-100 top-15 left-0 w-full bg-white border-b border-gray-200 drop-shadow rounded-sm">
           <div className="flex flex-col p-2">

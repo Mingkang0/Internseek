@@ -31,12 +31,12 @@ Internseek provides several key features that enhance the internship application
 
 ## Technologies Used
 
-![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![Inertia.js](https://img.shields.io/badge/inertia.js-%238700b3.svg?style=for-the-badge&logo=inertia&logoColor=white)
-![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
-![Flowbite](https://img.shields.io/badge/flowbite-%2303A9F4.svg?style=for-the-badge&logo=flowbite&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)(https://laravel.com/)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)(https://reactjs.org/)
+![Inertia.js](https://img.shields.io/badge/inertia.js-%238700b3.svg?style=for-the-badge&logo=inertia&logoColor=white)(https://inertiajs.com/)
+![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)(https://www.mysql.com/)
+![Flowbite](https://img.shields.io/badge/flowbite-%2303A9F4.svg?style=for-the-badge&logo=flowbite&logoColor=white)(https://flowbite.com/)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)(https://tailwindcss.com/)
 
 ## Usage
 

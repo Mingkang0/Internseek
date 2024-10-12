@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import { Head, usePage } from "@inertiajs/react";
 import { FaCheckSquare } from "react-icons/fa";
 
-export default function StudentProfile({ student, accomplishment, referee, languages, skill, education, experience, address, studentID }) {
+export default function StudentProfileDetails({ student, accomplishment, referee, languages, skill, education, experience, address, studentID }) {
   const [isGenerateResumeModalOpen, setIsGenerateResumeModalOpen] = useState(false);
   const [profileCompletion, setProfileCompletion] = useState(0);
 

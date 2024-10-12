@@ -21,9 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'isStudent' => \App\Http\Middleware\IsStudent::class,
-            'isAdmin' => \App\Http\Middleware\IsAdmin::class,
-            'isEmployer' => \App\Http\Middleware\IsEmployer::class,
+            'IsStudent' => \App\Http\Middleware\IsStudent::class,
+            'IsAdmin' => \App\Http\Middleware\IsAdmin::class,
+            'IsEmployer' => \App\Http\Middleware\IsEmployer::class,
         ]);
         
         $middleware->web(append: [

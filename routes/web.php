@@ -65,7 +65,7 @@ Route::get('/companies', [CompanyController::class, 'index'])->name('companies.i
 
 Route::get('/companies/{id}', [CompanyController::class, 'show'])->name('companies.show');
 
-Route::middleware('isStudent')->group(function () {
+Route::middleware('IsStudent')->group(function () {
     Route::post('/internships/{id}/bookmark', [InternshipController::class, 'bookmark'])->name('internships.bookmark');
 
     Route::post('report-internship/{id}', [InternshipController::class, 'ReportInternship'])->name('internships.report');
@@ -164,7 +164,7 @@ Route::middleware('isStudent')->group(function () {
 });
 
 
-Route::middleware('isAdmin')->group(function () {
+Route::middleware('IsAdmin')->group(function () {
 
     Route::get('/admin/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
 
@@ -201,7 +201,7 @@ Route::middleware('isAdmin')->group(function () {
     Route::post('/admin/update-companyRating/{id}', [AdminController::class, 'updateCompanyRating'])->name('admin.updatecompanyrating');
 });
 
-Route::middleware('isEmployer')->group(function () {
+Route::middleware('IsEmployer')->group(function () {
     Route::get('/employer/dashboard', [DashboardController::class, 'indexEmployer'])->name('employer.dashboard');
 
     Route::get('/register/existing-company', [RegistrationController::class, 'addExistingCompany'])->name('register.existingcompany');

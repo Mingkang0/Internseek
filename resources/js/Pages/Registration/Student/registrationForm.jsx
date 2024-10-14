@@ -19,6 +19,11 @@ const RegisterStudentForm = () => {
       setData('errors', { ...errors, password: 'Passwords do not match' });
       return;
     }
+
+    if (data.phoneNum.length < 10 || data.phoneNum.length > 11) {
+      setData('errors', { ...errors, phoneNum: 'Phone number must be at least 10/11 characters' });
+      return;
+    }
     post('/create/student', {
       onError: () => {
         if (data.password !== data.confirmPassword) {

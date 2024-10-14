@@ -8,9 +8,12 @@ export default function AdminDashboard({ internshipCount, companyCount, companie
     <DefaultLayout>
       <Head title="Admin Dashboard" />
       <div className="dashboard bg-gray-200 px-6 min-h-screen lg:py-4">
+      <div className="card-buttons">
+          <CardButtons internshipCount={internshipCount} employerCount={companyCount} studentCount={studentCount} />
+        </div>
         <div className="flex flex-col lg:flex-row card-sections gap-4">
           <div className="internship-reports w-full p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
-            <h5 className="flex flex-wrap justify-between mb-2 text-lg font-bold tracking-tight text-gray-900 gap-2">
+            <h5 className="flex flex-col lg:flex-row justify-between mb-2 text-lg font-bold tracking-tight text-gray-900 gap-2">
               Report Internship from Students
               <Link href='/admin/problems-reports'><p className="text-sm font-medium text-blue-600 cursor-pointer">View All</p></Link>
             </h5>
@@ -92,9 +95,7 @@ export default function AdminDashboard({ internshipCount, companyCount, companie
             </div>
           </div>
         </div>
-        <div className="card-buttons mt-4">
-          <CardButtons internshipCount={internshipCount} employerCount={companyCount} studentCount={studentCount} />
-        </div>
+
       </div>
     </DefaultLayout>
   );

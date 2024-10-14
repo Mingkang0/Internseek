@@ -49,7 +49,11 @@ Route::get('linkedin/callback', [LoginController::class, 'handleLinkedInCallback
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPassword'])->name('forgot-password.show');
+Route::get('/forgot-password/student', [ForgotPasswordController::class, 'showStudentForgotPassword'])->name('forgot-password.student');
+
+Route::get('/forgot-password/employer', [ForgotPasswordController::class, 'showEmployerForgotPassword'])->name('forgot-password.employer');
+
+Route::get('/forgot-password/admin', [ForgotPasswordController::class, 'showAdminForgotPassword'])->name('forgot-password.admin');
 
 Route::post('/forgot-password/{role}', [ForgotPasswordController::class, 'forgotPassword'])->name('forgot-password');
 

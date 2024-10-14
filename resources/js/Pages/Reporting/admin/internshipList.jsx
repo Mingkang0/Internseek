@@ -25,13 +25,13 @@ export default function AvailableInternshipsTable({ internships }) {
 
   const filteredInternships = internships.filter(internship =>
     internship.internshipTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    internship.employer.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    internship.company.companyName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Sort internships based on selected option
   const sortedInternships = filteredInternships.sort((a, b) => {
-    const dateA = new Date(a.created_at);
-    const dateB = new Date(b.created_at);
+    const dateA = new Date(a.startPostingDate);
+    const dateB = new Date(b.startPostingDate);
     
     return selectedOptions === 'Latest-to-Old' ? dateB - dateA : dateA - dateB;
   });

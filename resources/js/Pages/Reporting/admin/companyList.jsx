@@ -55,8 +55,8 @@ export default function RegisteredEmployerTable({ companies }) {
 
   // Sort companies based on the selected option
   const sortedCompanies = filteredCompanies.sort((a, b) => {
-    const dateA = new Date(a.created_at);
-    const dateB = new Date(b.created_at);
+    const dateA = new Date(a.businessRegDate);
+    const dateB = new Date(b.businessRegDate);
     return selectedOptions === "Latest-to-Old" ? dateB - dateA : dateA - dateB;
   });
 

@@ -24,7 +24,7 @@ export default function AdminDetails({ admin }) {
   const [isEditMode, setIsEditMode] = useState(false);
 
   // Initialize the form with the admin's existing data
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, processing, errors, setError } = useForm({
     firstName: admin?.firstName || "",
     lastName: admin?.lastName || "",
     phoneNum: admin?.phoneNum || "",
@@ -36,8 +36,17 @@ export default function AdminDetails({ admin }) {
     setIsEditMode(true);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = (e) => {
+
+    e.preventDefault();
+    if(data.phoneNum.length < 10 || data.phoneNum.length > 11){
+      setError('phoneNum', 'Phone number must be between 10 to 11 characters');
+      return;
+    }
+
+  
     post(route('admin.profile.update', admin.id), {
+      data,
       preserveScroll: true,
       onSuccess: () => setIsEditMode(false), // Exit edit mode on success
     });
@@ -59,6 +68,8 @@ export default function AdminDetails({ admin }) {
     const { name, value } = e.target;
     setData(name, value);
   };
+
+  console.log(data);
 
   return (
     <DefaultLayout>
@@ -155,10 +166,14 @@ export default function AdminDetails({ admin }) {
                 className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="Enter Phone Number"
                 value={data.phoneNum}
+                pattern="^01[0-46-9]-*[0-9]{7,8}$"
                 onChange={handleInputChange}
                 disabled={!isEditMode}
                 required
               />
+              {
+                errors.phoneNum && <p className="text-red-500 text-xs mt-1">{errors.phoneNum}</p>
+              }
             </div>
             <div className="grid grid-cols-6 lg:grid-cols-12 gap-6">
               <div className="col-span-6">

@@ -13,7 +13,15 @@ class Admin extends Authenticatable
     use HasFactory;
     use Notifiable;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = [
+        'firstName',
+        'lastName',
+        'phoneNum',
+        'ICNumber',
+        'gender',
+        'email', 
+        'password', 
+    ];
 
     protected $hidden = ['password', 'remember_token', 'reset_password_token'];
 

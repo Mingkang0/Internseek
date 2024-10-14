@@ -27,15 +27,33 @@ export default function EmployerDetails({ company, branches, sites, employers })
               <p className="text-base font-semibold text-gray-800">Status: </p>
               <p className="text-base text-gray-800">{company.registrationStatus}</p>
             </div>
+
             <div className="companyDetails">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-8 mt-4">
-                <div className="col-span-1">
-                  <label className="block text-sm font-semibold text-gray-700">Company Name</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyName} disabled />
+              <div className="grid grid-cols-3 lg:grid-cols-12 gap-6">
+                <div className="col-span-12 lg:col-span-3">
+                  <div className="companyLogo">
+                    <label>
+                      <div className="relative cursor-pointer">
+                        <img
+                          src={`/storage/company/companyLogo/${company.companyLogo}`}
+                          alt="Company Logo"
+                          className="w-32 h-32 mt-2 mx-auto rounded-full border ring-1 ring-gray-900"
+                        />
+                      </div>
+
+                    </label>
+                  </div>
                 </div>
-                <div className="col-span-1">
-                  <label className="block text-sm font-semibold text-gray-700">Company Email</label>
-                  <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={company.companyEmail} disabled />
+                <div className="col-span-9">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700">Company Name</label>
+                        <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="text" value={company.companyName} disabled />
+                      </div>
+
+                      <div className="mt-2">
+                        <label className="block text-sm font-semibold text-gray-700">Company Email</label>
+                        <input className="mt-1 p-2 w-full border border-gray-300 bg-gray-100 rounded-md text-sm" type="email" value={company.companyEmail} disabled />
+                      </div>
                 </div>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-4 mt-4">
@@ -90,16 +108,8 @@ export default function EmployerDetails({ company, branches, sites, employers })
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-9 lg:grid-cols-12 p-2 gap-8 lg:gap-0">
-              <div className="col-span-9 lg:col-span-3">
-                <p className="mb-2 text-xl font-bold tracking-tight text-blue-800">Company Logo</p>
-                <img
-                  src={`/storage/company/companyLogo/${company.companyLogo}`}
-                  alt="CompanyLogo"
-                  className="w-36 h-36 rounded-full mx-auto border ring-1 ring-gray-900"
-                />
-              </div>
-              <div className="col-span-9 lg:col-span-9">
+            <div className="grid grid-cols-12 lg:grid-cols-12 mt-4 gap-8 lg:gap-0">
+              <div className="col-span-12 lg:col-span-12">
                 <p className="mb-2 text-lg font-bold tracking-tight text-blue-800">Contact Person Details</p>
                 {employers.map((employer, index) => (
                   <>

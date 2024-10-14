@@ -15,11 +15,21 @@ use Illuminate\Support\Facades\Auth;
 
 class ForgotPasswordController extends Controller
 {
-    public function showForgotPassword()
+
+    public function showEmployerForgotPassword()
     {
-        return Inertia::render('ForgotPassword');
+        return Inertia::render('Login/ForgotPassword/Employer');
     }
 
+    public function showStudentForgotPassword()
+    {
+        return Inertia::render('Login/ForgotPassword/Student');
+    }
+
+    public function showAdminForgotPassword()
+    {
+        return Inertia::render('Login/ForgotPassword/Admin');
+    }
 
     public function routeNotificationForMail()
     {

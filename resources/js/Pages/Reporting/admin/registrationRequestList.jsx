@@ -80,7 +80,7 @@ export default function RegistrationRequestList({ companies }) {
                   <th scope="col" className="px-6 py-3 border-r border-gray-900">Business Registration Number</th>
                   <th scope="col" className="px-6 py-3 border-r border-gray-900">Business Registration Date</th>
                   <th scope="col" className="px-6 py-3 border-r border-gray-900">Status</th>
-                  <th scope="col" className="px-6 py-3 border-r border-gray-900">Company Email</th>
+                  <th scope="col" className="px-6 py-3 border-r border-gray-900">Requested Date</th>
                   <th scope="col" className="px-6 py-3 border-r border-gray-900">Company Type</th>
                   <th scope="col" className="px-6 py-3 border-r border-gray-900">Operation</th>
                 </tr>
@@ -93,7 +93,7 @@ export default function RegistrationRequestList({ companies }) {
                     <td className="px-6 py-3 border-r border-gray-900">{registrationRequest.businessRegNum}</td>
                     <td className="px-6 py-3 border-r border-gray-900">{registrationRequest.businessRegDate}</td>
                     <td className="px-6 py-3 border-r border-gray-900">{registrationRequest.registrationStatus}</td>
-                    <td className="px-6 py-3 border-r border-gray-900">{registrationRequest.companyEmail}</td>
+                    <td className="px-6 py-3 border-r border-gray-900">{new Date(registrationRequest.created_at).toLocaleDateString()}</td>
                     <td className="px-6 py-3 border-r border-gray-900">{registrationRequest.companyType}</td>
                     <td className="px-6 py-3 border-r border-gray-900">
                       <a href={`/admin/employer-requests/${registrationRequest.id}`} className="text-blue-600 cursor-pointer">View Request</a>

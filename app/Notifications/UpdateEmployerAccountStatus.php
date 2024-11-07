@@ -34,11 +34,14 @@ class UpdateEmployerAccountStatus extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $url = url('/login');
         return (new MailMessage)
         ->line('Hi!')
         ->subject('Employer Account Status')
         ->line('Your company account status has been updated by your company administrator.')
         ->line($this->data['message'] ?? '')
+        ->line('Please login to your account to view the changes.')   
+        ->action('Login', $url)    
         ->line("If you didn't request this, please ignore this email.")
         ->line('Thank you!');
     }

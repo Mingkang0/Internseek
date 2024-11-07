@@ -25,7 +25,7 @@ class InternshipController extends Controller
         ->get();
 
         // Return the data to the Inertia view
-        return Inertia::render('Internships/list', [
+        return Inertia::render('ViewInternshipListing/list', [
             'internships' => $internships,
         ]);
     }
@@ -49,7 +49,7 @@ class InternshipController extends Controller
         $applicationCount = $this->getApplicationCount($id);
 
         // Return the data to the Inertia view
-        return Inertia::render('Internships/details', [
+        return Inertia::render('ViewInternshipListing/details', [
             'internship' => $internship,
             'clickCount' => $clickCount,
             'bookmarkCount' => $bookmarkCount,
@@ -161,7 +161,7 @@ class InternshipController extends Controller
                   ->with(['internship.company'])
                   ->get();
   
-        return Inertia::render('Internships/reportList', [
+        return Inertia::render('ViewInternshipListing/reportList', [
           'reports' => $reports,
       ]);
     }

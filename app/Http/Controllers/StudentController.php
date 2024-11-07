@@ -37,7 +37,7 @@ class StudentController extends Controller
       $languages = Language::where('studentID', $studentID)->get();
       $skill = Skill::where('studentID', $studentID)->get();
     
-      return Inertia::render('Profile/student/profileDetails', [
+      return Inertia::render('ManageUserProfile/student/profileDetails', [
           'student' => $student,
           'address' => $address,
           'experience' => $experience,
@@ -55,7 +55,7 @@ class StudentController extends Controller
     $guard = session('userGuard');
     $student = Auth::guard($guard)->user();
 
-    return Inertia::render('Profile/student/settings', [
+    return Inertia::render('ManageUserProfile/student/settings', [
       'student' => $student,
     ]);
   }

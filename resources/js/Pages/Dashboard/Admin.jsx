@@ -1,4 +1,4 @@
-import CardButtons from "@/components/adminCardButtons";
+import CardButtons from "@/components/dashboard/admin/adminCardButtons";
 import DefaultLayout from "@/layout/defaultLayout";
 import { Head, Link } from "@inertiajs/react";
 

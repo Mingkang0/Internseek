@@ -21,7 +21,7 @@ class CompanyController extends Controller
         $companies = Company::where('registrationStatus', 'Approved')->get();
 
         // Return the data to the Inertia view
-        return Inertia::render('Companies/list', [
+        return Inertia::render('ViewCompanyListing/list', [
             'companies' => $companies,
         ]);
     }
@@ -32,7 +32,7 @@ class CompanyController extends Controller
         $company = Company::find($id);
 
         // Return the data to the Inertia view
-        return Inertia::render('Companies/details', [
+        return Inertia::render('ViewCompanyListing/details', [
             'company' => $company,
         ]);
     }
@@ -47,7 +47,7 @@ class CompanyController extends Controller
             ->where('companyID', $companyID)
             ->get();
 
-        return Inertia::render('Profile/employer/branchDetails', [
+        return Inertia::render('ManageUserProfile/employer/branchDetails', [
             'branches' => $branches,
             'companyID' => $companyID,
         ]);
@@ -202,7 +202,7 @@ class CompanyController extends Controller
         $company = Company::where('id', $user->companyID)->first();
 
 
-        return Inertia::render('Profile/employer/companyProfileDetails', [
+        return Inertia::render('ManageUserProfile/employer/companyProfileDetails', [
             'company' => $company,
         ]);
     }
@@ -271,7 +271,7 @@ class CompanyController extends Controller
                ->where('id', '!=', $user->id) // exclude the admin's ID
                ->get();
 
-          return Inertia::render('Profile/employer/userList', [
+          return Inertia::render('ManageCompanyRegistration/employer/userList', [
             'employers' => $employers,
           ]);
         } else {

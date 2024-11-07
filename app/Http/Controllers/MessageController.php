@@ -67,7 +67,7 @@ class MessageController extends Controller
         ->with('employer') // Eager-load employer relation if applicable
         ->get();
 
-        return Inertia::render('Message/ChatBox', [
+        return Inertia::render('ManageMessagingFeatures/ChatBox', [
             'messages' => $messages,
             'receiver' => $receiver,
             'sender' => $sender,
@@ -159,6 +159,7 @@ class MessageController extends Controller
                   ->where('receiver_type', 'employer'); // Ensure it's the company receiving
             });
         })
+        ->whereRaw('sender_id < receiver_id OR (sender_id = ? AND receiver_id = ?)', [$sender->id, $sender->id])
         ->distinct()
         ->get(['sender_id', 'receiver_id']);
 
@@ -191,7 +192,8 @@ class MessageController extends Controller
         ];
     }
 
-    return Inertia::render('Message/messagePage', [
+
+    return Inertia::render('ManageMessagingFeatures/messagePage', [
         'conversations' => $conversations,
         'userRole' => $userRole,
         'userID' => $userID,
@@ -210,6 +212,7 @@ class MessageController extends Controller
                   ->where('receiver_type', 'student'); // Ensure it's the student receiving
             });
         })
+        ->whereRaw('sender_id < receiver_id OR (sender_id = ? AND receiver_id = ?)', [$sender->id, $sender->id])
         ->distinct()
         ->get(['sender_id', 'receiver_id']);
 
@@ -242,7 +245,7 @@ class MessageController extends Controller
             ];
         }
 
-        return Inertia::render('Message/messagePage', [
+        return Inertia::render('ManageMessagingFeatures/messagePage', [
             'conversations' => $conversations,
             'userRole' => $userRole,
             'userID' => $userID,
@@ -252,21 +255,27 @@ class MessageController extends Controller
 
 public function markAsRead(Request $request, $id)
 {
-    // Retrieve the message and update the read status
-    $message = Message::find($id);
+  // Validate the incoming request
+  $validatedData = $request->validate([
+    'messageIds' => 'required|array',
+    'messageIds.*' => 'exists:messages,id', // Ensure IDs exist in the messages table
+]);
 
-    $userGuard = session('userGuard');
-    $user = Auth::guard($userGuard)->user();
+// Retrieve the messages and update their read status
+$userGuard = session('userGuard');
+$user = Auth::guard($userGuard)->user();
 
-    if($user instanceof Employer) {
-        $userID = $user->companyID;
-    } else {
-        $userID = $user->id;
-    }
-    if ($message->receiver_id == $userID && $message->receiver_type == $userGuard) {
-        $message->messageStatus = 'read';
-        $message->save();
-    }
-    
+// Determine the user ID based on the user type (Employer or Student)
+if ($user instanceof Employer) {
+    $userID = $user->companyID;
+} else {
+    $userID = $user->id;
+}
+
+// Update the message status in the database
+Message::whereIn('id', $validatedData['messageIds'])
+    ->where('receiver_id', $userID)
+    ->where('receiver_type', $userGuard)
+    ->update(['messageStatus' => 'read']);
 }
 }

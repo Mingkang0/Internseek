@@ -16,7 +16,7 @@ class EmployerController extends Controller
 
         $employer = Employer::findOrFail($user->id);
 
-        return Inertia::render('Profile/employer/employerDetails', [
+        return Inertia::render('ManageUserProfile/employer/employerDetails', [
             'employer' => $employer,
         ]);
     }

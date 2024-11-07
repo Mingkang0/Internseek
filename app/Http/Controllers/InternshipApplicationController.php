@@ -47,7 +47,7 @@ class InternshipApplicationController extends Controller
         $student = Student::with('skills', 'languages', 'accomplishments', 'addresses', 'educations', 'experiences', 'referees')->find($user->id);
 
 
-        return Inertia::render('Application/ApplyInternship/form', [
+        return Inertia::render('ManageInternshipApplication/ApplyInternship/form', [
             'student' => $student,
             'internship' => $internship,
         ]);
@@ -177,7 +177,7 @@ class InternshipApplicationController extends Controller
                     ->limit(2)
                     ->get();
 
-        return Inertia::render('Application/my-internships/page', [
+        return Inertia::render('ManageInternshipApplication/my-internships/page', [
           'bookmarks' => $bookmarks,
           'matchs' => $matchs,
           'appliedInternships' => $appliedInternships,
@@ -210,7 +210,7 @@ class InternshipApplicationController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-        return Inertia::render('Application/my-internships/pre-internships/page', [
+        return Inertia::render('ManageAnalyticsandReporting/student/my-internships/pre-internships/page', [
             'bookmarks' => $bookmarks,
             'matchs' => $matchs,
         ]);
@@ -253,7 +253,7 @@ class InternshipApplicationController extends Controller
     
         
 
-        return Inertia::render('Application/my-internships/process-internships/page', [
+        return Inertia::render('ManageInternshipApplication/my-internships/process-internships/page', [
             'appliedInternships' => $appliedInternships,
             'interviews' => $interviews,
             'approvedInternships' => $approvedInternships,
@@ -306,7 +306,7 @@ class InternshipApplicationController extends Controller
                 ->with(['internship']) 
                 ->get();
                 
-                return Inertia::render('Application/internshipApplication/list', [
+                return Inertia::render('ManageInternshipApplication/internshipApplication/list', [
                     'applications' => $applications,
                 ]);
             }
@@ -326,7 +326,7 @@ class InternshipApplicationController extends Controller
                     ->with(['internship'])
                     ->find($id);
 
-        return Inertia::render('Application/internshipApplication/updateStatus', [
+        return Inertia::render('ManageInternshipApplication/internshipApplication/updateStatus', [
             'application' => $application,
         ]);
     }
@@ -457,7 +457,7 @@ class InternshipApplicationController extends Controller
                     ->get();
 
     
-                return Inertia::render('Application/internshipApplication/Need-to-Interview/list', [
+                return Inertia::render('ManageInternshipApplication/internshipApplication/Need-to-Interview/list', [
                     'applications' => $applications,
                 ]);
             }
@@ -522,7 +522,7 @@ class InternshipApplicationController extends Controller
                     ->with(['internship'])
                     ->find($id);
 
-        return Inertia::render('Application/internshipApplication/Need-to-Interview/updateInterviewResult', [
+        return Inertia::render('ManageInternshipApplication/internshipApplication/Need-to-Interview/updateInterviewResult', [
             'application' => $application,
         ]);
     }
@@ -635,7 +635,7 @@ class InternshipApplicationController extends Controller
                     ->with(['internship'])
                     ->find($id);
     
-        return Inertia::render('Application/internshipApplication/ApprovedOrShortlisted/updateShortlistedResult', [
+        return Inertia::render('ManageInternshipApplication/internshipApplication/ApprovedOrShortlisted/updateShortlistedResult', [
             'application' => $application,
         ]);
     }
@@ -786,7 +786,7 @@ class InternshipApplicationController extends Controller
                ->orderBy('created_at', 'desc')
                ->get();
 
-        return Inertia::render('Application/IndustrialTraining/acceptedOffers', [
+        return Inertia::render('ManageInternshipApplication/IndustrialTraining/acceptedOffers', [
             'acceptedOffers' => $acceptedOffers,
         ]);
     }
@@ -809,7 +809,7 @@ class InternshipApplicationController extends Controller
                     ->get();
 
 
-                return Inertia::render('Application/internshipApplication/Accepted/list', [
+                return Inertia::render('ManageInternshipApplication/internshipApplication/Accepted/list', [
                     'applications' => $applications,
                 ]);
             }
@@ -840,7 +840,7 @@ class InternshipApplicationController extends Controller
                     ->get();
 
     
-                return Inertia::render('Application/internshipApplication/Rejected/list', [
+                return Inertia::render('ManageInternshipApplication/internshipApplication/Rejected/list', [
                     'applications' => $applications,
                 ]);
             }
@@ -871,7 +871,7 @@ class InternshipApplicationController extends Controller
                     ->get();
 
     
-                return Inertia::render('Application/internshipApplication/ApprovedOrShortlisted/list', [
+                return Inertia::render('ManageInternshipApplication/internshipApplication/ApprovedOrShortlisted/list', [
                     'applications' => $applications,
                 ]);
             }
@@ -929,7 +929,7 @@ class InternshipApplicationController extends Controller
         $acceptedOffer = AcceptedOffer::with(['application.student', 'application.internship'])->find($id);
 
 
-        return Inertia::render('Application/internshipApplication/Accepted/updateDetails', [
+        return Inertia::render('ManageInternshipApplication/internshipApplication/Accepted/updateDetails', [
             'acceptedOffer' => $acceptedOffer,
         ]);
     }
@@ -992,7 +992,7 @@ class InternshipApplicationController extends Controller
         }
 
 
-        return Inertia::render('Profile/employer/myReport', [
+        return Inertia::render('ManageAnalyticsandReporting/employer/myReport', [
             'applicationsData' => $applicationsData,
         ]);
 

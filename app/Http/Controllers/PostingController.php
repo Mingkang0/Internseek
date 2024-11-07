@@ -32,7 +32,7 @@ class PostingController extends Controller
                 ->get();
     
                 // Return the data to the Inertia view
-                return Inertia::render('Posting/postingList', [
+                return Inertia::render('ManageInternshipPosting/employer/postingList', [
                 'internships' => $internships,
             ]);
             } 
@@ -56,13 +56,13 @@ class PostingController extends Controller
 
             $branch = Branch::with('site') 
                     -> where('companyID', $company->id)->get();
-            return Inertia::render('Posting/createPosting', [
+            return Inertia::render('ManageInternshipPosting/employer/createPosting', [
                 'branch' => $branch,
             ]);
         } else {
             return redirect()->route('login')->with('error', 'You are not authorized to view this page');
         }
-        return Inertia::render('Posting/createPosting');
+        return Inertia::render('ManageInternshipPosting/employer/createPosting');
     }
 
     public function show($id)
@@ -84,7 +84,7 @@ class PostingController extends Controller
                 ->get();
 
         // Return the data to the Inertia view
-        return Inertia::render('Posting/viewPosting', [
+        return Inertia::render('ManageInternshipPosting/employer/viewPosting', [
             'internship' => $internship,
             'clickCount' => $clickCount,
             'bookmarkCount' => $bookmarkCount,
@@ -120,7 +120,7 @@ class PostingController extends Controller
     
     
 
-            return Inertia::render('Posting/editPosting', [
+            return Inertia::render('ManageInternshipPosting/employer/editPosting', [
                 'internship' => $internship,
                 'branch' => $branch,
             ]);

@@ -28,7 +28,7 @@ class AdminController extends Controller
 
         $admin = Admin::findOrfail($user->id);
 
-        return Inertia::render('Profile/admin/profileDetails', [
+        return Inertia::render('ManageUserProfile/admin/profileDetails', [
             'admin' => $admin,
         ]);
 
@@ -86,7 +86,7 @@ class AdminController extends Controller
         $internships = Internship::with('company')->get();
 
 
-        return Inertia::render('Reporting/admin/internshipList', [
+        return Inertia::render('ManageAnalyticsandReporting/admin/internshipList', [
             'internships' => $internships,
         ]);
     }
@@ -94,7 +94,7 @@ class AdminController extends Controller
     public function internshipDetails($id){
         $internship = Internship::with(['company', 'site', 'branch'])->find($id);
         
-        return Inertia::render('Reporting/admin/internshipDetails', [
+        return Inertia::render('ManageAnalyticsandReporting/admin/internshipDetails', [
             'internship' => $internship,
         ]);
     }
@@ -102,7 +102,7 @@ class AdminController extends Controller
     public function internseekerList(){
         $internseekers = Student::all();
 
-        return Inertia::render('Reporting/admin/internseekerList', [
+        return Inertia::render('ManageAnalyticsandReporting/admin/internseekerList', [
             'internseekers' => $internseekers,
         ]);
     }
@@ -111,7 +111,7 @@ class AdminController extends Controller
         $internseeker = Student::find($id);
         $address = Address::where('studentID', $internseeker->id)->get();
 
-        return Inertia::render('Reporting/admin/internseekerDetails', [
+        return Inertia::render('ManageAnalyticsandReporting/admin/internseekerDetails', [
             'internseeker' => $internseeker,
             'addresses' => $address,
         ]);
@@ -120,7 +120,7 @@ class AdminController extends Controller
     public function companyList(){
         $companies = Company::where('registrationStatus', 'Approved')->get();
 
-        return Inertia::render('Reporting/admin/companyList', [
+        return Inertia::render('ManageAnalyticsandReporting/admin/companyList', [
             'companies' => $companies
         ]);
     }
@@ -141,7 +141,7 @@ class AdminController extends Controller
             $sites = Site::whereIn('branchID', $branchIds)->get();
         }
 
-        return Inertia::render('Reporting/admin/companyDetails', [
+        return Inertia::render('ManageAnalyticsandReporting/admin/companyDetails', [
             'company' => $company,
             'employers' => $employers,
             'branches' => $branches,
@@ -153,7 +153,7 @@ class AdminController extends Controller
     public function ProblemReportList(){
         $problemReports = Report::with('internship.company', 'student')->get();
 
-        return Inertia::render('Reporting/admin/internshipReportList', [
+        return Inertia::render('ManageInternshipPosting/admin/internshipReportList', [
             'problemReports' => $problemReports,
         ]);
     }
@@ -161,7 +161,7 @@ class AdminController extends Controller
     public function ProblemReportDetails($id){
         $report = Report::with('internship.company','internship.branch', 'internship.site' , 'student')->find($id);
 
-        return Inertia::render('Reporting/admin/internshipReportDetails', [
+        return Inertia::render('ManageInternshipPosting/admin/internshipReportDetails', [
             'report' => $report,
         ]);
     }
@@ -224,7 +224,7 @@ class AdminController extends Controller
     public function CompanyRequestList(){
         $companies = Company::all();
 
-        return Inertia::render('Reporting/admin/registrationRequestList', [
+        return Inertia::render('ManageCompanyRegistration/admin/registrationRequestList', [
             'companies' => $companies,
         ]);
     }
@@ -236,7 +236,7 @@ class AdminController extends Controller
         $employer = Employer::where('companyID', $company->id)->first();
         
 
-        return Inertia::render('Reporting/admin/registrationRequestDetails', [
+        return Inertia::render('ManageCompanyRegistration/admin/registrationRequestDetails', [
             'employer' => $employer,
             'company' => $company,
         ]);

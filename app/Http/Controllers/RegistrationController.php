@@ -14,12 +14,12 @@ class RegistrationController extends Controller
 {
     public function createStudent()
     {
-        return Inertia::render('Registration/Student/registrationForm');
+        return Inertia::render('RegisterAccount/Student/registrationForm');
     }
 
     public function createEmployer()
     {
-        return Inertia::render('Registration/Employer/employerRegistration');
+        return Inertia::render('RegisterAccount/Employer/employerRegistration');
     }
 
     public function storeStudent(Request $request)
@@ -104,7 +104,7 @@ class RegistrationController extends Controller
 
     public function addExistingCompany()
     {
-        return Inertia::render('Registration/Employer/searchExistingCompany');
+        return Inertia::render('ManageCompanyRegistration/employer/searchExistingCompany');
     }
 
     public function searchExistingCompany(Request $request)
@@ -114,7 +114,7 @@ class RegistrationController extends Controller
                    ->where('registrationStatus', 'Approved')
                    ->get();
 
-        return Inertia::render('Registration/Employer/searchExistingCompany', [
+        return Inertia::render('ManageCompanyRegistration/employer/searchExistingCompany', [
             'companies' => $companies,
     ]);
     }
@@ -169,7 +169,7 @@ class RegistrationController extends Controller
 
         $employer = Employer::find($user->id);
 
-        return Inertia::render('Registration/Employer/companyRegistrationForm', [
+        return Inertia::render('ManageCompanyRegistration/employer/companyRegistrationForm', [
             'employer' => $employer,
         ]);
     }
@@ -263,7 +263,7 @@ class RegistrationController extends Controller
         $company = Company::find($employer->companyID);
 
 
-        return Inertia::render('Registration/Employer/editRegistrationDetails', [
+        return Inertia::render('ManageCompanyRegistration/employer/editRegistrationDetails', [
             'employer' => $employer,
             'company' => $company,
         ]);

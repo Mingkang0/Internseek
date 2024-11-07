@@ -25,10 +25,10 @@ class LoginController extends Controller
         $email = Cookie::get('remember_email');
         if($email){
             $email = Cookie::get('remember_email');
-            return Inertia::render('Login/Student', ['remember_email' => $email]);
+            return Inertia::render('ManageLogin/Student', ['remember_email' => $email]);
         }
         else {
-        return Inertia::render('Login/Student');
+        return Inertia::render('ManageLogin/Student');
         }
     }
 
@@ -37,10 +37,10 @@ class LoginController extends Controller
         $email = Cookie::get('remember_email');
         if($email){
             $email = Cookie::get('remember_email');
-            return Inertia::render('Login/Employer', ['remember_email' => $email]);
+            return Inertia::render('ManageLogin/Employer', ['remember_email' => $email]);
         }
         else {
-        return Inertia::render('Login/Employer');
+        return Inertia::render('ManageLogin/Employer');
         }
     }
 
@@ -49,10 +49,10 @@ class LoginController extends Controller
         $email = Cookie::get('remember_email');
         if($email){
             $email = Cookie::get('remember_email');
-            return Inertia::render('Login/Admin', ['remember_email' => $email]);
+            return Inertia::render('ManageLogin/Admin', ['remember_email' => $email]);
         }
         else {
-        return Inertia::render('Login/Admin');
+        return Inertia::render('ManageLogin/Admin');
         }
     }
     

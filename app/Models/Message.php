@@ -16,4 +16,16 @@ class Message extends Model
         return $this->belongsTo(Employer::class, 'employerID');
     }
 
+
+    public function sender(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    // Define the polymorphic relationship for the receiver
+    public function receiver(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
 }

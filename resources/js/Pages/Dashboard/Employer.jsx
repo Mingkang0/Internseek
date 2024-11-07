@@ -1,6 +1,6 @@
 
-import CardButtons from "@/components/employerCardButtons";
-import PostingCard from "@/components/postingCard";
+import CardButtons from "@/components/dashboard/employer/employerCardButtons";
+import PostingCard from "@/components/internshipPosting/postingCard";
 import DefaultLayout from "@/layout/defaultLayout";
 import { Head, Link } from "@inertiajs/react";
 import { usePage } from "@inertiajs/react";
@@ -12,7 +12,6 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
   const { auth, flash } = usePage().props;
   console.log(auth);
 
-  console.log(company);
   const [showModal, setShowModal] = useState(true);
 
   const closeModal = () => {
@@ -34,12 +33,13 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
     }
   }, [flash]);
 
+
   return (
     <DefaultLayout>
       <Head title="Employer Dashboard" />
       <div className="dashboard bg-gray-200 px-6 py-4 min-h-screen lg:py-4">
-        {company ? (
-          company.registrationStatus === 'Approved' && auth.user.status == 'Active' ? (
+        {auth.user.company ? (
+          auth.user.company.registrationStatus === 'Approved' && auth.user.status == 'Active' ? (
             // display approved employer content
             <>
               <div className="card-buttons">
@@ -84,7 +84,7 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
                 </div>
               </div>
             </>
-          ) : company.registrationStatus === 'Pending' ? (
+          ) : auth.user.company.registrationStatus === 'Pending' ? (
             // display pending employer content
             <div>
               <div>
@@ -108,7 +108,7 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
                 </div>
               </div>
             </div>
-          ) : company.registrationStatus === 'Inquiry' ? (
+          ) : auth.user.company.registrationStatus === 'Inquiry' ? (
             <div>
               <div className="flex flex-col items-center justify-center">
                 <p className="font-bold text-left text-gray-800 text-2xl">
@@ -120,7 +120,7 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
                   </p>
                   <div className="flex flex-col mt-4 gap-8">
                     <p className="text-gray-500 text-base font-semibold">
-                      Comment: {company.inquiryComment}
+                      Comment: {auth.user.company.inquiryComment}
                     </p>
                     <Link
                       href="/edit/registration-details"
@@ -139,13 +139,13 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
                 Welcome to your dashboard, {auth.user.firstName} {auth.user.lastName}
               </p>
 
-              {company.registrationStatus === 'Approved' && auth.user.status == 'Inactive' && (
+              {auth.user.company.registrationStatus === 'Approved' && auth.user.status == 'Inactive' && (
                 <p className="text-center text-gray-600 text-base font-sm mt-4">
                   Your account is inactive. Please wait the company administrator to activate your account.
                 </p>
               )}
 
-              {company.registrationStatus === 'Approved' && auth.user.status == 'Suspended' && (
+              {auth.user.company.registrationStatus === 'Approved' && auth.user.status == 'Suspended' && (
                 <p className="text-center text-gray-600 text-base font-sm mt-4">
                   Your account has been suspended. Please contact the company administrator for more information.
                 </p>
@@ -192,7 +192,7 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
       </div>
         )}
 
-      {company && company.registrationStatus === 'Approved' && auth.user.userType == 'user' && auth.user.status == 'Inactive' && !auth.user.department && !auth.user.position ? (
+      {auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.userType == 'user' && auth.user.status == 'Inactive' && !auth.user.department && !auth.user.position ? (
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative p-4 w-full max-w-xl max-h-full">
             <div className="relative bg-white rounded-lg shadow">
@@ -217,7 +217,7 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
             </div>
           </div>
         </div>
-      ) : company && company.registrationStatus === 'Approved' && auth.user.userType == 'user' && auth.user.status == 'Suspended' ? (
+      ) : auth.user.company && auth.user.company.registrationStatus === 'Approved' && auth.user.userType == 'user' && auth.user.status == 'Suspended' ? (
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative p-4 w-full max-w-xl max-h-full">
             <div className="relative bg-white rounded-lg shadow">

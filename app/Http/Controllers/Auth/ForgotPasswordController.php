@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Inertia\Inertia;
 use App\Notifications\ForgotPassword;
 use App\Models\Admin;
-use App\Models\ContactPerson;
+use App\Models\Employer;
 use App\Models\Student;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -18,17 +18,17 @@ class ForgotPasswordController extends Controller
 
     public function showEmployerForgotPassword()
     {
-        return Inertia::render('Login/ForgotPassword/Employer');
+        return Inertia::render('ManageLogin/ForgotPassword/Employer');
     }
 
     public function showStudentForgotPassword()
     {
-        return Inertia::render('Login/ForgotPassword/Student');
+        return Inertia::render('ManageLogin/ForgotPassword/Student');
     }
 
     public function showAdminForgotPassword()
     {
-        return Inertia::render('Login/ForgotPassword/Admin');
+        return Inertia::render('ManageLogin/ForgotPassword/Admin');
     }
 
     public function routeNotificationForMail()
@@ -48,7 +48,7 @@ class ForgotPasswordController extends Controller
         if ($request->role === 'admin') {
             $user = Admin::where('email', $request->email)->first();
         } elseif ($request->role === 'employer') {
-            $user = ContactPerson::where('email', $request->email)->first();
+            $user = Employer::where('email', $request->email)->first();
         } elseif ($request->role === 'student') {
             $user = Student::where('email', $request->email)->first();
         }
@@ -78,7 +78,7 @@ class ForgotPasswordController extends Controller
         $token = $request->route('token');
         $role = $request->route('role');
         
-        return Inertia::render('ResetPassword', [
+        return Inertia::render('ManageLogin/ForgotPassword/ResetPassword', [
             'token' => $token,
             'role' => $role,
         ]);
@@ -94,7 +94,7 @@ class ForgotPasswordController extends Controller
                 $user = Admin::where('reset_password_token', $token)->first();
                 break;
             case 'employer':
-                $user = ContactPerson::where('reset_password_token', $token)->first();
+                $user = Employer::where('reset_password_token', $token)->first();
                 break;
             case 'student':
                 $user = Student::where('reset_password_token', $token)->first();

@@ -17,10 +17,15 @@ use App\Http\Controllers\InternshipApplicationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\Authenticate;
+use Illuminate\Support\Facades\Artisan;
 
 use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link'); 
+});
 
 Route::get('/register/student', [RegistrationController::class, 'createStudent'])->name('register.student');
 

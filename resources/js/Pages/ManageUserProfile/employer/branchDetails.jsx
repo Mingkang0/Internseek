@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useMemo } from "react";
 import Swal from 'sweetalert2';
 import { FaPlus, FaEdit } from "react-icons/fa";
 import AddBranchModal from "@/components/companyProfile/addBranchModal";
@@ -14,14 +14,14 @@ export default function BranchAndSiteDetails({ branches, companyID }) {
 
   const [isAddBranchModalOpen, setIsAddBranchModalOpen] = useState(false);
   const [isEditBranchModalOpen, setIsEditBranchModalOpen] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState(null); // Display the first branch by default
+  const [selectedBranch, setSelectedBranch] = useState(branches[0] || null); // Display the first branch by default
   const [isAddSiteModalOpen, setIsAddSiteModalOpen] = useState(false);
   const [isEditSiteModalOpen, setIsEditSiteModalOpen] = useState(false);
   const [selectedSite, setSelectedSite] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const branchesPerPage = 1; // Display only one branch per page
-  const totalPages = Math.ceil(branches.length / branchesPerPage);
+  const totalPages = useMemo(() => Math.ceil(branches.length / branchesPerPage), [branches, branchesPerPage]);
 
   const indexOfLastBranch = currentPage * branchesPerPage;
   const indexOfFirstBranch = indexOfLastBranch - branchesPerPage;
@@ -41,12 +41,11 @@ export default function BranchAndSiteDetails({ branches, companyID }) {
     }
   }, [flash]);
 
+
   useEffect(() => {
-    // Set the selectedBranch to the first branch of the current page if available
-    setSelectedBranch(currentBranches[0] || null);
-  }, [currentBranches]);
-
-
+    const branchIndex = currentPage - 1;
+    setSelectedBranch(branches[branchIndex] || null);
+  }, [currentPage, branches]);
 
   const handleAddBranchModalOpen = () => {
     setIsAddBranchModalOpen(true);

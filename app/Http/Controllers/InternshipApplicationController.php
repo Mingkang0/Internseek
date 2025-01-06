@@ -270,12 +270,13 @@ class InternshipApplicationController extends Controller
         $application = InternshipApplication::where('studentID', $student->id)
                     ->where('id', $id)
                     ->first();
+
     
         // Check if the application exists
         if ($application) {
             // Delete the application
             
-            Notification::sendNow($application->internship->employer, new UpdateApplicationStatus($data = [
+            Notification::sendNow($application->internship->company, new UpdateApplicationStatus($data = [
                 'message' => "The student ({$student->firstName} {$student->lastName}) has cancelled their application for {$application->internship->internshipTitle}",
             ]));
 
@@ -991,9 +992,26 @@ class InternshipApplicationController extends Controller
             $applicationsData[] = $applications; // Push application count for each month
         }
 
+    // Count of rejected internship applications
+    $rejectedCount = InternshipApplication::whereHas('internship', function($query) use ($user) {
+        $query->where('companyID', $user->companyID);
+    })
+    ->where('applicationStatus', 'Rejected')
+    ->count(); // Get count of Rejected applications
+
+    // Count of accepted internship applications
+    $acceptedCount = InternshipApplication::whereHas('internship', function($query) use ($user) {
+        $query->where('companyID', $user->companyID);
+    })
+    ->where('applicationStatus', 'Accepted')
+    ->count(); // Get count of Accepted applications
+
+    
 
         return Inertia::render('ManageAnalyticsandReporting/employer/myReport', [
             'applicationsData' => $applicationsData,
+            'rejectedCount' => $rejectedCount,
+            'acceptedCount' => $acceptedCount,
         ]);
 
 

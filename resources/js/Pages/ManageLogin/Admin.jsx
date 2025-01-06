@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import { Head, useForm, router } from '@inertiajs/react';
 import { FaLinkedin } from 'react-icons/fa';
@@ -83,10 +82,6 @@ const AdminLoginPage = ({ remember_email }) => {
             >
               {processing ? 'Signing In...' : 'Sign In'}
             </button>
-
-            <p className="text-sm font-light text-gray-500">
-              Don’t have an account yet? <a href='/register/employer' className="font-medium text-primary-600 hover:underline">Sign Up</a>
-            </p>
           </form>
         </div>
       </div>

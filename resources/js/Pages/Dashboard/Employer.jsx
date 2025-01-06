@@ -66,9 +66,6 @@ export default function EmployerDashboard({ internships, company, appliedTotalCo
                       View All
                     </a>
                   </h2>
-                  <p className="text-sm font-semibold text-gray-500">
-                    Total Internship Posted: {internships.length}
-                  </p>
                 </div>
                 <div className="internship-posting-card">
                   {internships.map((internship) => (

@@ -2,7 +2,7 @@ import DefaultLayout from "@/layout/defaultLayout";
 import { Head, router, useForm } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 
-export default function EditPostingDetails({ internship, branch }) {
+export default function EditPostingDetails({ internship, branch, report }) {
   const { data, setData, post } = useForm({
     internshipTitle: internship.internshipTitle,
     internshipAllowance: internship.internshipAllowance,
@@ -66,7 +66,7 @@ export default function EditPostingDetails({ internship, branch }) {
   }, [data.branchID, branch]); // Dependencies ensure this runs when branchID or branch data changes
 
 
-  
+
   return (
     <DefaultLayout>
       <Head title="Edit Internship" />
@@ -92,6 +92,16 @@ export default function EditPostingDetails({ internship, branch }) {
             </div>
           </div>
           <form onSubmit={handleSubmit}>
+            {internship.postingStatus === 'Archived' && (
+              <div className="bg-red-100 border border-red-400 text-red-700 mt-2 px-4 py-3 rounded relative mb-4">
+                <strong className="font-bold">Reason Archived:</strong>
+                <ul className="list-disc pl-5 mt-2">
+                  {report.map((item, index) => (
+                    <li key={index}>{item.reasonArchived}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div className="grid grid-cols-6 lg:grid-cols-12 gap-6 mt-4">
               <div className="col-span-6">
                 <label className="block text-sm font-semibold text-gray-700">Internship Title</label>

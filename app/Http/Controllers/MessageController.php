@@ -149,96 +149,90 @@ class MessageController extends Controller
         $sender = Company::find($sender->companyID); // Set sender as Company
         $userID = $sender->id;
 
-        $conversationPartners = Message::where(function ($query) use ($sender, $employerID) {
-            // Ensure we check both sender_id and receiver_id but also differentiate by sender type
-            $query->where(function ($q) use ($sender, $employerID) {
-                $q->where('sender_id', $sender->id)
-                  ->where('sender_type', 'employer'); // Ensure it's the company sending
-            })->orWhere(function ($q) use ($sender, $employerID) {
-                $q->where('receiver_id', $sender->id)
-                  ->where('receiver_type', 'employer'); // Ensure it's the company receiving
-            });
-        })
-        ->whereRaw('sender_id < receiver_id OR (sender_id = ? AND receiver_id = ?)', [$sender->id, $sender->id])
-        ->distinct()
-        ->get(['sender_id', 'receiver_id']);
-
-    $conversations = [];
-
-    foreach ($conversationPartners as $partner) {
-        $partnerId = ($partner->sender_id == $userID) ? $partner->receiver_id : $partner->sender_id;
-
-        // Ensure each conversation is only retrieved once
-        $messages = Message::where(function ($query) use ($sender, $partnerId) {
-            $query->where(function ($q) use ($sender, $partnerId) {
-                $q->where('sender_id', $sender->id)
-                  ->where('receiver_id', $partnerId);
-            })
-            ->orWhere(function ($q) use ($sender, $partnerId) {
-                $q->where('sender_id', $partnerId)
-                  ->where('receiver_id', $sender->id);
-            });
-        })
-        ->orderBy('created_at', 'desc')
-        ->with('employer') // Eager-load employer relation if applicable
-        ->get();
-
-
-        $partner = Student::find($partnerId);
-        // Add each conversation to the array
-        $conversations[] = [
-            'messages' => $messages,
-            'partner' => $partner,
-        ];
-    }
-
-
-    return Inertia::render('ManageMessagingFeatures/messagePage', [
-        'conversations' => $conversations,
-        'userRole' => $userRole,
-        'userID' => $userID,
-    ]);
-    } 
-     else {
-        $userID = $sender->id;
-
+        // Normalize sender and receiver pairs
         $conversationPartners = Message::where(function ($query) use ($sender) {
-            // Ensure we check both sender_id and receiver_id but also differentiate by sender type
             $query->where(function ($q) use ($sender) {
                 $q->where('sender_id', $sender->id)
-                  ->where('sender_type', 'student'); // Ensure it's the student sending
+                  ->where('sender_type', 'employer'); // Employer sending
             })->orWhere(function ($q) use ($sender) {
                 $q->where('receiver_id', $sender->id)
-                  ->where('receiver_type', 'student'); // Ensure it's the student receiving
+                  ->where('receiver_type', 'employer'); // Employer receiving
             });
         })
-        ->whereRaw('sender_id < receiver_id OR (sender_id = ? AND receiver_id = ?)', [$sender->id, $sender->id])
-        ->distinct()
-        ->get(['sender_id', 'receiver_id']);
+        // Normalize conversation pairs using LEAST and GREATEST
+        ->selectRaw('DISTINCT LEAST(sender_id, receiver_id) AS partner1, GREATEST(sender_id, receiver_id) AS partner2')
+        ->get();
 
         $conversations = [];
-
         foreach ($conversationPartners as $partner) {
-            $partnerId = ($partner->sender_id == $userID) ? $partner->receiver_id : $partner->sender_id;
+            $partnerId = ($partner->partner1 == $userID) ? $partner->partner2 : $partner->partner1;
 
-            // Ensure each conversation is only retrieved once
+            // Retrieve messages for the unique conversation pair
             $messages = Message::where(function ($query) use ($sender, $partnerId) {
-                $query->where(function ($q) use ($sender, $partnerId) {
-                    $q->where('sender_id', $sender->id)
+                $query->where('sender_id', $sender->id)
                       ->where('receiver_id', $partnerId);
-                })
-                ->orWhere(function ($q) use ($sender, $partnerId) {
-                    $q->where('sender_id', $partnerId)
+            })
+            ->orWhere(function ($query) use ($sender, $partnerId) {
+                $query->where('sender_id', $partnerId)
                       ->where('receiver_id', $sender->id);
-                });
             })
             ->orderBy('created_at', 'desc')
             ->with('employer') // Eager-load employer relation if applicable
             ->get();
 
+            // Assuming partner is a Student
+            $partner = Student::find($partnerId);
+
+            $conversations[] = [
+                'messages' => $messages,
+                'partner' => $partner,
+            ];
+        }
+
+        return Inertia::render('ManageMessagingFeatures/messagePage', [
+            'conversations' => $conversations,
+            'userRole' => $userRole,
+            'userID' => $userID,
+        ]);
+
+    } else {
+        // For Student
+        $userID = $sender->id;
+
+        // Normalize sender and receiver pairs
+        $conversationPartners = Message::where(function ($query) use ($sender) {
+            $query->where(function ($q) use ($sender) {
+                $q->where('sender_id', $sender->id)
+                  ->where('sender_type', 'student'); // Student sending
+            })->orWhere(function ($q) use ($sender) {
+                $q->where('receiver_id', $sender->id)
+                  ->where('receiver_type', 'student'); // Student receiving
+            });
+        })
+        // Normalize conversation pairs using LEAST and GREATEST
+        ->selectRaw('DISTINCT LEAST(sender_id, receiver_id) AS partner1, GREATEST(sender_id, receiver_id) AS partner2')
+        ->get();
+
+        $conversations = [];
+        foreach ($conversationPartners as $partner) {
+            $partnerId = ($partner->partner1 == $userID) ? $partner->partner2 : $partner->partner1;
+
+            // Retrieve messages for the unique conversation pair
+            $messages = Message::where(function ($query) use ($sender, $partnerId) {
+                $query->where('sender_id', $sender->id)
+                      ->where('receiver_id', $partnerId);
+            })
+            ->orWhere(function ($query) use ($sender, $partnerId) {
+                $query->where('sender_id', $partnerId)
+                      ->where('receiver_id', $sender->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->with('employer') // Eager-load company relation if applicable
+            ->get();
+
+            // Assuming partner is a Company
             $partner = Company::find($partnerId);
-            
-            // Add each conversation to the array
+
             $conversations[] = [
                 'messages' => $messages,
                 'partner' => $partner,

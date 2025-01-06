@@ -132,6 +132,19 @@ class LoginController extends Controller
             default:
                 return back()->withErrors(['email' => 'Invalid user role.']);
         }
+
+        if (!$user) {
+            $roleFriendlyName = match ($role) {
+                'admin' => 'Admin',
+                'employer' => 'Employer',
+                'student' => 'Student',
+            };
+        
+            return back()->withErrors([
+                'email' => "No {$roleFriendlyName} account found with the provided email.",
+            ]);
+        }
+        
     
         if (Auth::guard($guard)->attempt(['email' => $user->email, 'password' => $request->password], $request->remember)) {
             $request->session()->regenerate();
@@ -155,7 +168,10 @@ class LoginController extends Controller
             }
         }
         
-        return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+            'password' => 'The password is incorrect.',
+        ]);
     }
     
     public function logout(Request $request)

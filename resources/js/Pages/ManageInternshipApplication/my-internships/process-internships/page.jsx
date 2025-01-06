@@ -1,4 +1,3 @@
-'use client';
 import DefaultLayout from '@/layout/defaultLayout';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';

@@ -50,7 +50,7 @@ export default function registrationRequestDetails({ employer, company }) {
       <div className="bg-gray-200 px-6 py-8 min-h-screen mx-auto overflow-y-auto lg:py-4">
       <div className="mx-auto w-full lg:max-w-4xl">
           <div className="w-full p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
-          <h5 className="text-xl font-bold text-gray-900">Company Details</h5>
+          <h5 className="text-xl font-bold text-gray-900">Company Registration Details</h5>
             <div className="flex gap-2">
               <p className="text-base font-semibold text-gray-800">Status: </p>
               <p className="text-base text-gray-800">{company.registrationStatus}</p>
@@ -203,7 +203,6 @@ export default function registrationRequestDetails({ employer, company }) {
                 <Link href='/admin/employer-requests' className="px-4 ml-4 py-2 text-sm font-semibold text-gray-900 bg-white border border-gray-900 rounded-md">Back</Link>
               </div>
             </form>
-
           </div>
         </div>
       </div>

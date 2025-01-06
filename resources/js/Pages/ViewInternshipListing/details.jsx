@@ -1,4 +1,3 @@
-'use client';
 import React, { useState } from 'react';
 import { FaEye, FaTimesCircle } from "react-icons/fa";
 import InternshipButtons from '@/components/internshipListing/internshipButtons';
@@ -115,17 +114,64 @@ const InternshipDetails = ({ internship, clickCount, bookmarkCount, applicationC
                 </div>
                 <div className="internship-responsibilities mt-4">
                   <h5 className="text-normal mb-2 font-semibold text-gray-900">Internship Responsibilities:</h5>
-                  {internship.internshipResponsibility}
-                  <ul className='max-w-md ml-2 space-y-1 text-gray-500 list-disc list-inside'>
+                  <ul className=' space-y-1 text-gray-700 list-disc list-inside'>
+                    {internship.internshipResponsibility.split('.').map((sentence, idx) => (
+                      sentence.trim() && <li key={idx}>{sentence.trim()}.</li>
+                    ))}
                   </ul>
                 </div>
                 <div className="internship-requirements mt-4">
                   <h5 className="text-normal mb-2 font-semibold text-gray-900">Internship Requirements:</h5>
-                  {internship.internshipRequirement}
-                  <ul className='max-w-md ml-2 space-y-1 text-gray-500 list-disc list-inside'>
-
+                  <ul className=' space-y-1 text-gray-700 list-disc list-inside'>
+                    {internship.internshipRequirement.split('.').map((sentence, idx) => (
+                      sentence.trim() && <li key={idx}>{sentence.trim()}.</li>
+                    ))}
                   </ul>
                 </div>
+                {internship.branch && (
+                  <div className="internship-branch mt-2">
+                    <div className="flex flex-col justify-between">
+                    <h5 className="text-normal font-semibold text-gray-900">Branch Address:</h5>
+                    <p className="mt-1 text-normal text-gray-700">{internship.branch.branchName}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.branch.branchAddress1}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.branch.branchAddress2}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.branch.branchPostcode} {internship.branch.branchCity}, {internship.branch.branchState}</p>
+                    </div>
+                    <div className='flex lg:flex-row flex-col items-center gap-4'>
+                    <p className="mt-1 text-normal text-gray-700"><strong>Phone Number</strong>: {internship.branch.branchPhoneNum}</p>
+                    <p className="mt-1 text-normal text-gray-700"><strong>Email</strong>: {internship.branch.branchEmail}</p>
+                    </div>
+                  </div>
+                )}
+                {internship.company && !internship.site && !internship.branch && (
+                  <div className="internship-company mt-2">
+                    <div className="flex flex-col justify-between">
+                    <h5 className="text-normal font-semibold text-gray-900">Company Address:</h5>
+                    <p className="mt-1 text-normal text-gray-700">{internship.company.companyAddress1}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.company.companyAddress2}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.company.companyPostcode} {internship.company.companyCity}, {internship.company.companyState}</p>
+                    </div>
+                    <div className='flex lg:flex-row flex-col items-center gap-4'>
+                    <p className="mt-1 text-normal text-gray-700"><strong>Phone Number</strong>: {internship.company.companyPhone}</p>
+                    <p className="mt-1 text-normal text-gray-700"><strong>Email</strong>: {internship.company.companyEmail}</p>
+                    </div>
+                  </div>
+                )}
+                {internship.site && (
+                  <div className="internship-site mt-2">
+                    <div className="flex flex-col justify-between">
+                    <h5 className="text-normal font-semibold text-gray-900">Site Address:</h5>
+                    <p className="mt-1 text-normal text-gray-700">{internship.site.siteName}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.site.siteAddress1}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.site.siteAddress2}</p>
+                    <p className="mt-1 text-normal text-gray-700">{internship.site.sitePostcode} {internship.site.siteCity}, {internship.site.siteState}</p>
+                    </div>
+                    <div className='flex lg:flex-row flex-col items-center gap-4'>
+                    <p className="mt-1 text-normal text-gray-700"><strong>Phone Number</strong>: {internship.site.sitePhone}</p>
+                    <p className="mt-1 text-normal text-gray-700"><strong>Email</strong>: {internship.site.siteEmail}</p>
+                    </div>
+                  </div>
+                )}
                 <div className="posting-date flex flex-wrap justify-between">
                   <p className="mt-4 text-sm font-semibold text-gray-900">Posting Date:
                     <span className='ml-2 font-normal'>{internship.startPostingDate}</span></p>

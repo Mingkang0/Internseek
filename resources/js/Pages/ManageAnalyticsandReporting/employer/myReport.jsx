@@ -3,7 +3,7 @@ import ApexCharts from "apexcharts";
 import { useEffect, useRef } from "react";
 import { Head } from "@inertiajs/react"
 
-export default function MyReport({ applicationsData }) {
+export default function MyReport({ applicationsData, acceptedCount, rejectedCount }) {
   console.log(applicationsData);
   const chartRef = useRef(null);
 
@@ -82,6 +82,7 @@ export default function MyReport({ applicationsData }) {
     };
   }, [applicationsData]);
 
+
   return (
     <DefaultLayout>
       <Head title="Internship Applications Report" />
@@ -102,9 +103,17 @@ export default function MyReport({ applicationsData }) {
                 <p className="text-lg font-bold text-gray-900">{applicationsData.reduce((a, b) => a + b, 0)}</p>
               </div>
               <div className="text-center">
-                <h6 className="text-md font-semibold text-gray-700 mb-2">Average Applications per Month</h6>
-                <p className="text-lg font-bold text-gray-900">{Math.round(applicationsData.reduce((a, b) => a + b, 0) / applicationsData.length)}</p>
+                <h6 className="text-md font-semibold text-gray-700 mb-2">Total Rejected Applicants</h6>
+                <p className="text-lg font-bold text-gray-900">
+                  {rejectedCount}
+                </p>
               </div>
+              <div className="text-center">
+                <h6 className="text-md font-semibold text-gray-700 mb-2">Total Accepted Applicants</h6>
+                <p className="text-lg font-bold text-gray-900">
+                  {acceptedCount}
+                </p>
+                </div>
             </div>
           </div>
         </div>

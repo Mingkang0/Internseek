@@ -232,14 +232,17 @@ export default function CompanyProfileDetails({ company }) {
                         <option value="11-50">11-50 employees</option>
                         <option value="51-200">51-200 employees</option>
                         <option value="201-500">201-500 employees</option>
-                        <option value="500+">500+ employees</option>
+                        <option value="501-1000">501-1000 employees</option>
+                        <option value="1001-5000">1001-5000 employees</option>
+                        <option value="5001-10000">5001-10000 employees</option>
+                        <option value="10001+">10001+ employees</option>
                       </select>
                     </div>
                   </div>
                   <div className="col-span-6">
                     <div className="companyEmail">
                       <label className="block mb-2 text-sm font-medium text-gray-900">Company Email</label>
-                      <input type="email" name="companyEmail" id="companyEmail" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Company Email" value={company.companyEmail} disabled/>
+                      <input type="email" name="companyEmail" id="companyEmail" className="bg-white border border-gray-500 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Company Email" value={company.companyEmail} disabled />
                     </div>
                     <div className="BusinessRegNum mt-2">
                       <label className="block mb-2 text-sm font-medium text-gray-900">Business Registration Number</label>

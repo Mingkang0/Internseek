@@ -42,7 +42,7 @@ const ApprovedInternshipCard = ({ approved }) => {
       </div>
       <div className="flex flex-col md:flex-row gap-4 md:gap-8">
         {/* Company Logo */}
-        <div className="flex justify-center md:justify-start">
+        <div className="flex justify-center md:justify-start lg:w-[100px]">
           <img
             src={`/storage/company/companyLogo/${company.companyLogo}`}
             alt="Company Logo"
@@ -51,7 +51,7 @@ const ApprovedInternshipCard = ({ approved }) => {
         </div>
 
         {/* Internship Information */}
-        <div className="flex flex-col">
+        <div className="flex flex-col lg:w-[900px]">
           <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
             {internship.internshipTitle}
           </h5>

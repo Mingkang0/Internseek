@@ -22,7 +22,7 @@ export default function ApplyStep2({ student }) {
           <h5 className="text-lg ml-1 font-bold tracking-tight text-gray-900">Resume</h5>
           <FaEdit size={18} className="text-gray-600 cursor-pointer" onClick={handleEdit} />
         </div>
-        <div className="flex flex-wrap bg-gray-100 p-4 rounded-xl justify-between text-left md:gap-4">
+        <div className="flex lg:flex-row lg:flex-nowrap flex-wrap bg-gray-100 p-4 rounded-xl justify-between text-left md:gap-4">
           {student.linkedin_id && student.profilePicture && typeof student.profilePicture === 'string' && student.profilePicture.startsWith('http') ? (
             <img
               className="w-24 h-24 rounded-full ml-2 border border-gray-900"
@@ -42,7 +42,7 @@ export default function ApplyStep2({ student }) {
               alt="Default Avatar"
             />
           )}
-          <div className="basicInfo">
+          <div className="lg:flex-1 basicInfo">
             <p className="text-base font-bold tracking-tight text-gray-800">Name: {student.firstName} {student.lastName}</p>
             <p className="text-sm font-medium tracking-tight text-gray-600">Email: {student.email}</p>
             <p className="text-sm font-medium tracking-tight text-gray-600">Phone: {student.phoneNum}</p>
@@ -52,7 +52,7 @@ export default function ApplyStep2({ student }) {
           {address.map((addr) => (
             <div key={addr.id}>
               {addr.type === 'home' && (
-                <div className="homeAddress">
+                <div className="lg:flex-1 homeAddress">
                   <p className="text-base font-bold tracking-tight text-gray-900"><u>Home Address</u></p>
                   <p className="text-sm font-medium tracking-tight text-gray-600">{addr.address1}</p>
                   <p className="text-sm font-medium tracking-tight text-gray-600">{addr.address2}</p>

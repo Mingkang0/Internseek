@@ -110,10 +110,9 @@ class RegistrationController extends Controller
     public function searchExistingCompany(Request $request)
     {
         $companyName = $request->input('companyName');
-        $companies = Company::where('companyName', 'like', "%{$companyName}%")
+        $companies = Company::whereRaw('LOWER("companyName") like ?', ['%' . strtolower($companyName) . '%'])
                    ->where('registrationStatus', 'Approved')
                    ->get();
-
         return Inertia::render('ManageCompanyRegistration/employer/searchExistingCompany', [
             'companies' => $companies,
     ]);
@@ -204,11 +203,16 @@ class RegistrationController extends Controller
     
         // Handle file uploads
         if ($request->hasFile('companyInfo.documentName')) {
+            //Delete the old document
+            //    Storage::delete('public/company/businessRegDocuments/' . $company->documentName);
             $documentPath = $request->file('companyInfo.documentName')->store('public/company/businessRegDocuments');
             $validatedData['companyInfo']['documentName'] = basename($documentPath);
         }
     
         if ($request->hasFile('logo.companyLogo')) {
+            //Delete the old logo
+             //    Storage::delete('public/company/companyLogo/' . $company->companyLogo);
+    
             $logoPath = $request->file('logo.companyLogo')->store('public/company/companyLogo');
             $validatedData['logo']['companyLogo'] = basename($logoPath);
         }

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
 const Message = ({ conversation, userRole, userID, updateConversation }) => {
   const [messageText, setMessageText] = useState('');
@@ -8,6 +8,8 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
   const messagesContainerRef = useRef(null);
   const [messages, setMessages] = useState(conversation.messages);
 
+  const { auth } = usePage().props;
+  console.log(auth);
 
   const [errors, setErrors] = useState({});
 
@@ -121,17 +123,17 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
               />
             ) : (
               <>
-                {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
-                  <img
-                    src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
-                    alt="Local Profile Pic"
-                    className="w-16 h-16 mx-auto rounded-full border border-gray-900"
-                  />
-                ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
+                { conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
                   <img
                     className="w-16 h-16 mx-auto rounded-full border border-gray-900"
                     src={conversation.partner.profilePicture}
                     alt="LinkedIn Profile Pic"
+                  />
+                ) : conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                  <img
+                    src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
+                    alt="Local Profile Pic"
+                    className="w-16 h-16 mx-auto rounded-full border border-gray-900"
                   />
                 ) : (
                   <img
@@ -166,19 +168,19 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
               {
                 message.sender_id === conversation.partner.id && message.sender_type !== userRole && userRole === 'employer' && (
                   <>
-                    {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
-                      <img
-                        src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
-                        alt="Local Profile Pic"
-                        className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
-                      />
-                    ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
+                    {conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
                       <img
                         className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
                         src={conversation.partner.profilePicture}
                         alt="LinkedIn Profile Pic"
                       />
-                    ) : (
+                    ) : conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                      <img
+                        src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
+                        alt="Local Profile Pic"
+                        className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
+                      />
+                    ) :  (
                       <img
                         src="../../assets/avatar.png"
                         alt="Default Avatar"
@@ -212,17 +214,17 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
             </div>
             {message.sender_id === userID && message.receiver_type !== userRole && message.sender_type === 'student' && (
               <>
-                {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                {auth.user.linkedin_id && auth.user.profilePicture && typeof auth.user.profilePicture === 'string' && auth.user.profilePicture.startsWith('http') ? (
                   <img
-                    src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
+                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
+                    src={auth.user.profilePicture}
+                    alt="LinkedIn Profile Pic"
+                  />
+                ) : auth.user.profilePicture && typeof auth.user.profilePicture === 'string' ? (
+                  <img
+                    src={`/storage/profile/student/profile_pictures/${auth.user.profilePicture}`}
                     alt="Local Profile Pic"
                     className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
-                  />
-                ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
-                  <img
-                    className="w-12 h-12 mx-2 rounded-full border border-gray-900 ml-2 mr-2"
-                    src={conversation.partner.profilePicture}
-                    alt="LinkedIn Profile Pic"
                   />
                 ) : (
                   <img
@@ -235,7 +237,7 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
             )}
             {
               message.sender_id === userID && message.receiver_type !== userRole && message.sender_type === 'employer' && (
-                <img src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`} alt="Company Logo" className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2 mr-2" />
+                <img src={`/storage/company/companyLogo/${auth.user.company.companyLogo}`} alt="Company Logo" className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2 mr-2" />
               )
             }
           </div>

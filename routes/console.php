@@ -14,11 +14,10 @@ Schedule::command('internships:update-statuses')
     ->appendOutputTo(storage_path('logs/internship-statuses.log'));
 
 
-Schedule::call(function () {
-    // Clear expired password reset tokens
+Artisan::command('internships:update-statuses', function () {
     DB::table('internships')
-        ->where('postingStatus','Published')
+        ->where('postingStatus', 'Published')
         ->where('endPostingDate', '<', now())
         ->update(['postingStatus' => 'Expired']);
-})->daily();
-
+    $this->info('Internship statuses updated successfully.');
+})->purpose('Update internship statuses');

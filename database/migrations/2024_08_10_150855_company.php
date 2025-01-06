@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('companyName');
+            $table->string('companyName')->unique();
             $table->string('companyEmail')->unique();
-            $table->string('businessRegNum');
+            $table->string('businessRegNum')->unique();
             $table->date('businessRegDate');
             $table->string('documentType');
             $table->string('documentName');

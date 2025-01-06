@@ -135,7 +135,7 @@ export default function EditRegistrationDetails({ employer, company }) {
         <div className="w-full mx-auto lg:max-w-4xl">
           <div className="w-full p-6 mt-4 bg-white border border-gray-200 rounded-lg shadow">
 
-            <h5 className="text-xl font-bold text-gray-900">Company Details</h5>
+            <h5 className="text-xl font-bold text-gray-900">Company Registration Details</h5>
             {
               company.registrationStatus === 'Pending' ? (
                 <div>

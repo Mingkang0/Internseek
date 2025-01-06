@@ -15,6 +15,7 @@ export default defineConfig({
     build: {
         manifest: true,
         chuckSizeWarningLimit: 800,
+        outDir: 'public/build/.vite',
     },
 
 

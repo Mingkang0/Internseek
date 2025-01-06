@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import MessageList from '../../components/message/messageList';
 import Message from '../../components/message/message';

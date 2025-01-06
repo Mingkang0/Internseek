@@ -3,7 +3,10 @@ import { Head, Link, usePage } from "@inertiajs/react";
 
 export default function Notifications({ notifications }) {
   // Group notifications by the 'created_at' date using native JS
-  const groupedNotifications = notifications.reduce((acc, notification) => {
+
+  const notificationsArray = Object.values(notifications);
+  console.log(notificationsArray);
+  const groupedNotifications = notificationsArray.reduce((acc, notification) => {
     const date = new Date(notification.created_at).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -84,7 +87,6 @@ export default function Notifications({ notifications }) {
                           {
                             hour: "2-digit",
                             minute: "2-digit",
-                            second: "2-digit",
                             hour12: true,
                           }
                         )}

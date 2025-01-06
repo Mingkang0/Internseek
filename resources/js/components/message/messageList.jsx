@@ -32,17 +32,17 @@ const MessageList = ({ conversations, userRole, onSelectConversation }) => {
             {
               userRole === 'employer' && (
                 <>
-                  {conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
+                  {conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
+                    <img
+                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
+                      src={conversation.partner.profilePicture}
+                      alt="LinkedIn Profile Pic"
+                    />
+                  ) : conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' ? (
                     <img
                       src={`/storage/profile/student/profile_pictures/${conversation.partner.profilePicture}`}
                       alt="Local Profile Pic"
                       className="w-12 h-12 mx-2 rounded-full border border-gray-900"
-                    />
-                  ) : conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
-                    <img
-                      className="w-12 h-12 mx-2 rounded-full border border-gray-900"
-                      src={receiver.profilePicture}
-                      alt="LinkedIn Profile Pic"
                     />
                   ) : (
                     <img

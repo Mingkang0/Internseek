@@ -19,122 +19,373 @@ class DatabaseSeeder extends Seeder
     {
 
 
-        $companies = Company::factory()->count(250)->create();
-        
-        // Create employers and associate them with companies
-        $companies->each(function ($company) {
-            Employer::factory()->count(rand(1, 3)) // Random number of employers per company
-                ->create(['companyID' => $company->id]); // Assuming 'company_id' is the foreign key
-        });
-
-        // Create 100 internships and associate them with employers
-        $employers = Employer::all(); // Retrieve all employers
-        Internship::factory()->count(100)->create(); // Create 100 internships  
-        
-        DB::table('admins')->insert([
-            'firstName' => 'admin',
-            'lastName' => 'admin',
-            'phoneNum' => '012-3456789',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('1234'),
-            'ICNumber' => '011225060012',
-            'gender' => 'Male',
+        DB::table('employers')->insert([
+            'firstName' => 'John Tan',
+            'lastName' => 'Ah Kow',
+            'phoneNum' => '0199885495',
+            'email' => 'shominkang@gmail.com',
+            'password' => bcrypt('test1234'),
         ]);
 
+
+
         DB::table('admins')->insert([
-            'firstName' => 'admin',
-            'lastName' => 'admin',
+            'firstName' => 'Sho',
+            'lastName' => 'Ming Kang',
             'phoneNum' => '012-3456789',
             'email' => 'shoning858@gmail.com',
-            'password' => bcrypt('1234'),
-            'ICNumber' => '011225060012',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011225060041',
             'gender' => 'Male',
             'reset_password_token' => null,
         ]);
 
-        DB::table('companies')->insert([
-            'companyName' => 'Tech Innovators Inc.',
-            'companyEmail' => 'employer@example.com',
-            'companyPhone' => '+1-800-555-0101',
-            'companyAddress1' => '123 Tech Avenue',
-            'companyAddress2' => 'Suite 200',
-            'companyPostalCode' => '12345',
-            'companyCity' => 'Tech City',
-            'companyState' => 'California',
-            'companyCountry' => 'United States',
-            'companySector' => 'Technology',
-            'companySize' => 'Large',
-            'inquiryComment' => 'Required change profile details',
-            'companyWebsite' => 'https://www.techinnovators.com',
-            'vision' => 'To innovate and lead the tech world.',
-            'mission' => 'Empowering businesses with cutting-edge technology solutions.',
-            'companyDescription' => 'Tech Innovators Inc. is a leading technology company that specializes in providing innovative solutions to businesses worldwide.',
-            'companyRating' => 'Highly Recommended',
-            'registrationStatus' => 'Approved',
-            'companyLogo' => 'https://www.techinnovators.com/logo.png',
-            'companyType' => 'MNC',
-            'businessRegNum' => '123456',
-            'businessRegDate' => '2021-01-01',
-            'documentType' => 'Certificate of Incorporation',
-            'documentName' => 'Tech Innovators Inc.',
-        ]);
-
-        
-        DB::table('employers')->insert([
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'phoneNum' => '012-3456789',
-            'email' => 'employer@example.com',
-            'position' => 'HR Manager',
-            'department' => 'Human Resources',
-            'password' => bcrypt('1234'),
-            'userType' => 'admin',
-            'status' => 'Active',
-            'companyID' => 1,
-        ]);
-
-        DB::table('internships')->insert([
-            'internshipTitle' => 'Software Developer Intern',
-            'internshipDescription' => 'We are looking for a software developer intern to join our team.',
-            'internshipRequirement' => 'Must have a strong understanding of software development.',
-            'internshipResponsibility' => 'Develop software applications.',
-            'internshipDuration' => 6,
-            'internshipAllowance' => 1000,
-            'startPostingDate' => '2024-08-01',
-            'endPostingDate' => '2025-08-01',
-            'workingHour' => 8,
-            'postingStatus' => 'Published',
-            'workingMethod' => 'Remote',
-            'studyScope' => 'Software Engineering',
-            'companyID' => 1,
-            'createdBy' => 1,
-            'lastEditedBy' => 1,
-        ]);
-
         DB::table('students')->insert([
-            'firstName' => 'student',
-            'lastName' => 'student',
+            'firstName' => 'Sho',
+            'lastName' => 'Ming Kang',
             'phoneNum' => '012-3456789',
-            'email' => 'student@example.com',
-            'password' => bcrypt('1234'),
+            'email' => 'shomingkang@gmail.com',
+            'password' => bcrypt('test1234'),
             'ICNumber' => '01122506060041',
-            'dateOfBirth' => '2000-01-01',
+            'dateOfBirth' => '2001-12-25',
             'nationality' => 'Malaysian Citizen',
             'gender' => 'Male',
-            'profilePicture' => 'https://www.example.com/profile.jpg',
+        ]);
+
+
+        DB::table('students')->insert([
+            'firstName' => 'Oh',
+            'lastName' => 'Hoa Yang',
+            'phoneNum' => '0164227223',
+            'email' => 'cb21048@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '020115075123',
+            'dateOfBirth' => '2002-01-15',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
         ]);
 
         DB::table('students')->insert([
-            'firstName' => 'student1',
-            'lastName' => 'student1',
-            'phoneNum' => '012-3456789',
-            'email' => 'student1@example.com',
-            'password' => bcrypt('1234'),
-            'passportNo' => 'A12345678',
-            'dateOfBirth' => '2000-01-01',
-            'nationality' => 'International',
+            'firstName' => 'Yee',
+            'lastName' => 'Zhi Yew',
+            'phoneNum' => '0125480228',
+            'email' => 'cb21026@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010129083321',
+            'dateOfBirth' => '2000-08-10',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Lai',
+            'lastName' => 'Jun Ta',
+            'phoneNum' => '0172079809',
+            'email' => 'cb21025@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011125020123',
+            'dateOfBirth' => '2001-11-25',
+            'nationality' => 'Malaysian Citizen',
             'gender' => 'Male',
-            'profilePicture' => 'https://www.example.com/profile.jpg',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Sit',
+            'lastName' => 'Wei Min',
+            'phoneNum' => '01155036595',
+            'email' => 'cb21015@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011228041130',
+            'dateOfBirth' => '2001-12-28',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+
+        DB::table('students')->insert([
+            'firstName' => 'Nurul',
+            'lastName' => 'Syazana',
+            'phoneNum' => '01161007875',
+            'email' => 'cb21029@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '021123060032',
+            'dateOfBirth' => '2000-11-23',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Pang',
+            'lastName' => 'Yi He',
+            'phoneNum' => '01112724482',
+            'email' => 'cd21074@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010707041414',
+            'dateOfBirth' => '2001-07-07',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Tan',
+            'lastName' => 'Jie Ying',
+            'phoneNum' => '0165365369',
+            'email' => 'cb21037@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010718084444',
+            'dateOfBirth' => '2001-07-18',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Kalvin',
+            'lastName' => 'Chen',
+            'phoneNum' => '0185787293',
+            'email' => 'cb21052@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011030084433',
+            'dateOfBirth' => '2001-10-30',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Lee',
+            'lastName' => 'Hui Ni',
+            'phoneNum' => '01161569195',
+            'email' => 'cb21054@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010418082122',
+            'dateOfBirth' => '2001-04-18',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Soon',
+            'lastName' => 'Wei Ye',
+            'phoneNum' => '0175002409',
+            'email' => 'cd21068@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010602040321',
+            'dateOfBirth' => '2001-06-02',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Yau',
+            'lastName' => 'De En',
+            'phoneNum' => '0124750884',
+            'email' => 'cd21033@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010914101234',
+            'dateOfBirth' => '2001-09-14',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Chee',
+            'lastName' => 'Jia Ning',
+            'phoneNum' => '0134999149',
+            'email' => 'ca21026@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011205011141',
+            'dateOfBirth' => '2001-12-05',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Teoh',
+            'lastName' => 'Woei Ming',
+            'phoneNum' => '0109431351',
+            'email' => 'ca21074@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010709020567',
+            'dateOfBirth' => '2001-07-09',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Jimmy',
+            'lastName' => 'Tang Jing Ming',
+            'phoneNum' => '0163723566',
+            'email' => 'ca21031@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010826130991',
+            'dateOfBirth' => '2001-08-26',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Andrew',
+            'lastName' => 'Chee Zhi Yuen',
+            'phoneNum' => '0194583368',
+            'email' => 'ca21056@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011019046547',
+            'dateOfBirth' => '2001-10-19',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Danial Wafi',
+            'lastName' => 'Bin Ramli',
+            'phoneNum' => '0194649973',
+            'email' => 'cb21066@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '020422060456',
+            'dateOfBirth' => '2002-04-22',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Muhammad Amir',
+            'lastName' => 'Bin Mohamed Ali',
+            'phoneNum' => '0192291001',
+            'email' => 'cb21060@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010612060988',
+            'dateOfBirth' => '2001-06-12',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Muhamad Azim',
+            'lastName' => 'Bin M.Bakri',
+            'phoneNum' => '0198580756',
+            'email' => 'cb21002@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '020901040664',
+            'dateOfBirth' => '2002-09-01',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Aina Jaleena',
+            'lastName' => 'Binti Jusop',
+            'phoneNum' => '0147341469',
+            'email' => 'cb21089@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010213091122',
+            'dateOfBirth' => '2001-02-13',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Ahmad Kholid',
+            'lastName' => 'Bin Khuzaini',
+            'phoneNum' => '0195698426',
+            'email' => 'cb21077@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010720067788',
+            'dateOfBirth' => '2001-07-20',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+
+        DB::table('students')->insert([
+            'firstName' => 'Mohammad Aidin Aiman',
+            'lastName' => 'Bin Ahmad Hazizi',
+            'phoneNum' => '0198458137',
+            'email' => 'cb21071@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010130051144',
+            'dateOfBirth' => '2001-01-30',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Axzly Juni',
+            'lastName' => 'Juni',
+            'phoneNum' => '01165585092',
+            'email' => 'cb20029@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010224041133',
+            'dateOfBirth' => '2000-02-24',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Muhammad Safwan',
+            'lastName' => 'Bin Roshidin',
+            'phoneNum' => '0189711323',
+            'email' => 'cb21091@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '020424023313',
+            'dateOfBirth' => '2002-04-24',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Tan',
+            'lastName' => 'Li Min',
+            'phoneNum' => '01127374781',
+            'email' => 'cd21072@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011111012113',
+            'dateOfBirth' => '2001-11-11',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+
+        DB::table('students')->insert([
+            'firstName' => 'Tan',
+            'lastName' => 'Pei Yee',
+            'phoneNum' => '01162489611',
+            'email' => 'cd21073@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011028083213',
+            'dateOfBirth' => '2001-10-28',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+        DB::table('students')->insert([
+            'firstName' => 'Ooi',
+            'lastName' => 'Ming Fang',
+            'phoneNum' => '0164752177',
+            'email' => 'cb21059@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010228077788',
+            'dateOfBirth' => '2001-02-28',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
+        ]);
+        DB::table('students')->insert([
+            'firstName' => 'Nicholas Tan',
+            'lastName' => 'Kae Jer',
+            'phoneNum' => '0128890840',
+            'email' => 'cd21062@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '011224101144',
+            'dateOfBirth' => '2001-12-24',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Male',
+        ]);
+        DB::table('students')->insert([
+            'firstName' => 'Choi',
+            'lastName' => 'Siow Hooi',
+            'phoneNum' => '0115890979',
+            'email' => 'cd21063@adab.umpsa.edu.my',
+            'password' => bcrypt('test1234'),
+            'ICNumber' => '010128056677',
+            'dateOfBirth' => '2001-01-28',
+            'nationality' => 'Malaysian Citizen',
+            'gender' => 'Female',
         ]);
 
 

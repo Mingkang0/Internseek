@@ -117,12 +117,17 @@ class PostingController extends Controller
 
 
             $internship->load('createdBy', 'lastEditedBy');
+
+            $report = Report::where('internshipID', $internship->id)
+            ->orWhere('actionTaken', 'Archived')
+            ->get();
     
     
 
             return Inertia::render('ManageInternshipPosting/employer/editPosting', [
                 'internship' => $internship,
                 'branch' => $branch,
+                'report' => $report,
             ]);
 
         } else {

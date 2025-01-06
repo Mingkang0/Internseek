@@ -56,7 +56,7 @@ const RegisterEmployerForm = ({ employer }) => {
   const handleStep4Submit = () => {
     Swal.fire({
       title: "Submission Confirmation",
-      text: "You cannot edit the information after submission. Do you want to submit the form?",
+      text: "Are you sure to submit the form?",
       icon: "warning",
       confirmButtonText: "Yes, I'm sure",
       confirmButtonColor: "#3085d6",
@@ -161,7 +161,7 @@ const RegisterEmployerForm = ({ employer }) => {
                 : step === 2
                   ? "Upload Company Logo"
                   : step === 3
-                    ? "Insert Contact Person Info"
+                    ? "Complete Employer Details"
                     :""}
             </h1>
             <form className="space-y-4 md:space-y-6">

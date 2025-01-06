@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import { FaUser, FaCaretDown, FaBuilding, FaBell } from 'react-icons/fa';
@@ -156,7 +155,7 @@ export default function Navbar() {
 
               {userRole === 'admin' && (
                 <>
-                  <a href="/admin/employers" className="text-sm font-bold text-gray-900">Employer List</a>
+                  <a href="/admin/employers" className="text-sm font-bold text-gray-900">Company List</a>
                   <a href="/admin/internseekers" className="text-sm font-bold text-gray-900">Internseeker List</a>
                   <a href="/admin/internships" className="text-sm font-bold text-gray-900">Internship List</a>
                 </>
@@ -575,7 +574,7 @@ export default function Navbar() {
                   </>
                 ) : userRole === 'admin' ? (
                   <>
-                    <a href="/admin/employers" className="text-sm font-semibold py-2">Employer List</a>
+                    <a href="/admin/employers" className="text-sm font-semibold py-2">Company List</a>
                     <a href="/admin/internseekers" className="text-sm font-semibold py-2">Internseeker List</a>
                     <a href="/admin/internships" className="text-sm font-semibold py-2">Internship List</a>
                     <a href="/admin/profile" className="text-sm font-semibold py-2">My Profile</a>

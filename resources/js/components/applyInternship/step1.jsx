@@ -1,4 +1,3 @@
-'use client';
 import { FaEdit } from 'react-icons/fa';
 import { router } from '@inertiajs/react';
 

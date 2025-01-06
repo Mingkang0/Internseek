@@ -1,4 +1,3 @@
-'use client';
 import { Head, useForm, usePage, Link, router } from '@inertiajs/react';
 import DefaultLayout from "@/layout/defaultLayout";
 import { useState, useEffect } from 'react';

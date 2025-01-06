@@ -109,7 +109,6 @@ export default function UpdateShortlistedResult({ application }) {
               >
                 <option value="">Select Status</option>
                 <option value="Interview">Need-to-Interview</option>
-                <option value="Shortlisted">Shortlisted</option>
                 <option value="Approved">Approved</option>
                 <option value="Unsuccessful">Unsuccessful</option>
               </select>

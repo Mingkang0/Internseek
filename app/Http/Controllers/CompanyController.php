@@ -234,16 +234,23 @@ class CompanyController extends Controller
             'documentType' => 'nullable|string|max:255',
         ]);
     
-     
             $company = Company::findOrFail($id);
     
             // Handle file uploads
             if ($request->hasFile('documentName')) {
+                // Delete the existing document if it exists
+                //if ($company->documentName) {
+                    //Storage::delete('public/company/businessRegDocuments/' . $company->documentName);
+                //}
                 $documentPath = $request->file('documentName')->store('public/company/businessRegDocuments');
                 $validatedData['documentName'] = basename($documentPath);
             }
     
             if ($request->hasFile('companyLogo')) {
+                // Delete the existing logo if it exists
+                //if ($company->companyLogo) {
+                   // Storage::delete('public/company/companyLogo/' . $company->companyLogo);
+                //}
                 $logoPath = $request->file('companyLogo')->store('public/company/companyLogo');
                 $validatedData['companyLogo'] = basename($logoPath);
             }
@@ -256,6 +263,7 @@ class CompanyController extends Controller
     
             return redirect()->back()->with('success', 'Company details updated successfully.');
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->withErrors(['error' => 'An error occurred while updating the company details.']);
         }
     }

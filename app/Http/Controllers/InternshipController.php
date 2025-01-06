@@ -33,7 +33,7 @@ class InternshipController extends Controller
     public function show($id)
     {
         // Fetch the internship with the associated company
-        $internship = Internship::with('company')->find($id);
+        $internship = Internship::with('company','branch','site')->find($id);
 
         if(Auth::guard('student')->check()) {
             $this->createClicks($id);

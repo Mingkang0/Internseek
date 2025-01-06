@@ -128,7 +128,10 @@ export default function UserList({ employers }) {
                     <FaUserTie className="text-gray-600" size={20} />
                     <p className="ml-2 text-normal text-gray-600">{employer.position}</p>
                   </div>
-
+                  <div className="flex gap-2 mt-2">
+                    <p className="text-normal font-semibold text-gray-700">Date Joined:</p>
+                    <p className="text-normal text-gray-600">{new Date(employer.created_at).toISOString().split('T')[0]}</p>
+                  </div>
                   <form onSubmit={(e) => handleSubmit(e, employer.id)}>
                     <div className="flex items-center justify-between mt-3">
                       <select

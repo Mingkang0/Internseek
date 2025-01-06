@@ -126,7 +126,7 @@ export default function EditEducationModal({ education, studentID, onClose }) {
             <option value="STPM">STPM</option>
             <option value="A-Level">A-Level</option>
             <option value="Foundation">Foundation</option>
-            <option value="Degree">Bachelor's Degree</option>
+            <option value="Bachelor's Degree">Bachelor's Degree</option>
           </select>
         </div>
       </div>

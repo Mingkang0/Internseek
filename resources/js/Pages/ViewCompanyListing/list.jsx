@@ -114,7 +114,7 @@ const CompanyListing = ({ companies }) => {
             )}
           </div>
           <nav aria-label="Page navigation example" className="mt-6">
-            <div className='flex justify-end'>
+            <div className='flex justify-center'>
               <ul className="inline-flex flex-wrap -space-x-px text-sm md:text-base">
                 <li>
                   <a

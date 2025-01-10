@@ -11,7 +11,6 @@ Internseek offers features like auto-generated resumes and built-in messaging, p
 - [Features](#features)
 - [Usage](#usage)
 - [Technologies](#technologies)
-- [License](#license)
 
 ## Features
 
@@ -51,7 +50,3 @@ Once on the site, you can:
 3. **Apply for Internships**: Click on any internship listing to view details and submit your application.
 4. **Manage Your Profile**: Access your profile and manage experiences, education, skills, accomplishments, and referees.
 5. **Track Internship Applications**: Monitor the status of your internship applications for easy follow-ups.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

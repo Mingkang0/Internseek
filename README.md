@@ -58,7 +58,7 @@ To set up the project locally, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/internseek.git
+   git clone https://github.com/Mingkang0/Internseek.git
    cd internseek
 2. **Install Composer Dependencies**:
    ```bash

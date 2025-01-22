@@ -71,27 +71,64 @@ class InternshipApplicationController extends Controller
             'applicationInfo.expectedAllowance' => 'required|numeric',
         ]);
     
-        // Handle file uploads and store paths
-        if($request->hasFile('documents.coverLetter')) {
+        // Handle file uploads and set permissions for student ID directory
+        if ($request->hasFile('documents.coverLetter')) {
+            $directory = storage_path("app/public/InternshipApplication/documents/coverLetter/{$student->id}");
+        
+            // Ensure the directory exists and set it to 777
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true); // Create directory with 777 permissions
+            } else {
+                chmod($directory, 0777); // Ensure the directory has 777 permissions
+            }
+        
             $documentPath = $request->file('documents.coverLetter')->store("public/InternshipApplication/documents/coverLetter/{$student->id}");
+            chmod(storage_path("app/{$documentPath}"), 0666); // Set file permissions to 644
             $validatedData['documents']['coverLetter'] = basename($documentPath);
         }
-    
-        if($request->hasFile('documents.ownResume')) {
+        
+        if ($request->hasFile('documents.ownResume')) {
+            $directory = storage_path("app/public/InternshipApplication/documents/ownResume/{$student->id}");
+        
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            } else {
+                chmod($directory, 0777);
+            }
+        
             $documentPath = $request->file('documents.ownResume')->store("public/InternshipApplication/documents/ownResume/{$student->id}");
+            chmod(storage_path("app/{$documentPath}"), 0666);
             $validatedData['documents']['ownResume'] = basename($documentPath);
         }
-    
-        if($request->hasFile('documents.transcript')) {
+        
+        if ($request->hasFile('documents.transcript')) {
+            $directory = storage_path("app/public/InternshipApplication/documents/transcript/{$student->id}");
+        
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            } else {
+                chmod($directory, 0777);
+            }
+        
             $documentPath = $request->file('documents.transcript')->store("public/InternshipApplication/documents/transcript/{$student->id}");
+            chmod(storage_path("app/{$documentPath}"), 0666);
             $validatedData['documents']['transcript'] = basename($documentPath);
         }
-    
-        if($request->hasFile('documents.SAL')) {
+        
+        if ($request->hasFile('documents.SAL')) {
+            $directory = storage_path("app/public/InternshipApplication/documents/SAL/{$student->id}");
+        
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            } else {
+                chmod($directory, 0777);
+            }
+        
             $documentPath = $request->file('documents.SAL')->store("public/InternshipApplication/documents/SAL/{$student->id}");
+            chmod(storage_path("app/{$documentPath}"), 0666);
             $validatedData['documents']['SAL'] = basename($documentPath);
         }
-    
+        
         // Add extra details to validatedData
         $validatedData['internshipID'] = $id;
         $validatedData['studentID'] = $student->id;
@@ -603,8 +640,19 @@ class InternshipApplicationController extends Controller
                 'actualAllowance' => 'required|numeric',
             ]);
     
-            // Handle file upload
+            $directory = storage_path("app/public/InternshipApplication/documents/offerLetter/{$application->studentID}");
             $documentPath = $request->file('offerLetter')->store("public/InternshipApplication/documents/offerLetter/{$application->studentID}");
+            
+            // Ensure the directory exists and has the correct permissions
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true); // Create directory with full permissions
+            } else {
+                chmod($directory, 0777); // Update directory permissions if it already exists
+            }
+            
+            // Update file permissions to ensure it is accessible
+            chmod(storage_path("app/{$documentPath}"), 0666); // Set file permissions to 644
+            
             $application->offerLetter = basename($documentPath);
             $application->actualAllowance = $approvedData['actualAllowance'];
         }
@@ -655,9 +703,22 @@ class InternshipApplicationController extends Controller
                 'actualAllowance' => 'required|numeric',
             ]);
 
-            $documentPath = $request->file('offerLetter')->store("public/InternshipApplication/documents/offerLetter/{$application->studentID}");
-            $application->offerLetter = basename($documentPath);
-            $application->actualAllowance = $extraData['actualAllowance'];
+                $directory = storage_path("app/public/InternshipApplication/documents/offerLetter/{$application->studentID}");
+                $documentPath = $request->file('offerLetter')->store("public/InternshipApplication/documents/offerLetter/{$application->studentID}");
+                
+                // Ensure the directory exists and has the correct permissions
+                if (!is_dir($directory)) {
+                    mkdir($directory, 0777, true); // Create directory with full permissions
+                } else {
+                    chmod($directory, 0777); // Update directory permissions if it already exists
+                }
+                
+                // Update file permissions to ensure it is accessible
+                chmod(storage_path("app/{$documentPath}"), 0666); // Set file permissions to 644
+                
+                $application->offerLetter = basename($documentPath);
+                $application->actualAllowance = $extraData['actualAllowance'];
+
 
             Notification::sendNow($application->student, new UpdateApplicationStatus($data = [
                 'message' => "Congratulations! Your application for {$application->internship->internshipTitle} has been approved",

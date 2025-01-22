@@ -10,7 +10,7 @@ const SearchExistingCompany = ({ companies }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    get('/search-existing-company', {data}, {
+    get('/search-existing-company', { data }, {
       onError: () => {
         errors.companyName = 'Company not found';
         console.log('Company not found');
@@ -51,7 +51,11 @@ const SearchExistingCompany = ({ companies }) => {
                       <li key={employer.id}>
                         <div className="flex flex-col lg:flex-row justify-between items-center company border border-gray-300 rounded-lg px-4 py-2 mb-2">
                           <div className="company-details flex lg:gap-8">
-                            <img src="../../assets/avatar.png" className="w-16 h-16 rounded-full border ring-1 ring-gray-900" alt="Company Logo" />
+                            <img
+                              src={`/storage/company/companyLogo/${employer.companyLogo}`}
+                              alt="CompanyLogo"
+                              className="w-16 h-16 rounded-full mx-auto border ring-1 ring-gray-900"
+                            />
                             <p className="text-lg font-semibold text-gray-800 mt-4 hidden lg:block">Company Name: {employer.companyName}</p>
                           </div>
                           <p className="text-lg font-semibold text-gray-800 mt-4 lg:hidden">Company Name: {employer.companyName}</p>

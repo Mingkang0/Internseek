@@ -78,7 +78,7 @@ const AddPostingForm = ({ branch }) => {
         <div className="container max-w-4xl mx-auto px-6 py-6 bg-white border border-gray-200 rounded-lg shadow">
           <div className="header-text">
             <h5 className="text-xl font-bold text-blue-800">Post an Internship</h5>
-            <p className="text-base font-medium mt-2">Company Name: {auth.user.companyName}</p>
+            <p className="text-base font-medium mt-2">Company Name: {auth.user.company.companyName}</p>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-12 gap-6 mt-4">

@@ -179,13 +179,27 @@ const ApprovedInternshipCard = ({ approved }) => {
             </>
           )}
           <div className="flex justify-center flex-wrap gap-4 mt-4">
-            <a id="download-link" href={`/storage/InternshipApplication/documents/offerLetter/${approved.studentID}/${approved.offerLetter}`} target="_blank" style={{ display: 'none' }} />
-            <span onClick={(e) => { e.preventDefault(); document.getElementById('download-link').click() }} className="flex items-center text-sm font-semibold text-red-800 cursor-pointer">
+            <a
+              id={`download-link-${approved.studentID}`}
+              href={`/storage/InternshipApplication/documents/offerLetter/${approved.studentID}/${approved.offerLetter}`}
+              target="_blank"
+              style={{ display: 'none' }}
+            />
+            <span
+              onClick={(e) => {
+                e.preventDefault();
+                // Dynamically access the correct link using the studentID
+                document.getElementById(`download-link-${approved.studentID}`).click();
+              }}
+              className="flex items-center text-sm font-semibold text-red-800 cursor-pointer"
+            >
               View Offer Letter
             </span>
-            <span className="flex items-center text-sm font-semibold text-gray-800">
-              Allowance Offered : RM {approved.actualAllowance}
-            </span>
+            {approved.actualAllowance && (
+              <span className="flex items-center text-sm font-semibold text-gray-800">
+                Given Allowance: RM {approved.actualAllowance}
+              </span>
+            )}
           </div>
         </div>
 

@@ -207,7 +207,7 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                         src={sender.profilePicture}
                         alt="LinkedIn Profile Pic"
                       />
-                    ) : sendersender.profilePicture && typeof sender.profilePicture === 'string' ? (
+                    ) : sender.profilePicture && typeof sender.profilePicture === 'string' ? (
                       <img
                         src={`/storage/profile/student/profile_pictures/${sender.profilePicture}`}
                         alt="Local Profile Pic"

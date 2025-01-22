@@ -40,7 +40,12 @@ class DashboardController extends Controller
             $rejectedTotalCount = 0;
             $acceptedTotalCount = 0;
 
-            foreach ($internships as $internship) {
+             $allInternships= Internship::where('companyID', $company->id)
+                            ->with('company')
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+            
+            foreach ($allInternships as $internship) {
                 $appliedCount = InternshipApplication::where('internshipID', $internship->id)
                             ->where('applicationStatus', 'Reviewing')
                             ->count();
@@ -80,9 +85,7 @@ class DashboardController extends Controller
                                 'accepted_count' => $acceptedCount,
                             ];
                         }
-
-    
-    
+                        
         return Inertia::render('Dashboard/Employer', [
             'internships' => $internships,
             'company' => $company,

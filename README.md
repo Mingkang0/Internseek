@@ -18,7 +18,7 @@ Internseek offers features like auto-generated resumes and built-in messaging, p
 Internseek provides several key features that enhance the internship application process for computer science students:
 
 - **User Registration and Login**: Secure and easy registration and login for students and employers, ensuring a personalized experience.
-- **Login with Linked Account**: Users can log in using their social media accounts (such as Google or Facebook) for easier access.
+- **Login with LinkedIn Account**: Users can log in using their LinkedIn account  for easier access.
 - **Internship Listings**: Access a wide range of internship opportunities specifically tailored for computer science majors.
 - **Company Listings**: A dedicated section for viewing registered companies to give students insights into potential employers.
 - **Company Registration**: Employers can easily register their companies, enabling them to post internships and manage applications.

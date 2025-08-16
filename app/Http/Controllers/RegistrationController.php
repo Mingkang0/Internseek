@@ -110,7 +110,7 @@ class RegistrationController extends Controller
     public function searchExistingCompany(Request $request)
     {
         $companyName = $request->input('companyName');
-        $companies = Company::whereRaw('LOWER("companyName") like ?', ['%' . strtolower($companyName) . '%'])
+        $companies = Company::where('companyName', 'LIKE', '%' . $companyName . '%')
                    ->where('registrationStatus', 'Approved')
                    ->get();
         return Inertia::render('ManageCompanyRegistration/employer/searchExistingCompany', [

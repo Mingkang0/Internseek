@@ -87,27 +87,67 @@ const ApplicantCard = ({ application }) => {
           <div className='flex flex-col lg:flex-row gap-2 lg:gap-8 mt-2'>
             <div className='flex flex-col transcript'>
               <label className='text-sm font-semibold text-gray-600'>Transcript</label>
-              <a id="transcript-download-link" href={`/storage/InternshipApplication/documents/transcript/${application.student.id}/${application.transcript}`} target="_blank" style={{ display: 'none' }} />
-              <button onClick={(e) => { e.preventDefault(); document.getElementById('transcript-download-link').click() }} className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'>View Transcript</button>
+              <a id = {`transcript-download-${application.student.id}`} href={`/storage/InternshipApplication/documents/transcript/${application.student.id}/${application.transcript}`} target="_blank" style={{ display: 'none' }} />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Correcting the id by using the dynamic student id
+                  document.getElementById(`transcript-download-${application.student.id}`).click();
+                }}
+                className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'
+              >
+                View Transcript
+              </button>
             </div>
 
             <div className='flex flex-col SAL'>
               <label className='text-sm font-semibold text-gray-600'>Student Application Letter</label>
-              <a id="sal-download-link" href={`/storage/InternshipApplication/documents/SAL/${application.student.id}/${application.SAL}`} target="_blank" style={{ display: 'none' }} />
-              <button onClick={(e) => { e.preventDefault(); document.getElementById('sal-download-link').click() }} className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'>View SAL</button>
+              <a id={`sal-download-${application.student.id}`} href={`/storage/InternshipApplication/documents/SAL/${application.student.id}/${application.SAL}`} target="_blank" style={{ display: 'none' }} />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Correcting the id by using the dynamic student id
+                  document.getElementById(`sal-download-${application.student.id}`).click();
+                }}
+                className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'
+              >
+                View SAL
+              </button>
             </div>
 
             <div className='flex flex-col CoverLetter'>
               <label className='text-sm font-semibold text-gray-600'>Cover Letter</label>
-              <a id="cover-letter-download-link" href={`/storage/InternshipApplication/documents/coverLetter/${application.student.id}/${application.coverLetter}`} target="_blank" style={{ display: 'none' }} />
-              <button onClick={(e) => { e.preventDefault(); document.getElementById('cover-letter-download-link').click() }} className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'>View Cover Letter</button>
+              <a id={`cover-letter-download-${application.student.id}`} href={`/storage/InternshipApplication/documents/coverLetter/${application.student.id}/${application.coverLetter}`} target="_blank" style={{ display: 'none' }} />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Correcting the id by using the dynamic student id
+                  document.getElementById(`cover-letter-download-${application.student.id}`).click();
+                }}
+                className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'>
+                View Cover Letter
+                </button>
             </div>
 
             {application.ownResume && (
               <div className='flex flex-col Resume'>
                 <label className='text-sm font-semibold text-gray-600'>Resume</label>
-                <a id="resume-download-link" href={`/storage/InternshipApplication/documents/ownResume/${application.student.id}/${application.ownResume}`} target="_blank" style={{ display: 'none' }} />
-                <button onClick={(e) => { e.preventDefault(); document.getElementById('resume-download-link').click() }} className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'>View Resume</button>
+                <a
+                  id={`resume-download-${application.student.id}`}
+                  href={`/storage/InternshipApplication/documents/ownResume/${application.student.id}/${application.ownResume}`}
+                  target="_blank"
+                  style={{ display: 'none' }}
+                />
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // Correcting the id by using the dynamic student id
+                    document.getElementById(`resume-download-${application.student.id}`).click();
+                  }}
+                  className='text-sm font-semibold text-white mt-2 bg-blue-800 px-4 py-2 rounded-lg lg:w-40 h-10'
+                >
+                  View Resume
+                </button>
               </div>
             )}
           </div>

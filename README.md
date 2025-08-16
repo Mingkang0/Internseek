@@ -11,14 +11,14 @@ Internseek offers features like auto-generated resumes and built-in messaging, p
 - [Features](#features)
 - [Usage](#usage)
 - [Technologies](#technologies)
-- [License](#license)
+- [Installation](#installation)
 
 ## Features
 
 Internseek provides several key features that enhance the internship application process for computer science students:
 
 - **User Registration and Login**: Secure and easy registration and login for students and employers, ensuring a personalized experience.
-- **Login with Linked Account**: Users can log in using their social media accounts (such as Google or Facebook) for easier access.
+- **Login with LinkedIn Account**: Users can log in using their LinkedIn account  for easier access.
 - **Internship Listings**: Access a wide range of internship opportunities specifically tailored for computer science majors.
 - **Company Listings**: A dedicated section for viewing registered companies to give students insights into potential employers.
 - **Company Registration**: Employers can easily register their companies, enabling them to post internships and manage applications.
@@ -29,12 +29,12 @@ Internseek provides several key features that enhance the internship application
 - **Application Tracking**: Track the status of internship applications for easy follow-ups.
 - **Responsive Design**: Fully responsive interface optimized for desktop and mobile devices.
 
-## Technologies Used
+## Technologies
 
 [![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com/)
 [![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
 [![Inertia.js](https://img.shields.io/badge/inertia.js-%238700b3.svg?style=for-the-badge&logo=inertia&logoColor=white)](https://inertiajs.com/)
-[![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-%23336791.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Flowbite](https://img.shields.io/badge/flowbite-%2303A9F4.svg?style=for-the-badge&logo=flowbite&logoColor=white)](https://flowbite.com/)
 [![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
@@ -52,6 +52,34 @@ Once on the site, you can:
 4. **Manage Your Profile**: Access your profile and manage experiences, education, skills, accomplishments, and referees.
 5. **Track Internship Applications**: Monitor the status of your internship applications for easy follow-ups.
 
-## License
+## Installation
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+To set up the project locally, follow these steps:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Mingkang0/Internseek.git
+   cd internseek
+2. **Install Composer Dependencies**:
+   ```bash
+   composer install
+3. **Install Node.js Dependencies**:
+   ```bash
+   npm install
+4. **Set Up the Environment**:
+   ```bash
+   cp .env.example .env
+5. **Generate Application Key**:
+   ```bash
+   php artisan key:generate
+6. **Run Database Migrations & Seed the Database**:
+   ```bash
+   php artisan migrate:fresh --seed
+7. **Build Assets**:
+   ```bash
+   npm run dev
+8. **Start the Development Server**:
+   ```bash
+   php artisan serve
+9. Access the Application: Open your browser and navigate to http://127.0.0.1:8000.
+

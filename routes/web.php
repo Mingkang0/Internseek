@@ -24,8 +24,14 @@ use Inertia\Inertia;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/linkstorage', function () {
-    Artisan::call('storage:link'); 
+    try {
+        Artisan::call('storage:link');
+        return 'Storage link created successfully!';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
 });
+
 
 Route::get('/register/student', [RegistrationController::class, 'createStudent'])->name('register.student');
 

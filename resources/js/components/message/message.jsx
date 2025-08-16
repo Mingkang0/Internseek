@@ -155,10 +155,10 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.sender_id === userID && message.sender_type === userRole ? 'justify-end' : 'justify-start'} mb-4`}
+            className={`flex ${Number(message.sender_id) === Number(auth.user.id) && message.sender_type === auth.role ? 'justify-end' : 'justify-start'} mb-4`}
           >
             <div className='flex'>
-              {message.sender_id === conversation.partner.id && message.sender_type !== userRole && userRole === 'student' && (
+              {Number(message.sender_id) === Number(conversation.partner.id) && message.sender_type !== auth.role && auth.role === 'student' && (
                 <img
                   src={`/storage/company/companyLogo/${conversation.partner.companyLogo}`}
                   alt="Company Logo"
@@ -166,7 +166,7 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
                 />
               )}
               {
-                message.sender_id === conversation.partner.id && message.sender_type !== userRole && userRole === 'employer' && (
+                Number(message.sender_id) === Number(conversation.partner.id) && message.sender_type !== auth.role && auth.role === 'employer' && (
                   <>
                     {conversation.partner.linkedin_id && conversation.partner.profilePicture && typeof conversation.partner.profilePicture === 'string' && conversation.partner.profilePicture.startsWith('http') ? (
                       <img
@@ -189,10 +189,10 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
                     )}
                   </>
                 )}
-              <div className={`p-4 border ${message.sender_id === userID ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}>
+              <div className={`p-4 border ${Number(message.sender_id) === Number(userID) ? 'border-gray-200 bg-gray-100 rounded-tl-xl' : 'border-gray-300 bg-white rounded-tr-xl'} rounded-xl`}>
                 <div className="flex flex-wrap gap-2 items-center mb-2 overflow-y-auto">
                   <h5 className="text-sm font-semibold text-gray-900">
-                    {message.sender_id === userID && message.sender_type === userRole ? 'You' : message.receiver_type === 'student' ? conversation.partner.companyName : conversation.partner.firstName + ' ' + conversation.partner.lastName}
+                    {Number(message.sender_id) === Number(auth.user.id) && message.sender_type === auth.role ? 'You' : message.receiver_type === 'student' ? conversation.partner.companyName : conversation.partner.firstName + ' ' + conversation.partner.lastName}
                   </h5>
                   <span className="text-sm text-gray-600">{formatDate(message.created_at)}</span>
                 </div>
@@ -205,14 +205,14 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
                   )}
 
                 </div>
-                {message.sender_id === userID && message.sender_type === userRole && (
+                {Number(message.sender_id) === Number(auth.user.id) && message.sender_type === auth.role && (
                   <div className='flex justify-end mt-1'>
                     <p className='text-sm text-gray-600'>{message.messageStatus}</p>
                   </div>
                 )}
               </div>
             </div>
-            {message.sender_id === userID && message.receiver_type !== userRole && message.sender_type === 'student' && (
+            {Number(message.sender_id) === Number(auth.user.id) && message.receiver_type !== auth.role && message.sender_type === 'student' && (
               <>
                 {auth.user.linkedin_id && auth.user.profilePicture && typeof auth.user.profilePicture === 'string' && auth.user.profilePicture.startsWith('http') ? (
                   <img
@@ -236,7 +236,7 @@ const Message = ({ conversation, userRole, userID, updateConversation }) => {
               </>
             )}
             {
-              message.sender_id === userID && message.receiver_type !== userRole && message.sender_type === 'employer' && (
+              Number(message.sender_id) === Number(auth.user.id) && message.receiver_type !== auth.role && message.sender_type === 'employer' && (
                 <img src={`/storage/company/companyLogo/${auth.user.company.companyLogo}`} alt="Company Logo" className="w-12 h-12 rounded-full border ring-1 ring-gray-900 ml-2 mr-2" />
               )
             }

@@ -132,7 +132,7 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.sender_id === sender.id && message.sender_type !== receiverType ? 'justify-end' : 'justify-start'} mb-4`}
+                className={`flex ${Number(message.sender_id) === Number(auth.user.id) && message.sender_type === auth.role ? 'justify-end' : 'justify-start'} mb-4`}
               >
                 {message.receiver_id == sender.id && message.sender_type == receiverType && message.sender_type == 'employer' && (
                   <img
@@ -207,7 +207,7 @@ const Chatbox = ({ messages, sender, receiver, receiverType }) => {
                         src={sender.profilePicture}
                         alt="LinkedIn Profile Pic"
                       />
-                    ) : sendersender.profilePicture && typeof sender.profilePicture === 'string' ? (
+                    ) : sender.profilePicture && typeof sender.profilePicture === 'string' ? (
                       <img
                         src={`/storage/profile/student/profile_pictures/${sender.profilePicture}`}
                         alt="Local Profile Pic"
